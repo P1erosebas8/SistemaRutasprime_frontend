@@ -31,15 +31,15 @@ function Contactanos() {
         <div className="container">
           <h2 className="text-center mb-4">Envíanos un mensaje</h2>
           <form className="mx-auto" style={{ maxWidth: "600px" }}>
-            <div className="mb-3">
+            <div className="mb-3 text-start">
               <label className="form-label">Nombre</label>
               <input type="text" className="form-control" placeholder="Tu nombre" />
             </div>
-            <div className="mb-3">
+            <div className="mb-3 text-start">
               <label className="form-label">Correo</label>
               <input type="email" className="form-control" placeholder="tuemail@gmail.com" />
             </div>
-            <div className="mb-3">
+            <div className="mb-3 text-start">
               <label className="form-label">Mensaje</label>
               <textarea className="form-control" rows="4" placeholder="Escribe tu mensaje"></textarea>
             </div>
