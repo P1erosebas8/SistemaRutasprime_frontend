@@ -8,7 +8,8 @@ import historia from "../assets/historia.jpg";
 import flota from "../assets/flota.webp";
 import valores from "../assets/valores.jpg";
 import ReuFondo from "../assets/ReuFondo.jpg";
-
+import NosTransPesa from "../assets/NosTransPesa.jpg";
+import CargaSegura from "../assets/CargaSegura.jpg";
 
 function AcercaDe() {
   return (
@@ -33,8 +34,29 @@ function AcercaDe() {
           <p className="lead">Llevando tu carga con seguridad</p>
         </div>
       </section>
-
-      {/* HISTORIA */}
+      <section className="py-5" style={{ backgroundColor: "#2C2C2C" }}>
+        <Container>
+          <Row className="align-items-center text-white flex-md-row-reverse">
+            <Col md={6}>
+              <img
+                src={NosTransPesa}
+                alt="Descripción"
+                className="img-fluid rounded rounded"
+              />
+            </Col>
+            <Col md={6}>
+              <h1 className="text-white">Sobre Nosotros</h1>
+              <p className="text-white">
+                Sobre RutasPrime - Somos una empresa de transporte de carga formal. 100% peruana y areditada ante la ATU.
+                Tenemos relacioens comerciales con empresas importantesen PEru, contamos con "Cero incidencias" registradas durante mas de 25 años de operaciones
+              </p>
+              <p className="text-white">
+                Contamos con conductores calificados y vehículos modernos para garantizar tu comodidad y seguridad.
+              </p>
+            </Col>
+          </Row>
+        </Container>
+      </section>
       <section className="py-5" style={{ backgroundColor: "#1E1F20" }}>
         <Container>
           <Row className="align-items-center text-white">
@@ -56,8 +78,21 @@ function AcercaDe() {
           </Row>
         </Container>
       </section>
-
-      {/* MISIÓN Y VISIÓN  */}
+      <section className="py-5" style={{ backgroundColor: "#1E1F20" }}>
+        <Container>
+          <Row className="align-items-center">
+            <Col md={6}>
+              <h1 className="text-white">Haz que que tu carga llegue segura</h1>
+              <p className="text-white">
+                No te estreses mientras viajas por la ciudad en Perú. ¡RutasPrime te ayuda! Nuestra app es tu mejor opción para viajes asequibles y cómodos. Hemos diseñado Rutas Prime pensando
+                en la facilidad, así que olvídate de regatear y de esperar afuera: reserva tu viaje en minutos, consulta el precio por adelantado y sigue a tu conductor en tiempo real. Leva tu carga y experimenta una nueva forma de desplazarte por Perú con vehículos de calidad y un alto nivel de servicio.</p>
+            </Col>
+            <Col md={6}>
+              <img src={CargaSegura} alt="Descripción" className="img-fluid rounded" />
+            </Col>
+          </Row>
+        </Container>
+      </section>
       <section className="py-5" style={{ backgroundColor: "#2C2C2C" }}>
         <Container>
           <Row className="align-items-center text-white flex-md-row-reverse">
@@ -71,12 +106,12 @@ function AcercaDe() {
             <Col md={6}>
               <h2>Misión y Visión</h2>
               <p>
-                <strong>Misión:</strong> Brindar un servicio de transporte de carga ágil,
+                <strong>Misión</strong> - Brindar un servicio de transporte de carga ágil,
                 seguro y transparente, conectando a empresas y usuarios con
                 camioneros disponibles en todo el Perú.
               </p>
               <p>
-                <strong>Visión:</strong> Ser la empresa líder en transporte en
+                <strong>Visión</strong> - Ser la empresa líder en transporte en
                 Perú, reconocida por la innovación, sostenibilidad y servicio
                 de excelencia.
               </p>
@@ -84,8 +119,6 @@ function AcercaDe() {
           </Row>
         </Container>
       </section>
-
-      {/* VALORES */}
       <section className="py-5" style={{ backgroundColor: "#1E1F20" }}>
         <Container>
           <Row className="align-items-center text-white">
@@ -98,7 +131,7 @@ function AcercaDe() {
             </Col>
             <Col md={6}>
               <h2>Nuestros Valores</h2>
-              <ul>
+              <ul className="list-unstyled">
                 <li><strong>Seguridad:</strong> Cuidamos cada carga.</li>
                 <li><strong>Responsabilidad:</strong> Cumplimos con cada compromiso.</li>
                 <li><strong>Innovación:</strong> Usamos tecnología de última generación.</li>
@@ -107,8 +140,6 @@ function AcercaDe() {
           </Row>
         </Container>
       </section>
-
-      {/* FLOTA */}
       <section className="py-5" style={{ backgroundColor: "#2C2C2C" }}>
         <Container>
           <Row className="align-items-center text-white flex-md-row-reverse">
@@ -153,7 +184,7 @@ function AcercaDe() {
           </Row>
         </Container>
       </section>
-  </>
+    </>
   );
 }
 

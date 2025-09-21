@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState } from 'react'
 import './App.css'
 import MyNavbar from './components/MyNavbar'
-import Nosotros from "./components/Nosotros";
+import PreguntasFrec from "./components/PreguntasFrec";
 import Contactanos from "./components/Contactanos";
 import AcercaDe from "./components/AcercaDe";
 import MyFooter from "./components/MyFooter";
@@ -19,7 +19,7 @@ function App() {
         <MyNavbar />
         <Routes>
           <Route path="/Inicio" element={<Inicio />} />
-          <Route path="/Nosotros" element={<Nosotros />} />
+          <Route path="/PreguntasFrec" element={<PreguntasFrec />} />
           <Route path="/Contactanos" element={<Contactanos />} />
           <Route path="/AcercaDe" element={<AcercaDe />} />
         </Routes>
