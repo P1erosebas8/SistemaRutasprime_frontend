@@ -32,7 +32,7 @@ function PreguntasFrec() {
                     <Accordion defaultActiveKey={null} className="custom-accordion">
                         <Accordion.Item eventKey="0">
                             <Accordion.Header>
-                                ¿Cómo puedo saber en dónde está el pasajero asignado al pedido?
+                                ¿Cómo puedo registrarme como conductor en Rutas Prime?
                             </Accordion.Header>
                             <Accordion.Body>
                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus sint maxime libero incidunt quod tenetur aliquam repellat. Magnam molestiae, eligendi at rem perspiciatis cumque molestias suscipit, accusantium, non rerum nam?
@@ -40,28 +40,28 @@ function PreguntasFrec() {
                         </Accordion.Item>
                         <Accordion.Item eventKey="1">
                             <Accordion.Header>
-                                El cliente no marcó en la app web que ya se completo el pedido ¿Qué puedo hacer?
+                                ¿Qué requisitos necesito para conducir vehículos de carga pesada?
                             </Accordion.Header>
                             <Accordion.Body>
                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum ab placeat excepturi, veritatis, blanditiis nostrum illo alias praesentium temporibus ut vel ullam nesciunt eius necessitatibus officiis perferendis. Quae, hic optio.                            </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="2">
                             <Accordion.Header>
-                                El cliente señaló que el pedido estaba en cierto punto pero no fue así, ¿Qué puedo hacer?
+                                ¿Cómo recibo las solicitudes de transporte de carga?
                             </Accordion.Header>
                             <Accordion.Body>
                                 Lorem, ipsum dolor sit amet consectetur adipisicing elit. Atque non enim, deleniti quas, explicabo cum doloribus distinctio, voluptas voluptate iure eligendi. Ipsam beatae veritatis, illo officia in facere reprehenderit dolorum.                            </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="3">
                             <Accordion.Header>
-                                ¿Qué debo hacer si no puedo contactar al cliente/pasajero?
+                                ¿Cómo recibo mis pagos y con qué frecuencia?
                             </Accordion.Header>
                             <Accordion.Body>
                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus id fugiat, consequuntur ea sint enim officia laudantium excepturi pariatur consectetur ratione, voluptatibus dolor adipisci nostrum doloremque a dignissimos iure expedita.                            </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="4">
                             <Accordion.Header>
-                                ¿Cómo puedo levantar una queja contra un cliente/pasajero?
+                                ¿Qué documentos debo mantener actualizados para seguir operando?
                             </Accordion.Header>
                             <Accordion.Body>
                                 Lorem, ipsum dolor sit amet consectetur adipisicing elit. Temporibus eum sit beatae odio. Eum repellat dicta fugit error accusamus dignissimos similique quis, aliquid perspiciatis debitis. Beatae amet debitis aspernatur fugiat.
@@ -76,7 +76,7 @@ function PreguntasFrec() {
                     <Accordion defaultActiveKey={null} className="custom-accordion">
                         <Accordion.Item eventKey="0">
                             <Accordion.Header>
-                                ¿Cómo consigo mi primer viaje gratis con RutasPrime?
+                                ¿Cómo puedo registrarme en Rutas Prime?
                             </Accordion.Header>
                             <Accordion.Body>
                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia non quibusdam asperiores accusantium ut vel illo? Animi, molestias perspiciatis assumenda deleniti, aliquid natus ullam similique rem fugiat saepe excepturi quaerat.
@@ -84,7 +84,7 @@ function PreguntasFrec() {
                         </Accordion.Item>
                         <Accordion.Item eventKey="1">
                             <Accordion.Header>
-                                ¿Cómo pido un viaje?
+                                ¿Qué tipo de carga puedo enviar mediante la plataforma?
                             </Accordion.Header>
                             <Accordion.Body>
                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque veritatis iusto, perferendis facilis magnam tempore quaerat. Id cupiditate, repudiandae nesciunt doloribus quia quisquam pariatur voluptate, neque beatae quae rem veritatis.
@@ -92,7 +92,7 @@ function PreguntasFrec() {
                         </Accordion.Item>
                         <Accordion.Item eventKey="2">
                             <Accordion.Header>
-                                ¿Puedo reservar un viaje con varias paradas?
+                                ¿Cómo hago para solicitar un transporte de carga?
                             </Accordion.Header>
                             <Accordion.Body>
                                 Lorem, ipsum dolor sit amet consectetur adipisicing elit. Error veritatis optio enim nostrum, libero provident voluptatibus iure fuga corrupti beatae vel, minus minima adipisci voluptatum deserunt quam repellat rem non.
@@ -100,7 +100,7 @@ function PreguntasFrec() {
                         </Accordion.Item>
                         <Accordion.Item eventKey="3">
                             <Accordion.Header>
-                                ¿Qué debo hacer si no puedo contactar al conductor?
+                                ¿Qué pasa si mi carga llega tarde o se pierde?
                             </Accordion.Header>
                             <Accordion.Body>
                                 Lorem ipsum dolor, sit amet consectetur adipisicing elit. Deserunt, similique. Sit mollitia vero aliquid. Facilis ea itaque beatae ipsa soluta iure animi, hic dolorem corporis explicabo eveniet nam ab assumenda.
@@ -108,7 +108,7 @@ function PreguntasFrec() {
                         </Accordion.Item>
                         <Accordion.Item eventKey="4">
                             <Accordion.Header>
-                                ¿Cómo puedo levantar una queja contra un conductor?
+                                ¿Rutas Prime ofrece seguro para la carga transportada?
                             </Accordion.Header>
                             <Accordion.Body>
                                 Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dignissimos adipisci, provident porro doloremque repellendus nihil quos harum consectetur iusto enim reprehenderit repellat quibusdam aspernatur, assumenda ipsam. Autem dolores facere dolorem?
@@ -123,21 +123,23 @@ function PreguntasFrec() {
                     <Accordion defaultActiveKey={null} className="custom-accordion">
                         <Accordion.Item eventKey="0">
                             <Accordion.Header>
-                                ¿Qué tipos de tarjetas de débito o crédito puedo usar para pagar?</Accordion.Header>
+                                ¿Qué métodos de pago acepta Rutas Prime?
+                            </Accordion.Header>
                             <Accordion.Body>
                                 Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquam sint voluptate voluptatibus consequuntur, atque nobis itaque! Dolores quibusdam deleniti, ad quo laudantium ducimus aspernatur vero iusto minima distinctio quae quas!
                             </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="1">
                             <Accordion.Header>
-                                ¿Cuánto tiempo tarda en procesarse un pago?</Accordion.Header>
+                                ¿Cuánto tiempo tarda en procesarse un pago?
+                            </Accordion.Header>
                             <Accordion.Body>
                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Non excepturi ut tempora veniam voluptas commodi deleniti quidem? Accusamus magni dicta odio rerum. Facere eum provident est sint excepturi voluptatem veritatis.
                             </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="2">
                             <Accordion.Header>
-                                ¿Hay algún cargo por usar la plataforma de pagos?
+                                ¿Puedo pagar en efectivo o solo con tarjeta/billetera digital?
                             </Accordion.Header>
                             <Accordion.Body>
                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Id maxime consequuntur modi illo ipsam quasi voluptas error quia reiciendis exercitationem temporibus, labore neque illum, dolore similique nemo voluptatem ut rem!
@@ -145,14 +147,16 @@ function PreguntasFrec() {
                         </Accordion.Item>
                         <Accordion.Item eventKey="3">
                             <Accordion.Header>
-                                ¿Por qué mi transacción fue rechazada?</Accordion.Header>
+                                ¿Qué pasa si hay un error en el cobro?
+                            </Accordion.Header>
                             <Accordion.Body>
                                 Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ratione quae, distinctio numquam excepturi cum labore aspernatur saepe deserunt alias expedita at? Obcaecati minima minus iste totam delectus suscipit ad atque!
                             </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="4">
                             <Accordion.Header>
-                                ¿Cómo cambio mi método de pago en la aplicación?</Accordion.Header>
+                                ¿Cómo cambio mi método de pago en la aplicación?
+                            </Accordion.Header>
                             <Accordion.Body>
                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium quia ullam atque. Ab assumenda explicabo perferendis totam eius nemo exercitationem, dolore consequuntur iusto numquam maxime omnis itaque nostrum quia distinctio.
                             </Accordion.Body>
@@ -166,28 +170,32 @@ function PreguntasFrec() {
                     <Accordion defaultActiveKey={null} className="custom-accordion">
                         <Accordion.Item eventKey="0">
                             <Accordion.Header>
-                                ¿Por qué mi aplicación se bloquea con frecuencia o tarda mucho en cargar?</Accordion.Header>
+                                ¿Por qué mi aplicación se bloquea con frecuencia o tarda mucho en cargar?
+                            </Accordion.Header>
                             <Accordion.Body>
                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex quae est consequatur quidem, exercitationem similique ipsum id! Dolor dolorem, libero animi neque debitis, ipsam, id sint ex magnam unde qui.
                             </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="1">
                             <Accordion.Header>
-                                ¿La navegación de mi aplicación es confusa y los usuarios se pierden fácilmente?</Accordion.Header>
+                                ¿Por qué no puedo iniciar sesión en la plataforma?
+                            </Accordion.Header>
                             <Accordion.Body>
                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore aperiam dolor possimus modi consectetur, consequuntur voluptates fugiat mollitia laudantium dicta eligendi ratione qui fugit dolore omnis nihil officiis! Dolorem, praesentium?
                             </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="2">
                             <Accordion.Header>
-                                ¿Por qué algunos elementos de mi aplicación se ven desalineados o se superponen?</Accordion.Header>
+                                ¿Cómo recupero mi contraseña?
+                            </Accordion.Header>
                             <Accordion.Body>
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sit accusamus a dolor, illum odio inventore qui? Dolore at, odio amet ratione maiores veritatis molestias suscipit odit eum sed tempore cum?
                             </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="3">
                             <Accordion.Header>
-                                ¿Cómo puedo solucionar problemas de red como la lentitud de mi conexión?</Accordion.Header>
+                                ¿Cómo reporto errores o problemas técnicos en la plataforma?
+                            </Accordion.Header>
                             <Accordion.Body>
                                 Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quod illum culpa consequuntur aliquid porro. Temporibus explicabo suscipit dicta odio exercitationem doloribus perspiciatis. Obcaecati, accusamus repellendus commodi molestiae nisi vel? Ipsum.
                             </Accordion.Body>

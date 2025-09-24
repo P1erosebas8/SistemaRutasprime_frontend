@@ -91,6 +91,7 @@
 
 .navbar-custom .navbar-brand {
   color: #ffffff !important;
+  font-weight: bold;
 }
 
 .navbar-custom .nav-link {
@@ -99,4 +100,9 @@
 
 .navbar-custom .nav-link:hover {
   color: #00ccff !important;
+}
+@media (max-width: 992px) {
+  .navbar-custom.bg-transparent {
+    background-color: rgba(63, 60, 60, 0.877) !important;
+  }
 }
