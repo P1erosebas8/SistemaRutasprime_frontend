@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -6,9 +7,24 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Logo from "../assets/logo.png";
 
 function MyNavbar() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   return (
-    <Navbar expand="lg" bg='dark' data-bs-theme="dark" fixed='top' className='py-3'>
-      <Container fluid>
+    <Navbar expand="lg" fixed="top" className={`py-3 navbar-custom ${scrolled ? "bg-dark" : "bg-transparent"}`}
+    >      <Container fluid>
         <Navbar.Brand className='d-flex align-items-center fs-3' as={Link} to="/Inicio"><img
           src={Logo}
           alt="Logo"
@@ -36,7 +52,6 @@ function MyNavbar() {
             <Nav.Link as={Link} to="/Contactanos" className='fs-5'>Contactanos</Nav.Link>
             <Nav.Link as={Link} to="/AcercaDe" className='fs-5'>Acerca De</Nav.Link>
             <Nav.Link as={Link} to="/PreguntasFrec" className='fs-5'>Preguntas Frecuentes</Nav.Link>
-
           </Nav>
         </Navbar.Collapse>
       </Container>

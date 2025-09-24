@@ -132,9 +132,9 @@ function AcercaDe() {
             <Col md={6}>
               <h2>Nuestros Valores</h2>
               <ul className="list-unstyled">
-                <li><strong>Seguridad:</strong> Cuidamos cada carga.</li>
-                <li><strong>Responsabilidad:</strong> Cumplimos con cada compromiso.</li>
-                <li><strong>Innovación:</strong> Usamos tecnología de última generación.</li>
+                <li><strong>Seguridad</strong> - Cuidamos cada carga.</li>
+                <li><strong>Responsabilidad</strong> - Cumplimos con cada compromiso.</li>
+                <li><strong>Innovación</strong> - Usamos tecnología de última generación.</li>
               </ul>
             </Col>
           </Row>
