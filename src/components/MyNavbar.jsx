@@ -27,7 +27,7 @@ function MyNavbar() {
   return (
     <Navbar expand="lg" fixed="top" className={`py-3 navbar-custom ${scrolled ? "bg-dark" : "bg-transparent"}`} expanded={expanded} onToggle={() => setExpanded(!expanded)}>
       <Container fluid>
-        <Navbar.Brand className='d-flex align-items-center fs-3' as={Link} to="/Inicio"><img
+        <Navbar.Brand className='d-flex align-items-center fs-3' as={Link} to="/Inicio" onClick={() => setExpanded(false)}><img
           src={Logo}
           alt="Logo"
           width="50"

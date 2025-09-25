@@ -106,3 +106,6 @@
     background-color: rgba(63, 60, 60, 0.877) !important;
   }
 }
+.card-custom {
+  min-height: 320px; /* ajusta según el diseño */
+}
