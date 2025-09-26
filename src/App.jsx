@@ -1,15 +1,15 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './App.css'
 import MyNavbar from './components/MyNavbar'
-import PreguntasFrec from "./components/PreguntasFrec";
-import Contactanos from "./components/Contactanos";
-import AcercaDe from "./components/AcercaDe";
+import PreguntasFrec from "./pages/PreguntasFrec";
+import Contactanos from "./pages/Contactanos";
+import AcercaDe from "./pages/AcercaDe";
 import MyFooter from "./components/MyFooter";
-import Inicio from "./components/Inicio";
-import Privacidad from "./components/privacidad";
-import Reclamaciones from "./components/reclamaciones";
-import Terminos from "./components/terminos";
-import LogIN from "./components/LogIn";
+import Inicio from "./pages/Inicio";
+import Privacidad from "./pages/privacidad";
+import Reclamaciones from "./pages/reclamaciones";
+import Terminos from "./pages/terminos";
+import LogIN from "./pages/LogIn";
 import WhatsappBoton from "./components/WhatsappBoton";
 
 function App() {

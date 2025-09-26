@@ -1,31 +1,18 @@
-import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import PregFrec from "../assets/PregFrec.png";
 import Accordion from "react-bootstrap/Accordion";
+import HeroSection from "../components/HeroSection";
 
 function PreguntasFrec() {
     return (
         <>
-            <section
-                className="d-flex flex-column justify-content-center align-items-end text-center text-white"
-                style={{
-                    backgroundImage: `url(${PregFrec})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    width: "100vw",
-                    height: "80vh",
-                    position: "relative"
-                }}
-            >
-                <div
-                    className="position-absolute top-0 start-0 w-100 h-100"
-                    style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-                ></div>
-                <div className="position-relative me-5">
-                    <h1 className="display-3 fw-bold">Preguntas Frecuentes</h1>
-                    <p className="lead">¿Tienes alguna pregunta? A continuación, consulta la sección de preguntas frecuentes</p>
-                </div>
-            </section>
+            <HeroSection
+                title="Bienvenido a Rutas Prime"
+                subtitle="Tu seguridad y comodidad en cada viaje"
+                background="src/assets/PregFrec.png"
+                height="80vh"
+                align="right"
+                backgroundPosition="center"
+            />
             <section className="py-5" style={{ backgroundColor: "#2C2C2C" }}>
                 <div className="container">
                     <h2 className="text-white mb-4">Conductores</h2>

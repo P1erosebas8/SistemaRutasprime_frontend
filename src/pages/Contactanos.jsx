@@ -1,31 +1,17 @@
-import React from "react";
-import contactanos from "../assets/contactanos.jpeg";
 import "bootstrap/dist/css/bootstrap.min.css";
+import HeroSection from "../components/HeroSection";
 
 function Contactanos() {
   return (
     <>
-      <section
-        className="d-flex flex-column justify-content-center align-items-center text-center text-white"
-        style={{
-          backgroundImage: "url(" + contactanos + ")",
-          backgroundSize: "cover",
-          backgroundPosition: "center top",
-          width: "100vw",
-          height: "70vh",
-          position: "relative"
-        }}
-      >
-        <div
-          className="position-absolute top-0 start-0 w-100 h-100"
-          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-        ></div>
-
-        <div className="position-relative">
-          <h1 className="display-4 fw-bold">Contáctanos</h1>
-          <p className="lead">Estamos aquí para ayudarte en lo que necesites</p>
-        </div>
-      </section>
+      <HeroSection
+        title="Contáctanos"
+        subtitle="Estamos aquí para ayudarte en lo que necesites"
+        background="src/assets/contactanos.jpeg"
+        height="80vh"
+        align="center"
+        backgroundPosition="center top"
+      />
 
       <section className="py-5" style={{ backgroundColor: "#f8f9fa" }}>
         <div className="container">
