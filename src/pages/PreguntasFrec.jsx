@@ -59,7 +59,7 @@ function PreguntasFrec() {
             </section>
             <section className="py-3" style={{ backgroundColor: "#2C2C2C" }}>
                 <div className="container">
-                    <h2 className="text-white mb-4">Pasajeros</h2>
+                    <h2 className="text-white mb-4">Clientes</h2>
                     <Accordion defaultActiveKey={null} className="custom-accordion">
                         <Accordion.Item eventKey="0">
                             <Accordion.Header>

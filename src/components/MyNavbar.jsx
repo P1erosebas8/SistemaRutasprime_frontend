@@ -45,11 +45,9 @@ function MyNavbar() {
               <NavDropdown.Item as={Link} to="/action/1.4" onClick={() => setExpanded(false)}>Ciudades</NavDropdown.Item>
             </NavDropdown>
             <NavDropdown title="Socios" id="basic-nav-dropdown" className='fs-5' menuVariant="dark">
-              <NavDropdown.Item as={Link} to="/action/2.1" onClick={() => setExpanded(false)}>Registrate como conductor</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/action/2.2" onClick={() => setExpanded(false)}>Registrate como pasajero</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/action/2.3" onClick={() => setExpanded(false)}>Requisitos para conductores</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/action/2.4" onClick={() => setExpanded(false)}>Soporte</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/action/2.5" onClick={() => setExpanded(false)}>Preguntas Frecuentes</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/Socios1" onClick={() => setExpanded(false)}>¿Como me puedo registrar?</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/Socios2" onClick={() => setExpanded(false)}>Requisitos para conductores</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/Socios3" onClick={() => setExpanded(false)}>Soporte</NavDropdown.Item>
             </NavDropdown>
             <Nav.Link as={Link} to="/Contactanos" className='fs-5' onClick={() => setExpanded(false)}>Contactanos</Nav.Link>
             <Nav.Link as={Link} to="/AcercaDe" className='fs-5' onClick={() => setExpanded(false)}>Acerca De</Nav.Link>

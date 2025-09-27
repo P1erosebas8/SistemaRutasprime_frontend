@@ -28,7 +28,7 @@ function MyFooter() {
               <p>Central: +01 217 7777</p>
               <p>Afiliaciones: 201 217 7785</p>
               <p>Flota: +01 217 7790</p>
-              <p>Email: reservas@alotaxis.com</p>
+              <p>Email: RutasPrime@gmail.com</p>
             </Col>
             <Col md={3}>
               <h5 className="fw-bold">PLATAFORMAS</h5>

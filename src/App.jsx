@@ -11,6 +11,9 @@ import Reclamaciones from "./pages/reclamaciones";
 import Terminos from "./pages/terminos";
 import LogIN from "./pages/LogIn";
 import WhatsappBoton from "./components/WhatsappBoton";
+import ComoRegistroCon from "./pages/Socios1";
+import RequisitosConductor from "./pages/Socios2";
+
 
 function App() {
   return (
@@ -24,6 +27,8 @@ function App() {
           <Route path="/Contactanos" element={<Contactanos />} />
           <Route path="/AcercaDe" element={<AcercaDe />} />
           <Route path="/LogIn" element={<LogIN />} />
+          <Route path="/Socios1" element={<ComoRegistroCon />} />
+          <Route path="/Socios2" element={<RequisitosConductor/>}/>
           <Route path="/privacidad" element={<Privacidad />} />
           <Route path="/reclamaciones" element={<Reclamaciones />} />
           <Route path="/terminos" element={<Terminos />} />
