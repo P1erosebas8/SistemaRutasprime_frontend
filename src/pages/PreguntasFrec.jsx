@@ -6,8 +6,8 @@ function PreguntasFrec() {
     return (
         <>
             <HeroSection
-                title="Bienvenido a Rutas Prime"
-                subtitle="Tu seguridad y comodidad en cada viaje"
+                title="Preguntas Frecuentes"
+                subtitle="¿Tienes alguna pregunta? A continuación, consulta la sección de preguntas frecuentes"
                 background="src/assets/PregFrec.png"
                 height="80vh"
                 align="right"

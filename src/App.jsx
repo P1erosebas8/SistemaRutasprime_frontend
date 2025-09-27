@@ -13,13 +13,15 @@ import LogIN from "./pages/LogIn";
 import WhatsappBoton from "./components/WhatsappBoton";
 import ComoRegistroCon from "./pages/Socios1";
 import RequisitosConductor from "./pages/Socios2";
-
+import Soporte from "./pages/Socios3";
+import ScrollToTop from "./components/ScrollTop";
 
 function App() {
   return (
     <>
       <Router>
         <MyNavbar />
+         <ScrollToTop />
         <Routes>
           <Route path="/" element={<Inicio />} />
           <Route path="/Inicio" element={<Inicio />} />
@@ -29,6 +31,7 @@ function App() {
           <Route path="/LogIn" element={<LogIN />} />
           <Route path="/Socios1" element={<ComoRegistroCon />} />
           <Route path="/Socios2" element={<RequisitosConductor/>}/>
+          <Route path="/Socios3" element={<Soporte/>}/>
           <Route path="/privacidad" element={<Privacidad />} />
           <Route path="/reclamaciones" element={<Reclamaciones />} />
           <Route path="/terminos" element={<Terminos />} />

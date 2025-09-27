@@ -58,7 +58,7 @@ function RequisitosConductor() {
         align="center"
         backgroundPosition="center 40%"
       />
-      <section className="py-5" style={{ backgroundColor: "#1b5c9cff" }}>
+      <section className="py-5" style={{ backgroundColor: "#0d2842ff" }}>
         <Container>
           <h2 className="text-center mb-5 text-white">📋 Requisitos del Conductor</h2>
           <Row>

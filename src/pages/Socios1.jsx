@@ -14,7 +14,7 @@ function ComoRegistroCon() {
                 backgroundPosition="center 40%"
             />
 
-            <section className="py-5 bg-dark">
+            <section className="py-5"style={{ backgroundColor: "#0d2842ff" }}>
                 <Container>
                     <h2 className="text-center mb-4 text-white">¿Cómo registrarse?</h2>
                     <Row>

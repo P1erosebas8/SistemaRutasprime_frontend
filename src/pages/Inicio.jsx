@@ -3,6 +3,9 @@ import CargaInic from "../assets/CargaInic.jpg";
 import HeroSection from "../components/HeroSection";
 import ListaConImagen from "../components/ListadoConImagen";
 import CarruselCards from "../components/CaruselConCards";
+import { Link } from "react-router-dom";
+
+
 
 
 function Inicio() {
@@ -37,8 +40,9 @@ function Inicio() {
         height="80vh"
         align="left"
         backgroundPosition="center 40%"
+        botonTexto="Conocenos"
+        botonLink="/AcercaDe"
       />
-
       <ListaConImagen
         features={listaInicio}
         image={CargaInic}

@@ -13,7 +13,7 @@ export default function RequisitoCard({ titulo, descripcion, imagen }) {
         <Card.Title className="fw-bold">{titulo}</Card.Title>
         <Card.Text className="text-muted">{descripcion}</Card.Text>
         <Button variant="dark" className="w-100">
-          Subir documento
+          Mas información
         </Button>
       </Card.Body>
     </Card>

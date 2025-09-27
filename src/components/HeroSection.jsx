@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function HeroSection({
     title,
     subtitle,
@@ -6,6 +8,8 @@ function HeroSection({
     overlay = "rgba(0,0,0,0.5)",
     align = "center",
     backgroundPosition = "center",
+    botonTexto, 
+    botonLink 
 }) {
     const alignmentClass =
         align === "left"
@@ -33,7 +37,17 @@ function HeroSection({
             <div className="position-relative">
                 <h1 className="display-3 fw-bold">{title}</h1>
                 {subtitle && <p className="lead">{subtitle}</p>}
+                {botonTexto && botonLink && (
+                    <Link
+                        to={botonLink}
+                        className="btn btn-primary"
+                        style={{ padding: "6px 16px", fontSize: "1rem" }}
+                    >
+                        {botonTexto}
+                    </Link>
+                )}
             </div>
+
         </section>
     );
 }
