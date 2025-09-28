@@ -41,8 +41,8 @@ function MyNavbar() {
             <NavDropdown title="Viajes" className='fs-5' id="basic-nav-dropdown" menuVariant="dark">
               <NavDropdown.Item as={Link} to="/action/1.1" onClick={() => setExpanded(false)}>Viajes de empresa asociada</NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/action/1.2" onClick={() => setExpanded(false)}>Viajes de empresa independiente</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/action/1.3" onClick={() => setExpanded(false)}>Rutas</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/action/1.4" onClick={() => setExpanded(false)}>Ciudades</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/Viajes3" onClick={() => setExpanded(false)}>Rutas</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/Viajes4" onClick={() => setExpanded(false)}>Ciudades</NavDropdown.Item>
             </NavDropdown>
             <NavDropdown title="Socios" id="basic-nav-dropdown" className='fs-5' menuVariant="dark">
               <NavDropdown.Item as={Link} to="/Socios1" onClick={() => setExpanded(false)}>¿Como me puedo registrar?</NavDropdown.Item>
