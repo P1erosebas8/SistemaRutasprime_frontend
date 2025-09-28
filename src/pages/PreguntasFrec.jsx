@@ -22,36 +22,39 @@ function PreguntasFrec() {
                                 ¿Cómo puedo registrarme como conductor en Rutas Prime?
                             </Accordion.Header>
                             <Accordion.Body>
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus sint maxime libero incidunt quod tenetur aliquam repellat. Magnam molestiae, eligendi at rem perspiciatis cumque molestias suscipit, accusantium, non rerum nam?
-                            </Accordion.Body>
+                                Debes crear una cuenta en la app, subir tus documentos y esperar la validación de nuestro equipo.
+                                </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="1">
                             <Accordion.Header>
                                 ¿Qué requisitos necesito para conducir vehículos de carga pesada?
                             </Accordion.Header>
                             <Accordion.Body>
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum ab placeat excepturi, veritatis, blanditiis nostrum illo alias praesentium temporibus ut vel ullam nesciunt eius necessitatibus officiis perferendis. Quae, hic optio.                            </Accordion.Body>
+                                Licencia de conducir vigente para transporte de carga y los documentos del vehículo en regla.
+                                </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="2">
                             <Accordion.Header>
                                 ¿Cómo recibo las solicitudes de transporte de carga?
                             </Accordion.Header>
                             <Accordion.Body>
-                                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Atque non enim, deleniti quas, explicabo cum doloribus distinctio, voluptas voluptate iure eligendi. Ipsam beatae veritatis, illo officia in facere reprehenderit dolorum.                            </Accordion.Body>
+                                A través de la aplicación móvil, donde podrás aceptar o rechazar viajes.
+                                </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="3">
                             <Accordion.Header>
                                 ¿Cómo recibo mis pagos y con qué frecuencia?
                             </Accordion.Header>
                             <Accordion.Body>
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus id fugiat, consequuntur ea sint enim officia laudantium excepturi pariatur consectetur ratione, voluptatibus dolor adipisci nostrum doloremque a dignissimos iure expedita.                            </Accordion.Body>
+                                Los pagos se realizan de manera semanal a la cuenta bancaria registrada.
+                                </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="4">
                             <Accordion.Header>
                                 ¿Qué documentos debo mantener actualizados para seguir operando?
                             </Accordion.Header>
                             <Accordion.Body>
-                                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Temporibus eum sit beatae odio. Eum repellat dicta fugit error accusamus dignissimos similique quis, aliquid perspiciatis debitis. Beatae amet debitis aspernatur fugiat.
+                                Licencia de conducir, SOAT, revisión técnica y tarjeta de propiedad.
                             </Accordion.Body>
                         </Accordion.Item>
                     </Accordion>
@@ -66,7 +69,7 @@ function PreguntasFrec() {
                                 ¿Cómo puedo registrarme en Rutas Prime?
                             </Accordion.Header>
                             <Accordion.Body>
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia non quibusdam asperiores accusantium ut vel illo? Animi, molestias perspiciatis assumenda deleniti, aliquid natus ullam similique rem fugiat saepe excepturi quaerat.
+                                Descarga la app, crea tu cuenta y comienza a solicitar envíos de carga.
                             </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="1">
@@ -74,32 +77,32 @@ function PreguntasFrec() {
                                 ¿Qué tipo de carga puedo enviar mediante la plataforma?
                             </Accordion.Header>
                             <Accordion.Body>
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque veritatis iusto, perferendis facilis magnam tempore quaerat. Id cupiditate, repudiandae nesciunt doloribus quia quisquam pariatur voluptate, neque beatae quae rem veritatis.
-                            </Accordion.Body>
+                                Cargas medianas y pesadas que puedan transportarse en camiones.
+                                </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="2">
                             <Accordion.Header>
                                 ¿Cómo hago para solicitar un transporte de carga?
                             </Accordion.Header>
                             <Accordion.Body>
-                                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Error veritatis optio enim nostrum, libero provident voluptatibus iure fuga corrupti beatae vel, minus minima adipisci voluptatum deserunt quam repellat rem non.
-                            </Accordion.Body>
+                                Solo debes ingresar origen, destino y tipo de carga en la aplicación.
+                                </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="3">
                             <Accordion.Header>
                                 ¿Qué pasa si mi carga llega tarde o se pierde?
                             </Accordion.Header>
                             <Accordion.Body>
-                                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Deserunt, similique. Sit mollitia vero aliquid. Facilis ea itaque beatae ipsa soluta iure animi, hic dolorem corporis explicabo eveniet nam ab assumenda.
-                            </Accordion.Body>
+                                Puedes reportarlo en la app y nuestro equipo dará solución inmediata.
+                                </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="4">
                             <Accordion.Header>
                                 ¿Rutas Prime ofrece seguro para la carga transportada?
                             </Accordion.Header>
                             <Accordion.Body>
-                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dignissimos adipisci, provident porro doloremque repellendus nihil quos harum consectetur iusto enim reprehenderit repellat quibusdam aspernatur, assumenda ipsam. Autem dolores facere dolorem?
-                            </Accordion.Body>
+                                Sí, todas las cargas viajan con cobertura básica y puedes solicitar seguros adicionales.
+                                </Accordion.Body>
                         </Accordion.Item>
                     </Accordion>
                 </div>
@@ -113,40 +116,40 @@ function PreguntasFrec() {
                                 ¿Qué métodos de pago acepta Rutas Prime?
                             </Accordion.Header>
                             <Accordion.Body>
-                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquam sint voluptate voluptatibus consequuntur, atque nobis itaque! Dolores quibusdam deleniti, ad quo laudantium ducimus aspernatur vero iusto minima distinctio quae quas!
-                            </Accordion.Body>
+                                Tarjeta de débito, crédito y billeteras digitales.
+                                </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="1">
                             <Accordion.Header>
                                 ¿Cuánto tiempo tarda en procesarse un pago?
                             </Accordion.Header>
                             <Accordion.Body>
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Non excepturi ut tempora veniam voluptas commodi deleniti quidem? Accusamus magni dicta odio rerum. Facere eum provident est sint excepturi voluptatem veritatis.
-                            </Accordion.Body>
+                                Generalmente en minutos, pero puede tomar hasta 24 horas.
+                                </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="2">
                             <Accordion.Header>
                                 ¿Puedo pagar en efectivo o solo con tarjeta/billetera digital?
                             </Accordion.Header>
                             <Accordion.Body>
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Id maxime consequuntur modi illo ipsam quasi voluptas error quia reiciendis exercitationem temporibus, labore neque illum, dolore similique nemo voluptatem ut rem!
-                            </Accordion.Body>
+                                Actualmente solo aceptamos pagos digitales para mayor seguridad.
+                                </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="3">
                             <Accordion.Header>
                                 ¿Qué pasa si hay un error en el cobro?
                             </Accordion.Header>
                             <Accordion.Body>
-                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ratione quae, distinctio numquam excepturi cum labore aspernatur saepe deserunt alias expedita at? Obcaecati minima minus iste totam delectus suscipit ad atque!
-                            </Accordion.Body>
+                                Puedes reportarlo en la app y el área de soporte revisará tu caso.
+                                </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="4">
                             <Accordion.Header>
                                 ¿Cómo cambio mi método de pago en la aplicación?
                             </Accordion.Header>
                             <Accordion.Body>
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium quia ullam atque. Ab assumenda explicabo perferendis totam eius nemo exercitationem, dolore consequuntur iusto numquam maxime omnis itaque nostrum quia distinctio.
-                            </Accordion.Body>
+                                En tu perfil, en la sección de métodos de pago, puedes actualizar la información.
+                                </Accordion.Body>
                         </Accordion.Item>
                     </Accordion>
                 </div>
@@ -160,32 +163,32 @@ function PreguntasFrec() {
                                 ¿Por qué mi aplicación se bloquea con frecuencia o tarda mucho en cargar?
                             </Accordion.Header>
                             <Accordion.Body>
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex quae est consequatur quidem, exercitationem similique ipsum id! Dolor dolorem, libero animi neque debitis, ipsam, id sint ex magnam unde qui.
-                            </Accordion.Body>
+                                Asegúrate de tener la última versión de la app y buena conexión a internet.
+                                </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="1">
                             <Accordion.Header>
                                 ¿Por qué no puedo iniciar sesión en la plataforma?
                             </Accordion.Header>
                             <Accordion.Body>
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore aperiam dolor possimus modi consectetur, consequuntur voluptates fugiat mollitia laudantium dicta eligendi ratione qui fugit dolore omnis nihil officiis! Dolorem, praesentium?
-                            </Accordion.Body>
+                                Verifica tu usuario, contraseña y conexión a internet.
+                                </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="2">
                             <Accordion.Header>
                                 ¿Cómo recupero mi contraseña?
                             </Accordion.Header>
                             <Accordion.Body>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sit accusamus a dolor, illum odio inventore qui? Dolore at, odio amet ratione maiores veritatis molestias suscipit odit eum sed tempore cum?
-                            </Accordion.Body>
+                                Usa la opción “Olvidé mi contraseña” y sigue los pasos en tu correo.
+                                </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="3">
                             <Accordion.Header>
                                 ¿Cómo reporto errores o problemas técnicos en la plataforma?
                             </Accordion.Header>
                             <Accordion.Body>
-                                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quod illum culpa consequuntur aliquid porro. Temporibus explicabo suscipit dicta odio exercitationem doloribus perspiciatis. Obcaecati, accusamus repellendus commodi molestiae nisi vel? Ipsum.
-                            </Accordion.Body>
+                                Desde la sección de “Ayuda” en la app o escribiendo a soporte técnico.
+                                </Accordion.Body>
                         </Accordion.Item>
                     </Accordion>
                 </div>

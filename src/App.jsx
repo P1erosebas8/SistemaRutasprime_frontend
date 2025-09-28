@@ -15,8 +15,8 @@ import ComoRegistroCon from "./pages/Socios1";
 import RequisitosConductor from "./pages/Socios2";
 import Soporte from "./pages/Socios3";
 import ScrollToTop from "./components/ScrollTop";
-import Rutas from "./pages/Viajes3";
-import Ciudades from "./pages/Viajes4";
+import Rutas from "./pages/Viajes1";
+import Ciudades from "./pages/Viajes2";
 
 
 function App() {
@@ -35,8 +35,8 @@ function App() {
           <Route path="/Socios1" element={<ComoRegistroCon />} />
           <Route path="/Socios2" element={<RequisitosConductor/>}/>
           <Route path="/Socios3" element={<Soporte/>}/>
-          <Route path="/Viajes3" element={<Rutas/>}/>
-          <Route path="/Viajes4" element={<Ciudades/>}/>
+          <Route path="/Viajes1" element={<Rutas/>}/>
+          <Route path="/Viajes2" element={<Ciudades/>}/>
           <Route path="/privacidad" element={<Privacidad />} />
           <Route path="/reclamaciones" element={<Reclamaciones />} />
           <Route path="/terminos" element={<Terminos />} />
