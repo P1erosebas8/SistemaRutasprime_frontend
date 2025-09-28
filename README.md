@@ -43,13 +43,28 @@ Definidas en `package.json`:
 ---
 
 ## 📂 Estructura del Proyecto
+```
 src/
 ├── assets/ # Imágenes y recursos estáticos
-├── components/ # Componentes reutilizables (Header, Footer, HeroSection, etc.)
+├── components/ # Componentes reutilizables
+│   ├── CardConDescripcion.jsx
+│   └── CaruselConCards.jsx
+│   └── HeroSection.jsx
+│   └── ListadoConImagen.jsx
+│   └── MyFooter.jsx
+│   └── ...
 ├── pages/ # Páginas principales (Home, Rutas, Ciudades, Soporte, Contacto)
+│   └── AcercaDe.jsx
+│   └── Contactanos.jsx
+│   └── inicio.jsx
+│   └── PrguntasFrec.jsx
+│   └── reclamaciones.jsx
+│   └── terminos.jsx
+│   └── ...
 ├── App.jsx # Configuración de rutas y layout principal
 ├── main.jsx # Punto de entrada de la aplicación
 └── index.css # Estilos globales
+```
 ---
 
 ## 🛠️ Configuración
