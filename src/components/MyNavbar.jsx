@@ -52,7 +52,20 @@ function MyNavbar() {
             <Nav.Link as={Link} to="/Contactanos" className='fs-5' onClick={() => setExpanded(false)}>Contactanos</Nav.Link>
             <Nav.Link as={Link} to="/AcercaDe" className='fs-5' onClick={() => setExpanded(false)}>Acerca De</Nav.Link>
             <Nav.Link as={Link} to="/PreguntasFrec" className='fs-5' onClick={() => setExpanded(false)}>Preguntas Frecuentes</Nav.Link>
-            <Nav.Link as={Link} to="/LogIn" className="fs-5 btn btn-outline-light ms-3 px-3 rounded" onClick={() => setExpanded(false)}>Inicio Sesion</Nav.Link>
+            <Nav.Link
+              as={Link}
+              to="/LogIn"
+              onClick={() => setExpanded(false)}
+              className="d-flex align-items-center"
+            >
+              <img
+                src="src/assets/user.png"
+                alt="Usuario"
+                width="35"
+                height="35"
+                className="rounded-circle border border-light"
+              />
+            </Nav.Link>
             {loggedIn && <Nav.Link href="/perfil">Perfil</Nav.Link>}
           </Nav>
         </Navbar.Collapse>
