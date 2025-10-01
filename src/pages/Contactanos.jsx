@@ -13,7 +13,7 @@ function Contactanos() {
         backgroundPosition="center top"
       />
 
-      <section className="py-5" style={{ backgroundColor: "#f8f9fa" }}>
+      <section className="py-5 text-white" style={{ backgroundColor: "#0d2842ff" }}>
         <div className="container">
           <h2 className="text-center mb-4">Envíanos un mensaje</h2>
           <form className="mx-auto" style={{ maxWidth: "600px" }}>
@@ -33,7 +33,6 @@ function Contactanos() {
               type="submit"
               className="btn btn-primary w-100"
               style={{
-                backgroundColor: "#2C2C2C",
                 border: "none",
                 fontWeight: "bold"
               }}
