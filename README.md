@@ -175,13 +175,20 @@ Cuando termines tu funcionalidad:
 
 * En GitHub, ve a la pestaña Pull requests → New Pull Request.
 
-    * * Base: main
-    * * Compare: tu rama
+    * Base: main
+    * Compare: tu rama
 
 * Describe lo que hiciste y somete el PR para revisión.
 
 * Alguien más revisa y hace el merge al proyecto principal.
 
+### 7. Puntos Importates
+
+Algunas veces se requerira instalar otras dependecias, en caso no se descarguen automaticamente se usa:
+```bash
+npm install react-toastify
+npm install lucide-react
+```
 
 ## React + Vite
 
