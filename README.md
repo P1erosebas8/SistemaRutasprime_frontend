@@ -12,8 +12,7 @@ Incluye un diseño **responsivo**, navegación con **React Router**, y component
 * [📂 Estructura del Proyecto](#-estructura-del-proyecto)
 * [🛠️ Configuración](#-configuración)
 * [▶️ Ejecución](#-ejecución)
-* [🌍 Páginas Principales](#-páginas-principales)
-* [💡 Notas finales](#-notas-finales)
+* [💡 Cómo integrarte al proyecto React-BootStrap](#-cómo-integrarte-al-proyecto-react-bootstrap)
 
 ---
 
@@ -90,11 +89,12 @@ La aplicación estará disponible en:
 
 http://localhost:5173
 
+---
+
 ## 🛠️ Cómo integrarte al proyecto React-BootStrap
 
 Sigue estos pasos si te unes al proyecto para asegurar que todo fluya bien con Git, ramas y actualizaciones.
 
----
 
 ### 1. Clonar el repositorio
 
