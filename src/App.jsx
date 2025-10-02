@@ -17,6 +17,11 @@ import Soporte from "./pages/Socios3";
 import ScrollToTop from "./components/ScrollTop";
 import Rutas from "./pages/Viajes1";
 import Ciudades from "./pages/Viajes2";
+import Register from "./pages/Register";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Profile from "./pages/Profile";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 
 function App() {
@@ -24,7 +29,7 @@ function App() {
     <>
       <Router>
         <MyNavbar />
-         <ScrollToTop />
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Inicio />} />
           <Route path="/Inicio" element={<Inicio />} />
@@ -32,18 +37,21 @@ function App() {
           <Route path="/Contactanos" element={<Contactanos />} />
           <Route path="/AcercaDe" element={<AcercaDe />} />
           <Route path="/LogIn" element={<LogIN />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/Socios1" element={<ComoRegistroCon />} />
-          <Route path="/Socios2" element={<RequisitosConductor/>}/>
-          <Route path="/Socios3" element={<Soporte/>}/>
-          <Route path="/Viajes1" element={<Rutas/>}/>
-          <Route path="/Viajes2" element={<Ciudades/>}/>
+          <Route path="/Socios2" element={<RequisitosConductor />} />
+          <Route path="/Socios3" element={<Soporte />} />
+          <Route path="/Viajes1" element={<Rutas />} />
+          <Route path="/Viajes2" element={<Ciudades />} />
           <Route path="/privacidad" element={<Privacidad />} />
           <Route path="/reclamaciones" element={<Reclamaciones />} />
           <Route path="/terminos" element={<Terminos />} />
+          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         </Routes>
         <WhatsappBoton />
         <MyFooter />
       </Router>
+      <ToastContainer position="top-right" autoClose={3000} theme="colored" />
     </>
   )
 }
