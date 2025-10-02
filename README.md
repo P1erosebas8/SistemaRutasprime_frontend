@@ -12,7 +12,8 @@ Incluye un diseño **responsivo**, navegación con **React Router**, y component
 * [📂 Estructura del Proyecto](#-estructura-del-proyecto)
 * [🛠️ Configuración](#-configuración)
 * [▶️ Ejecución](#-ejecución)
-* [💡 Cómo integrarte al proyecto React-BootStrap](#-cómo-integrarte-al-proyecto-react-bootstrap)
+* [🌱 Cómo integrarte al proyecto React-BootStrap](#-cómo-integrarte-al-proyecto-react-bootstrap)
+- [💡 Notas finales](#-notas-finales)  
 
 ---
 
@@ -91,7 +92,7 @@ http://localhost:5173
 
 ---
 
-## 🛠️ Cómo integrarte al proyecto React-BootStrap
+## 🌱 Cómo integrarte al proyecto React-BootStrap
 
 Sigue estos pasos si te unes al proyecto para asegurar que todo fluya bien con Git, ramas y actualizaciones.
 
@@ -189,6 +190,11 @@ Algunas veces se requerira instalar otras dependecias, en caso no se descarguen 
 npm install react-toastify
 npm install lucide-react
 ```
+## 💡 Notas finales
+- El Frontend está diseñado para integrarse directamente con el **Backend de RutasPrime**.  
+- Para revisar o contribuir en la lógica de negocio, APIs y base de datos, consulta el repositorio del **Backend**:  
+
+👉 [🌐 SistemaRutasprime Backend](https://github.com/JeancarloMejia/SistemaRutasprime_backend)
 
 ## React + Vite
 
