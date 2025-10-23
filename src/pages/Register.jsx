@@ -155,7 +155,7 @@ function Register() {
                 <input
                   name="dniRuc"
                   className={`form-control ${errors.dniRuc ? "is-invalid" : ""}`}
-                  placeholder="DNI o RUC"
+                  placeholder="DNI"
                   value={form.dniRuc}
                   onChange={handleChange}
                   required

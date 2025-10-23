@@ -8,14 +8,18 @@ export function useAuth() {
   const login = async (email, password) => {
     setLoading(true);
     try {
-      const response = await apiRequest("/auth/login", "POST", { email, password });
-  
-      const token = response?.data?.token;
+      const response = await apiRequest("/auth/public/login", "POST", { email, password });
+
+      const token = response?.data?.data?.token;
+      const roles = response?.data?.data?.roles || [];
+      
       if (!token) throw new Error("No se recibió token del servidor");
-  
-      localStorage.setItem("token", token); 
+      
+      localStorage.setItem("token", token);
+      localStorage.setItem("roles", JSON.stringify(roles)); 
+      
       toast.success("Inicio de sesión exitoso");
-      return response;
+      return response.data;   
     } catch (err) {
       toast.error("Usuario o contraseña incorrectos");
       throw err;
@@ -27,7 +31,7 @@ export function useAuth() {
   const register = async (form) => {
     setLoading(true);
     try {
-      const data = await apiRequest("/auth/register", "POST", form);
+      const data = await apiRequest("/auth/public/register", "POST", form);
       toast.success("Registro exitoso, revisa tu correo para el OTP");
       return data;
     } catch (err) {
@@ -41,12 +45,12 @@ export function useAuth() {
   const getProfile = async () => {
     try {
       const response = await apiRequest("/user/profile", "GET", null, true);
-      return response.data; 
+      return response.data.data;
     } catch (err) {
       toast.error("No se pudo obtener el perfil");
       throw err;
     }
-  };
+  };  
   
   const updateProfile = async (updates) => {
     setLoading(true);
@@ -83,6 +87,7 @@ export function useAuth() {
 
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("roles");
     toast.info("Sesión cerrada");
   };
 

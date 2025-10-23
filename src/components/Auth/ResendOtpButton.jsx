@@ -23,7 +23,7 @@ function ResendOtpButton({ email, type }) {
 
     setLoading(true);
     try {
-      await apiRequest("/auth/reset-otp", "POST", { email, type });
+      await apiRequest("/auth/public/reset-otp", "POST", { email, type });
       toast.success("Nuevo código enviado a tu correo");
       setTimer(60); 
     } catch {

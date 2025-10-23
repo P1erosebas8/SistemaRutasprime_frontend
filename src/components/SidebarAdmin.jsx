@@ -9,13 +9,16 @@ import {
   FaVoteYea,
 } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useAuthAdmin } from "../hooks/useAuthAdmin"; 
 
 function SidebarAdmin({ isOpen, setIsOpen }) {
   const toggleSidebar = () => setIsOpen(!isOpen);
   const navigate = useNavigate();
+  const { logoutAdmin } = useAuthAdmin(); 
 
   const handleLogout = () => {
-    navigate("/");
+    logoutAdmin(); 
+    navigate("/loginadmin"); 
   };
 
   return (

@@ -1,18 +1,21 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { useAuthAdmin } from "../hooks/useAuthAdmin";
 
 function LogInAdmin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { loginAdmin, loading } = useAuthAdmin();
   const navigate = useNavigate();
-    {/* Puse esta condicional para verificar que me redireccionaba al panel administrador despeus pondre los mensjaes de error en modales*/}
-  const handleLogin = (e) => {
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (email === "asd@asd.com" && password === "123456") {
+    try {
+      await loginAdmin(email, password);
       navigate("/DashBoardPrincipal");
-    } else {
-      alert("Credenciales incorrectas (usa admin@example.com / 123456)");
+    } catch (error) {
+      console.error("Error al iniciar sesión:", error);
     }
   };
 
@@ -20,8 +23,7 @@ function LogInAdmin() {
     <div
       className="vh-100 d-flex align-items-center justify-content-center"
       style={{
-        backgroundImage:
-          "url('src/assets/bg-loginadmin.png')",
+        backgroundImage: "url('src/assets/bg-loginadmin.png')",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
@@ -35,11 +37,9 @@ function LogInAdmin() {
         }}
       >
         <div className="row g-5">
-              <div
+          <div
             className="col-lg-5 d-flex flex-column justify-content-center align-items-center text-white p-4"
-            style={{
-              background: "#1e2a52",
-            }}
+            style={{ background: "#1e2a52" }}
           >
             <img
               src="src/assets/Logo.png"
@@ -54,16 +54,14 @@ function LogInAdmin() {
 
           <div className="col-lg-7 d-flex align-items-center justify-content-center p-4 bg-light">
             <div style={{ width: "100%", maxWidth: "400px" }}>
-              <h4 className="text-center mb-4 fw-semibold text-dark">
-                Iniciar Sesión
-              </h4>
+              <h4 className="text-center mb-4 fw-semibold text-dark">Iniciar Sesión</h4>
               <form onSubmit={handleLogin}>
                 <div className="mb-3">
                   <label className="form-label fw-semibold">Correo</label>
                   <input
                     type="email"
                     className="form-control"
-                    placeholder="admin@example.com"
+                    placeholder="admin@rutasprime.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -82,8 +80,8 @@ function LogInAdmin() {
                   />
                 </div>
 
-                <button type="submit" className="btn btn-dark w-100 mb-3">
-                  Ingresar
+                <button type="submit" className="btn btn-dark w-100 mb-3" disabled={loading}>
+                  {loading ? "Ingresando..." : "Ingresar"}
                 </button>
                 <p className="text-center text-muted" style={{ fontSize: "0.9rem" }}>
                   Acceso exclusivo para administradores

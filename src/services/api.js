@@ -1,35 +1,33 @@
 const API_URL = "http://localhost:8080/api";
 
-export async function apiRequest(endpoint, method = "GET", body = null, auth = false) {
+export async function apiRequest(endpoint, method = "GET", body = null, auth = false, isAdmin = false) {
   const headers = { "Content-Type": "application/json" };
 
   if (auth) {
-    const token = localStorage.getItem("token");
+    const tokenKey = isAdmin ? "adminToken" : "token";
+    const token = localStorage.getItem(tokenKey);
     if (token) headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const response = await fetch(`${API_URL}${endpoint}`, {
+  const res = await fetch(`${API_URL}${endpoint}`, {
     method,
     headers,
     body: body ? JSON.stringify(body) : null,
   });
 
-  if (!response.ok) {
+  let data;
+  try {
+    data = await res.json();
+  } catch {
+    data = null;
+  }
+
+  if (!res.ok) {
     let errorMessage = "Error en la petición";
-    try {
-      const errorData = await response.json(); 
-      if (errorData.message) {
-        errorMessage = errorData.message;
-      }
-      if (errorData.data) {
-        const errors = Object.values(errorData.data);
-        errorMessage = errors.join(" | "); 
-      }
-    } catch {
-      errorMessage = await response.text();
-    }
+    if (data?.message) errorMessage = data.message;
+    else if (typeof data === "string") errorMessage = data;
     throw new Error(errorMessage);
   }
 
-  return response.json();
+  return { data }; 
 }
