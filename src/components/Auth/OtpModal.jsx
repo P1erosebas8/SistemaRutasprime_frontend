@@ -15,7 +15,7 @@ function OtpModal({ show, onHide, email, onSuccess }) {
     }
     setLoading(true);
     try {
-      await apiRequest("/auth/verify-otp", "POST", { email, codigo });
+      await apiRequest("/auth/public/verify-otp", "POST", { email, codigo });
       toast.success("Verificación exitosa");
 
       if (onSuccess) {

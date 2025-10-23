@@ -13,16 +13,29 @@ function ResetPasswordModal({ show, onHide }) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [emailError, setEmailError] = useState(""); 
   const navigate = useNavigate();
+
+  const validateEmail = (email) => {
+    const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    return regex.test(email);
+  };
 
   const handleSendEmail = async () => {
     if (!email) {
-      toast.error("Ingresa tu correo");
+      setEmailError("Ingresa tu correo");
       return;
     }
+
+    if (!validateEmail(email)) {
+      setEmailError("Por favor ingresa un correo electrónico válido");
+      return;
+    }
+
+    setEmailError("");
     setLoading(true);
     try {
-      await apiRequest("/auth/forgot-password", "POST", { email });
+      await apiRequest("/auth/public/forgot-password", "POST", { email });
       toast.success("Te hemos enviado un código OTP");
       setStep(2);
     } catch {
@@ -44,7 +57,7 @@ function ResetPasswordModal({ show, onHide }) {
 
     setLoading(true);
     try {
-      await apiRequest("/auth/reset-password", "POST", {
+      await apiRequest("/auth/public/reset-password", "POST", {
         email,
         codigo,
         nuevaPassword: newPassword,
@@ -66,6 +79,7 @@ function ResetPasswordModal({ show, onHide }) {
     setNewPassword("");
     setConfirmPassword("");
     setStep(1);
+    setEmailError("");
     onHide();
   };
 
@@ -83,7 +97,12 @@ function ResetPasswordModal({ show, onHide }) {
               placeholder="tuemail@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              isInvalid={!!emailError} 
             />
+            {/* Mostrar mensaje de error debajo del campo */}
+            {emailError && (
+              <Form.Text className="text-danger">{emailError}</Form.Text>
+            )}
           </>
         ) : (
           <>

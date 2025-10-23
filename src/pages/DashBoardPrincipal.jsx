@@ -1,9 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUser, FaCar, FaRoute, FaChartBar } from "react-icons/fa";
+import { useAuthAdmin } from "../hooks/useAuthAdmin";
 
 export default function DashBoardPrincipal() {
   const navigate = useNavigate();
+  const { isAdminAuthenticated } = useAuthAdmin();
+
+  useEffect(() => {
+    if (!isAdminAuthenticated) {
+      navigate("/loginadmin");
+    }
+  }, [isAdminAuthenticated, navigate]);
 
   const sections = [
     {

@@ -30,8 +30,8 @@ export const validators = {
     return null;
   },
   dniRuc: (value) => {
-    if (!/^(\d{8}|\d{11})$/.test(value)) {
-      return "El DNI debe tener 8 dígitos y el RUC 11";
+    if (!/^\d{8}$/.test(value)) {
+      return "El DNI debe tener 8 dígitos";
     }
     return null;
   },
