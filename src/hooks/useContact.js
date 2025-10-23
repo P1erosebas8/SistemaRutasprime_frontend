@@ -29,11 +29,11 @@ export function useContact() {
     setLoading(true);
     try {
       const response = await apiRequest("/contact", "POST", formData);
-      toast.success(response.message || "Mensaje enviado correctamente 🎉");
+      toast.success(response.message || "Mensaje enviado correctamente");
       setErrors({});
       return response;
     } catch (err) {
-      toast.error(err.message || "Error al enviar el mensaje ❌");
+      toast.error(err.message || "Error al enviar el mensaje");
       throw err;
     } finally {
       setLoading(false);
