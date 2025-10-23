@@ -105,6 +105,16 @@ function LogIn() {
                 </Link>
               </small>
             </div>
+            <div className="text-center mt-3">
+              <button
+                type="button"
+                className="btn btn-link text-info p-0"
+              >
+                <Link to="/LogInAdmin" className="text-decoration-none text-info">
+                Iniciar como Administrador
+                </Link>
+              </button>
+            </div>
           </form>
         </div>
       </section>
