@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useAuthAdmin } from "../hooks/useAuthAdmin";
@@ -8,6 +8,15 @@ function LogInAdmin() {
   const [password, setPassword] = useState("");
   const { loginAdmin, loading } = useAuthAdmin();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("adminToken");
+    const roles = localStorage.getItem("adminRoles");
+
+    if (token && roles) {
+      navigate("/DashBoardPrincipal");
+    }
+  }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();

@@ -3,7 +3,6 @@ import HeroSection from "../components/HeroSection";
 import { useState } from "react";
 import { useContact } from "../hooks/useContact";
 import { contactValidators } from "../utils/validators";
-import { BiErrorCircle } from "react-icons/bi";
 
 function Contactanos() {
   const { sendMessage, loading, errors, setErrors } = useContact();
@@ -27,8 +26,11 @@ function Contactanos() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await sendMessage(formData);
+    
     if (response?.success) {
       setFormData({ name: "", email: "", message: "" });
+    } else {
+      console.error("Error al enviar el mensaje:", response?.message);
     }
   };
 
@@ -76,6 +78,7 @@ function Contactanos() {
                   }`}
                 value={formData.name}
                 onChange={handleChange}
+                disabled={loading} 
               />
               {renderError("name")}
             </div>
@@ -95,6 +98,7 @@ function Contactanos() {
                   }`}
                 value={formData.email}
                 onChange={handleChange}
+                disabled={loading} 
               />
               {renderError("email")}
             </div>
@@ -114,6 +118,7 @@ function Contactanos() {
                   }`}
                 value={formData.message}
                 onChange={handleChange}
+                disabled={loading} 
               ></textarea>
               {renderError("message")}
             </div>
