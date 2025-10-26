@@ -1,12 +1,24 @@
 import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import HeroSection from "../components/HeroSection";
 import { useAuth } from "../hooks/useAuth";
-import OtpModal from "../components/Auth/OtpModal";
+import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import OtpModal from "../components/Auth/OtpModal";
 import PasswordInput from "../components/Auth/PasswordInput";
-import { validators } from "../utils/validators"; 
-import { Link, useNavigate } from "react-router-dom";
+import { validators } from "../utils/validators";
+
+// 💡 IMPORTACIÓN DE IMÁGENES
+import LogoImage from "../assets/logoooooooo.png";
+import RegistroImage from "../assets/registroooooooooooooooooo.png"; // Usa una imagen parecida al login (camión o fondo atractivo)
+
+const colors = {
+  primaryCeleste: '#00bcd4',
+  darkAccent: '#00838f',
+  textColor: '#333333',
+  lightTextColor: '#666666',
+  whiteBackground: '#ffffff',
+  darkBackground: '#ffffffff',
+};
 
 function Register() {
   const { register, loading } = useAuth();
@@ -56,29 +68,84 @@ function Register() {
     try {
       await register(form);
       setShowOtp(true);
-    } catch {}
+    } catch {
+      toast.error("Ocurrió un error al registrarte. Intenta nuevamente.");
+    }
   };
 
   return (
-    <>
-      <HeroSection
-        title="Registro"
-        subtitle="Crea tu cuenta en segundos"
-        description="Únete a nuestra comunidad y accede a viajes exclusivos, gestiona tus reservas de manera sencilla y aprovecha beneficios pensados para ti."
-        background="src/assets/FondosAuth2.jpg"
-        height="80vh"
-        align="center"
-        backgroundPosition="center top"
-      />
-
-      <section className="py-5 text-white" style={{ backgroundColor: "#0a1e33" }}>
-        <div className="container">
-          <h2 className="text-center mb-4">Crea tu cuenta</h2>
-          <form
-            className="mx-auto"
-            style={{ maxWidth: "600px" }}
-            onSubmit={handleSubmit}
+    <div
+      className="d-flex align-items-center justify-content-center"
+      style={{
+        backgroundColor: '#f5f5f5',
+        minHeight: '100vh',
+        fontFamily: "'Roboto', sans-serif",
+      }}
+    >
+      <div
+        className="row g-0 overflow-hidden shadow-lg"
+        style={{
+          maxWidth: "1000px",
+          width: '95%',
+          minHeight: '650px',
+          backgroundColor: colors.whiteBackground,
+          borderRadius: '8px',
+        }}
+      >
+        {/* Columna izquierda: formulario */}
+        <div className="col-lg-5 p-4 p-md-5 d-flex flex-column justify-content-start">
+          <Link
+            to="/"
+            className="btn btn-outline-secondary d-inline-flex align-items-center mb-5"
+            style={{
+              width: 'fit-content',
+              borderColor: '#e9ecef',
+              color: colors.lightTextColor,
+              textDecoration: 'none',
+              backgroundColor: 'transparent'
+            }}
           >
+            <i className="bi bi-arrow-left me-2"></i>
+            Volver a Inicio
+          </Link>
+
+          <div className="mb-4 d-flex flex-column align-items-center">
+            <img
+              src={LogoImage}
+              alt="Rutas Prime Logo"
+              style={{ height: '80px', width: 'auto', marginBottom: '20px' }}
+              className="d-block"
+            />
+            <h1
+              className="fw-bold mb-4"
+              style={{ color: colors.darkBackground, fontSize: '2rem', textAlign: 'center' }}
+            >
+              RUTAS PRIME
+            </h1>
+            <h2
+              className="fw-normal mb-1"
+              style={{ color: colors.textColor, fontSize: '1.75rem', textAlign: 'center' }}
+            >
+              Registro de Cliente
+            </h2>
+            <p className="text-muted text-center">
+              ¿Ya tienes una cuenta?{" "}
+              <Link
+                to="/login"
+                style={{
+                  color: colors.primaryCeleste,
+                  fontWeight: '600',
+                  textDecoration: 'none',
+                }}
+                onMouseOver={(e) => e.currentTarget.style.color = colors.darkAccent}
+                onMouseOut={(e) => e.currentTarget.style.color = colors.primaryCeleste}
+              >
+                Inicia sesión
+              </Link>
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="mt-4">
             <div className="row g-3">
               <div className="col-md-6">
                 <input
@@ -89,9 +156,6 @@ function Register() {
                   onChange={handleChange}
                   required
                 />
-                {errors.nombres && (
-                  <div className="invalid-feedback">{errors.nombres}</div>
-                )}
               </div>
 
               <div className="col-md-6">
@@ -103,9 +167,6 @@ function Register() {
                   onChange={handleChange}
                   required
                 />
-                {errors.apellidos && (
-                  <div className="invalid-feedback">{errors.apellidos}</div>
-                )}
               </div>
 
               <div className="col-md-6">
@@ -117,9 +178,6 @@ function Register() {
                   onChange={handleChange}
                   required
                 />
-                {errors.celular && (
-                  <div className="invalid-feedback">{errors.celular}</div>
-                )}
               </div>
 
               <div className="col-md-6">
@@ -127,14 +185,11 @@ function Register() {
                   type="email"
                   name="email"
                   className={`form-control ${errors.email ? "is-invalid" : ""}`}
-                  placeholder="Correo"
+                  placeholder="Correo electrónico"
                   value={form.email}
                   onChange={handleChange}
                   required
                 />
-                {errors.email && (
-                  <div className="invalid-feedback">{errors.email}</div>
-                )}
               </div>
 
               <div className="col-md-6">
@@ -146,9 +201,6 @@ function Register() {
                   onChange={handleChange}
                   required
                 />
-                {errors.direccion && (
-                  <div className="invalid-feedback">{errors.direccion}</div>
-                )}
               </div>
 
               <div className="col-md-6">
@@ -160,12 +212,8 @@ function Register() {
                   onChange={handleChange}
                   required
                 />
-                {errors.dniRuc && (
-                  <div className="invalid-feedback">{errors.dniRuc}</div>
-                )}
               </div>
 
-              {/* Password con ojito + barra de fuerza + reglas */}
               <div className="col-12">
                 <PasswordInput
                   name="password"
@@ -174,17 +222,25 @@ function Register() {
                   placeholder="Contraseña"
                   withStrength={true}
                 />
-                {errors.password && (
-                  <div className="text-danger small">{errors.password}</div>
-                )}
               </div>
             </div>
 
-            {/* Botón con loader */}
             <button
               type="submit"
-              className="btn btn-primary w-100 mt-3 d-flex align-items-center justify-content-center"
+              className="btn btn-lg w-100 shadow-sm mt-4"
               disabled={loading}
+              style={{
+                background: 'linear-gradient(90deg, #00bcd4, #00838f)',
+                border: 'none',
+                color: '#fff',
+                fontWeight: '600',
+                borderRadius: '10px',
+                fontSize: '1.1rem',
+                padding: '12px 15px',
+                transition: 'transform 0.2s ease, background 0.3s ease',
+              }}
+              onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
+              onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1.0)'}
             >
               {loading ? (
                 <>
@@ -195,31 +251,32 @@ function Register() {
                 "Registrarse"
               )}
             </button>
-
-            {/* Link al login */}
-            <div className="text-center mt-3">
-              <small>
-                ¿Ya tienes cuenta?{" "}
-                <Link to="/login" className="text-decoration-none text-info">
-                  Inicia sesión
-                </Link>
-              </small>
-            </div>
           </form>
         </div>
-      </section>
 
-      {/* Modal OTP */}
+        {/* Columna derecha: imagen */}
+        <div
+          className="col-lg-7 d-none d-lg-flex align-items-center justify-content-center"
+          style={{
+            backgroundImage: `url(${RegistroImage})`,
+            backgroundSize: 'contain',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+            backgroundColor: colors.darkBackground,
+          }}
+        />
+      </div>
+
       <OtpModal
         show={showOtp}
         onHide={() => setShowOtp(false)}
         email={form.email}
         onSuccess={() => {
           setShowOtp(false);
-          navigate("/LogIn");
+          navigate("/login");
         }}
       />
-    </>
+    </div>
   );
 }
 
