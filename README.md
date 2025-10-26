@@ -108,7 +108,7 @@ cd React-BootStrap
 
 ### 2. Crear tu rama de trabajo
 
-Antes de hacer algún cambio, crea tu propia rama. No trabajes directo sobre main o master.
+Antes de realizar algún cambio, crea tu propia rama. No trabajes directo sobre main o master, trabaja en una rama temporal o personal.
 
 ```bash
 git checkout -b nombre-de-tu-rama
