@@ -149,7 +149,7 @@ function Profile() {
             <p><strong>Email:</strong> {user.email}</p>
             <p><strong>Celular:</strong> {user.celular}</p>
             <p><strong>Dirección:</strong> {user.direccion}</p>
-            <p><strong>DNI:</strong> {user.dniRuc}</p>
+            <p><strong>DNI/RUC:</strong> {user.dniRuc}</p>
 
             <div className="d-flex gap-2 mt-3">
               <button className="btn btn-warning" onClick={() => setShowUpdate(true)}>
@@ -224,7 +224,7 @@ function Profile() {
               <Form.Control value={user.celular} readOnly />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>DNI</Form.Label>
+              <Form.Label>DNI/RUC</Form.Label>
               <Form.Control value={user.dniRuc} readOnly />
             </Form.Group>
           </Form>

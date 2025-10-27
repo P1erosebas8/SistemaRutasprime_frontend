@@ -9,7 +9,6 @@ import Inicio from "./pages/Inicio";
 import Privacidad from "./pages/privacidad";
 import Reclamaciones from "./pages/reclamaciones";
 import Terminos from "./pages/terminos";
-import LogIN from "./pages/LogIn";
 import WhatsappBoton from "./components/WhatsappBoton";
 import ComoRegistroCon from "./pages/Socios1";
 import RequisitosConductor from "./pages/Socios2";
@@ -17,7 +16,6 @@ import Soporte from "./pages/Socios3";
 import ScrollToTop from "./components/ScrollTop";
 import Rutas from "./pages/Viajes1";
 import Ciudades from "./pages/Viajes2";
-import Register from "./pages/Register";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Profile from "./pages/Profile";
@@ -30,20 +28,23 @@ import DashBoardUsuarios from "./pages/DashBoardUsuarios"
 import DashBoardConductores from "./pages/DashBoardConductores"
 import DashBoardPrincipal from "./pages/DashBoardPrincipal"
 
+// 👇 Import de clientes
+import ClienteLogin from "./Clientes/login";
+import ClienteRegister from "./Clientes/register";
+
 function App() {
   return (
     <>
       <Router>
         <ScrollToTop />
         <Routes>
+          {/* Layout público normal */}
           <Route element={<PublicLayout />}>
             <Route path="/" element={<Inicio />} />
             <Route path="/Inicio" element={<Inicio />} />
             <Route path="/PreguntasFrec" element={<PreguntasFrec />} />
             <Route path="/Contactanos" element={<Contactanos />} />
             <Route path="/AcercaDe" element={<AcercaDe />} />
-            <Route path="/LogIn" element={<LogIN />} />
-            <Route path="/register" element={<Register />} />
             <Route path="/Socios1" element={<ComoRegistroCon />} />
             <Route path="/Socios2" element={<RequisitosConductor />} />
             <Route path="/Socios3" element={<Soporte />} />
@@ -55,6 +56,13 @@ function App() {
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/LogInAdmin" element={<LogInAdmin />} />
           </Route>
+
+          {/* Layout minimal para login y registro de clientes */}
+            <Route path="/clientes/login" element={<ClienteLogin />} />
+            <Route path="/register" element={<ClienteRegister />} />
+
+
+          {/* Layout admin */}
           <Route element={<AdminLayout />}>
             <Route path="/DashBoardPrincipal" element={<DashBoardPrincipal />} />
             <Route path="/DashBoardUsuarios" element={<DashBoardUsuarios />} />
@@ -67,4 +75,4 @@ function App() {
   )
 }
 
-export default App
+export default App;
