@@ -108,20 +108,13 @@ function MyNavbar() {
                             onClick={() => setExpanded(false)}
                             className="d-flex align-items-center mx-2"
                         >
-                            <img
-                                src="src/assets/user.png"
-                                alt="Usuario"
-                                width="35"
-                                height="35"
-                                className="rounded-circle border"
-                                style={{ borderColor: customStyles.navLinkColor, borderWidth: '2px !important' }} 
-                            />
+
                         </Nav.Link>
 
                         {/* Botón de Acción Principal (fondo celeste, texto blanco y MAYÚSCULAS) */}
                         <Nav.Link>
                             <Link
-                                to="/solicitar-servicio"
+                                to="/clientes/login"
                                 onClick={() => setExpanded(false)}
                                 className="btn text-white px-4 py-2 fw-bold"
                                 style={{ 

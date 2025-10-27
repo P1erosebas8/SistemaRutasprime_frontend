@@ -1,36 +1,43 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import './App.css'
-import MyNavbar from './components/MyNavbar'
+import './App.css';
+import ScrollToTop from "./components/ScrollTop";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+// 🌐 Layouts y componentes globales
+import PublicLayout from "./layouts/PublicLayout";
+import AdminLayout from "./layouts/AdminLayout";
+import ProtectedRoute from "./components/ProtectedRoute";
+
+// 🏠 Páginas principales
+import Inicio from "./pages/Inicio";
 import PreguntasFrec from "./pages/PreguntasFrec";
 import Contactanos from "./pages/Contactanos";
 import AcercaDe from "./pages/AcercaDe";
-import MyFooter from "./components/MyFooter";
-import Inicio from "./pages/Inicio";
 import Privacidad from "./pages/privacidad";
 import Reclamaciones from "./pages/reclamaciones";
 import Terminos from "./pages/terminos";
-import WhatsappBoton from "./components/WhatsappBoton";
 import ComoRegistroCon from "./pages/Socios1";
 import RequisitosConductor from "./pages/Socios2";
 import Soporte from "./pages/Socios3";
-import ScrollToTop from "./components/ScrollTop";
 import Rutas from "./pages/Viajes1";
 import Ciudades from "./pages/Viajes2";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import Profile from "./pages/Profile";
-import ProtectedRoute from "./components/ProtectedRoute";
-import PublicLayout from "./layouts/PublicLayout";
-import AdminLayout from "./layouts/AdminLayout";
-import DashboardAdmin from "./pages/DashboardAdmin";
-import LogInAdmin from "./pages/LogInAdmin"
-import DashBoardUsuarios from "./pages/DashBoardUsuarios"
-import DashBoardConductores from "./pages/DashBoardConductores"
-import DashBoardPrincipal from "./pages/DashBoardPrincipal"
 
-// 👇 Import de clientes
+// 🧑‍💼 Admin
+import LogInAdmin from "./pages/LogInAdmin";
+import DashBoardPrincipal from "./pages/DashBoardPrincipal";
+import DashBoardUsuarios from "./pages/DashBoardUsuarios";
+import DashBoardConductores from "./pages/DashBoardConductores";
+
+// 👥 Clientes
 import ClienteLogin from "./Clientes/login";
 import ClienteRegister from "./Clientes/register";
+
+// 🚛 Transportistas
+import RegistroTransportista from "./Transportistas/RegistroTransportista";
+import LoginTransportista from "./Transportistas/LoginTransportista";
+
 
 function App() {
   return (
@@ -38,7 +45,8 @@ function App() {
       <Router>
         <ScrollToTop />
         <Routes>
-          {/* Layout público normal */}
+
+          {/* 🌍 Layout público */}
           <Route element={<PublicLayout />}>
             <Route path="/" element={<Inicio />} />
             <Route path="/Inicio" element={<Inicio />} />
@@ -57,22 +65,29 @@ function App() {
             <Route path="/LogInAdmin" element={<LogInAdmin />} />
           </Route>
 
-          {/* Layout minimal para login y registro de clientes */}
-            <Route path="/clientes/login" element={<ClienteLogin />} />
-            <Route path="/register" element={<ClienteRegister />} />
+          {/* 👤 CLIENTES */}
+          <Route path="/clientes/login" element={<ClienteLogin />} />
+          <Route path="/register" element={<ClienteRegister />} />
+
+          {/* 🚛 TRANSPORTISTAS */}
+          <Route path="/Transportistas/LoginTransportista" element={<LoginTransportista />} />
+          <Route path="/RegistroTransportista" element={<RegistroTransportista />} />
 
 
-          {/* Layout admin */}
+          {/* 🧑‍💼 ADMIN */}
           <Route element={<AdminLayout />}>
             <Route path="/DashBoardPrincipal" element={<DashBoardPrincipal />} />
             <Route path="/DashBoardUsuarios" element={<DashBoardUsuarios />} />
             <Route path="/DashBoardConductores" element={<DashBoardConductores />} />
           </Route>
+
         </Routes>
       </Router>
+
+      {/* ✅ Notificaciones globales */}
       <ToastContainer position="top-right" autoClose={3000} theme="colored" />
     </>
-  )
+  );
 }
 
 export default App;

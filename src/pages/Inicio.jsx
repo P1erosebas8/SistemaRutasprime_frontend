@@ -99,7 +99,7 @@ function Inicio() {
                   Acceso Clientes
                 </Link>
                 {/* Botón Secundario (Transportistas) con el color primario como contorno */}
-                <Link to="/transportista/login" className="btn btn-lg fw-bold"
+                <Link to="/transportistas/LoginTransportista" className="btn btn-lg fw-bold"
                   style={{ borderColor: PRIMARY_COLOR, color: PRIMARY_COLOR }}>
                   Acceso Transportistas
                 </Link>
