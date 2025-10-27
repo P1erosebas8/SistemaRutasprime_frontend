@@ -7,6 +7,7 @@ import {
   FaBars,
   FaHome,
   FaVoteYea,
+  FaUserShield, // 👈 nuevo ícono para "Administradores"
 } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuthAdmin } from "../hooks/useAuthAdmin";
@@ -37,15 +38,13 @@ function SidebarAdmin({ isOpen, setIsOpen }) {
         zIndex: 1000,
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between", 
+        justifyContent: "space-between",
       }}
     >
-      {/* Contenedor superior */}
       <div>
         <div
-          className={`d-flex align-items-center ${
-            isOpen ? "justify-content-between" : "justify-content-center"
-          } mb-4`}
+          className={`d-flex align-items-center ${isOpen ? "justify-content-between" : "justify-content-center"
+            } mb-4`}
         >
           {isOpen && <h5 className="m-0 fw-bold">Panel Admin</h5>}
 
@@ -62,23 +61,23 @@ function SidebarAdmin({ isOpen, setIsOpen }) {
         </div>
 
         <Nav
-          className={`flex-column mt-3 ${
-            isOpen ? "align-items-start" : "align-items-center"
-          }`}
+          className={`flex-column mt-3 ${isOpen ? "align-items-start" : "align-items-center"
+            }`}
         >
           {[
             { to: "/", icon: <FaHome />, label: "Inicio" },
             { to: "/DashBoardPrincipal", icon: <FaVoteYea />, label: "Principal" },
             { to: "/DashBoardUsuarios", icon: <FaUser />, label: "Usuarios" },
+            { to: "/DashBoardAdministradores", icon: <FaUserShield />, label: "Administradores" },
             { to: "/DashBoardConductores", icon: <FaCar />, label: "Conductores" },
             { to: "/admin/registro-viajes", icon: <FaRoute />, label: "Registro de Viajes" },
+
           ].map((item, idx) => (
             <NavLink
               key={idx}
               to={item.to}
               className={({ isActive }) =>
-                `nav-link d-flex align-items-center text-white mb-2 ${
-                  isActive ? "fw-bold text-info" : ""
+                `nav-link d-flex align-items-center text-white mb-2 ${isActive ? "fw-bold text-info" : ""
                 }`
               }
               style={{
@@ -109,12 +108,12 @@ function SidebarAdmin({ isOpen, setIsOpen }) {
           ))}
         </Nav>
       </div>
+
       <div style={{ borderTop: "1px solid #444", paddingTop: "10px" }}>
         <Nav.Link
           onClick={handleLogout}
-          className={`text-danger d-flex align-items-center ${
-            isOpen ? "justify-content-start" : "justify-content-center"
-          }`}
+          className={`text-danger d-flex align-items-center ${isOpen ? "justify-content-start" : "justify-content-center"
+            }`}
           style={{
             cursor: "pointer",
             fontSize: isOpen ? "1rem" : "1.3rem",
