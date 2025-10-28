@@ -98,6 +98,11 @@ export function useAuth() {
     }
   };
 
+  const getSolicitudStatus = async () => {
+    const response = await apiRequest("/conductor/status", "GET", null, true);
+    return response.data; 
+  };  
+
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("roles");
@@ -114,6 +119,7 @@ export function useAuth() {
     updateProfile,
     changePassword,
     applyConductor,
+    getSolicitudStatus,
     logout,
     isAuthenticated,
   };

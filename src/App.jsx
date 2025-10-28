@@ -33,6 +33,7 @@ import DashBoardAdministradores from "./pages/DashBoardadminisitradores";
 import PostularConductor from "./pages/PostularConductor";
 import DatosConductor from "./pages/DatosConductor";
 import DatosVehiculo from "./pages/DatosVehiculo";
+import SolicitudEstado from "./pages/ExtraConductor/SolicitudEstado";
 
 function App() {
   return (
@@ -59,14 +60,15 @@ function App() {
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/LogInAdmin" element={<LogInAdmin />} />
             <Route path="/postular-conductor" element={<PostularConductor />} />
-            <Route path="/DatosConductor" element={<DatosConductor/>} />
-            <Route path="/DatosVehiculo" element={<DatosVehiculo/>} />
+            <Route path="/DatosConductor" element={<DatosConductor />} />
+            <Route path="/DatosVehiculo" element={<DatosVehiculo />} />
+            <Route path="/solicitud-estado" element={<ProtectedRoute><SolicitudEstado /></ProtectedRoute>} />
           </Route>
           <Route element={<AdminLayout />}>
             <Route path="/DashBoardPrincipal" element={<DashBoardPrincipal />} />
             <Route path="/DashBoardUsuarios" element={<DashBoardUsuarios />} />
             <Route path="/DashBoardConductores" element={<DashBoardConductores />} />
-            <Route path="/DashBoardAdministradores" element={<DashBoardAdministradores/>} />
+            <Route path="/DashBoardAdministradores" element={<DashBoardAdministradores />} />
           </Route>
         </Routes>
       </Router>
