@@ -7,18 +7,19 @@ import {
   FaBars,
   FaHome,
   FaVoteYea,
+  FaUserShield, // 👈 nuevo ícono para "Administradores"
 } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useAuthAdmin } from "../hooks/useAuthAdmin"; 
+import { useAuthAdmin } from "../hooks/useAuthAdmin";
 
 function SidebarAdmin({ isOpen, setIsOpen }) {
   const toggleSidebar = () => setIsOpen(!isOpen);
   const navigate = useNavigate();
-  const { logoutAdmin } = useAuthAdmin(); 
+  const { logoutAdmin } = useAuthAdmin();
 
   const handleLogout = () => {
-    logoutAdmin(); 
-    navigate("/loginadmin"); 
+    logoutAdmin();
+    navigate("/loginadmin");
   };
 
   return (
@@ -35,81 +36,84 @@ function SidebarAdmin({ isOpen, setIsOpen }) {
         overflow: "hidden",
         boxShadow: "2px 0 10px rgba(0,0,0,0.3)",
         zIndex: 1000,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
       }}
     >
-      <div
-        className={`d-flex align-items-center ${
-          isOpen ? "justify-content-between" : "justify-content-center"
-        } mb-4`}
-      >
-        {isOpen && <h5 className="m-0 fw-bold">Panel Admin</h5>}
+      <div>
+        <div
+          className={`d-flex align-items-center ${isOpen ? "justify-content-between" : "justify-content-center"
+            } mb-4`}
+        >
+          {isOpen && <h5 className="m-0 fw-bold">Panel Admin</h5>}
 
-        <FaBars
-          role="button"
-          onClick={toggleSidebar}
-          className="text-white fs-5"
-          style={{
-            cursor: "pointer",
-            minWidth: "24px",
-            textAlign: "center",
-          }}
-        />
-      </div>
-
-      <Nav
-        className={`flex-column mt-3 ${
-          isOpen ? "align-items-start" : "align-items-center"
-        }`}
-      >
-        {[
-          { to: "/", icon: <FaHome />, label: "Inicio" },
-          { to: "/DashBoardPrincipal", icon: <FaVoteYea />, label: "Principal" },
-          { to: "/DashBoardUsuarios", icon: <FaUser />, label: "Usuarios" },
-          { to: "/DashBoardConductores", icon: <FaCar />, label: "Conductores" },
-          { to: "/admin/registro-viajes", icon: <FaRoute />, label: "Registro de Viajes" },
-        ].map((item, idx) => (
-          <NavLink
-            key={idx}
-            to={item.to}
-            className={({ isActive }) =>
-              `nav-link d-flex align-items-center text-white mb-2 ${
-                isActive ? "fw-bold text-info" : ""
-              }`
-            }
+          <FaBars
+            role="button"
+            onClick={toggleSidebar}
+            className="text-white fs-5"
             style={{
-              justifyContent: isOpen ? "flex-start" : "center",
-              fontSize: isOpen ? "1rem" : "1.4rem",
-              transition: "all 0.2s ease",
+              cursor: "pointer",
+              minWidth: "24px",
+              textAlign: "center",
             }}
-          >
-            <span
-              className="d-flex align-items-center"
+          />
+        </div>
+
+        <Nav
+          className={`flex-column mt-3 ${isOpen ? "align-items-start" : "align-items-center"
+            }`}
+        >
+          {[
+            { to: "/", icon: <FaHome />, label: "Inicio" },
+            { to: "/DashBoardPrincipal", icon: <FaVoteYea />, label: "Principal" },
+            { to: "/DashBoardUsuarios", icon: <FaUser />, label: "Usuarios" },
+            { to: "/DashBoardAdministradores", icon: <FaUserShield />, label: "Administradores" },
+            { to: "/DashBoardConductores", icon: <FaCar />, label: "Conductores" },
+            { to: "/admin/registro-viajes", icon: <FaRoute />, label: "Registro de Viajes" },
+
+          ].map((item, idx) => (
+            <NavLink
+              key={idx}
+              to={item.to}
+              className={({ isActive }) =>
+                `nav-link d-flex align-items-center text-white mb-2 ${isActive ? "fw-bold text-info" : ""
+                }`
+              }
               style={{
-                justifyContent: "center",
-                width: isOpen ? "auto" : "100%",
+                justifyContent: isOpen ? "flex-start" : "center",
+                fontSize: isOpen ? "1rem" : "1.4rem",
+                transition: "all 0.2s ease",
               }}
             >
               <span
+                className="d-flex align-items-center"
                 style={{
-                  fontSize: isOpen ? "1.1rem" : "1.6rem",
-                  marginRight: isOpen ? "10px" : "0px",
-                  transition: "all 0.2s ease",
+                  justifyContent: "center",
+                  width: isOpen ? "auto" : "100%",
                 }}
               >
-                {item.icon}
+                <span
+                  style={{
+                    fontSize: isOpen ? "1.1rem" : "1.6rem",
+                    marginRight: isOpen ? "10px" : "0px",
+                    transition: "all 0.2s ease",
+                  }}
+                >
+                  {item.icon}
+                </span>
+                {isOpen && item.label}
               </span>
-              {isOpen && item.label}
-            </span>
-          </NavLink>
-        ))}
+            </NavLink>
+          ))}
+        </Nav>
+      </div>
 
-        <hr className="text-secondary w-100" />
-
+      <div style={{ borderTop: "1px solid #444", paddingTop: "10px" }}>
         <Nav.Link
           onClick={handleLogout}
-          className={`text-danger d-flex align-items-center ${
-            isOpen ? "justify-content-start" : "justify-content-center"
-          }`}
+          className={`text-danger d-flex align-items-center ${isOpen ? "justify-content-start" : "justify-content-center"
+            }`}
           style={{
             cursor: "pointer",
             fontSize: isOpen ? "1rem" : "1.3rem",
@@ -117,21 +121,21 @@ function SidebarAdmin({ isOpen, setIsOpen }) {
         >
           <FaSignOutAlt className="me-2" /> {isOpen && "Cerrar sesión"}
         </Nav.Link>
-      </Nav>
+      </div>
 
       <style>
         {`
-          .nav-link {
-            transition: background-color 0.2s ease, transform 0.2s ease;
-            border-radius: 8px;
-            padding: 8px 12px;
-            width: 100%;
-          }
-          .nav-link:hover {
-            background-color: rgba(255,255,255,0.1);
-            transform: translateX(4px);
-          }
-        `}
+        .nav-link {
+          transition: background-color 0.2s ease, transform 0.2s ease;
+          border-radius: 8px;
+          padding: 8px 12px;
+          width: 100%;
+        }
+        .nav-link:hover {
+          background-color: rgba(255,255,255,0.1);
+          transform: translateX(4px);
+        }
+      `}
       </style>
     </div>
   );

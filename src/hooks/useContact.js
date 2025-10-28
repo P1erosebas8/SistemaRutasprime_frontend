@@ -29,9 +29,8 @@ export function useContact() {
     setLoading(true);
     try {
       const response = await apiRequest("/contact", "POST", formData);
-      toast.success(response.message || "Mensaje enviado correctamente");
-      setErrors({});
-      return response;
+      toast.success(response.data.message || "Mensaje enviado correctamente");
+      return response.data;
     } catch (err) {
       toast.error(err.message || "Error al enviar el mensaje");
       throw err;

@@ -29,6 +29,10 @@ import LogInAdmin from "./pages/LogInAdmin"
 import DashBoardUsuarios from "./pages/DashBoardUsuarios"
 import DashBoardConductores from "./pages/DashBoardConductores"
 import DashBoardPrincipal from "./pages/DashBoardPrincipal"
+import DashBoardAdministradores from "./pages/DashBoardadminisitradores";
+import PostularConductor from "./pages/PostularConductor";
+import DatosConductor from "./pages/DatosConductor";
+import DatosVehiculo from "./pages/DatosVehiculo";
 
 function App() {
   return (
@@ -54,11 +58,15 @@ function App() {
             <Route path="/terminos" element={<Terminos />} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/LogInAdmin" element={<LogInAdmin />} />
+            <Route path="/postular-conductor" element={<PostularConductor />} />
+            <Route path="/DatosConductor" element={<DatosConductor/>} />
+            <Route path="/DatosVehiculo" element={<DatosVehiculo/>} />
           </Route>
           <Route element={<AdminLayout />}>
             <Route path="/DashBoardPrincipal" element={<DashBoardPrincipal />} />
             <Route path="/DashBoardUsuarios" element={<DashBoardUsuarios />} />
             <Route path="/DashBoardConductores" element={<DashBoardConductores />} />
+            <Route path="/DashBoardAdministradores" element={<DashBoardAdministradores/>} />
           </Route>
         </Routes>
       </Router>
