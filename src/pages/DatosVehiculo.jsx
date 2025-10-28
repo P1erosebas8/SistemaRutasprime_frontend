@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import HeroSection from "../components/HeroSection";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { vehiculoValidators } from "../utils/validators";
 import imgTarjetaPropiedad from "../assets/registrovehiculo/tarjeta_propiedad.jpg";
 import imgTarjetaCirculacion from "../assets/registrovehiculo/tarjeta_circulacion.jpg";
 import imgSoat from "../assets/registrovehiculo/soat.jpg";
@@ -21,6 +22,11 @@ function DatosVehiculo() {
     tarjetaCirculacion: null,
     soat: null,
     revisionTecnica: null,
+  });
+
+  const [errors, setErrors] = useState({
+    placa: "",
+    anioFabricacion: "",
   });
 
   const [modals, setModals] = useState({
@@ -68,6 +74,19 @@ function DatosVehiculo() {
     }
   }, []);
 
+  const handleChange = (field, value) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+
+    if (field === "placa") {
+      const error = vehiculoValidators.placa(value);
+      setErrors((prev) => ({ ...prev, placa: error }));
+    }
+    if (field === "anioFabricacion") {
+      const error = vehiculoValidators.anioFabricacion(value);
+      setErrors((prev) => ({ ...prev, anioFabricacion: error }));
+    }
+  };
+
   const handleFileChange = (e, field) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -106,7 +125,20 @@ function DatosVehiculo() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.placa || !form.marca || !form.color || !form.anioFabricacion) {
+
+    const placaError = vehiculoValidators.placa(form.placa);
+    const anioError = vehiculoValidators.anioFabricacion(form.anioFabricacion);
+
+    if (placaError || anioError) {
+      setErrors({
+        placa: placaError,
+        anioFabricacion: anioError,
+      });
+      toast.error("Corrige los errores antes de continuar");
+      return;
+    }
+
+    if (!form.marca || !form.color) {
       toast.warn("Completa todos los campos del vehículo", {
         position: "top-right",
         autoClose: 2500,
@@ -114,6 +146,7 @@ function DatosVehiculo() {
       });
       return;
     }
+
     if (
       !uploaded.tarjetaPropiedad ||
       !uploaded.tarjetaCirculacion ||
@@ -127,15 +160,18 @@ function DatosVehiculo() {
       });
       return;
     }
+
     localStorage.setItem(
       "datosVehiculo",
       JSON.stringify({ form, uploaded, completado: true })
     );
+
     toast.success("Datos del vehículo guardados correctamente", {
       position: "top-right",
       autoClose: 2000,
       theme: "colored",
     });
+
     setTimeout(() => {
       navigate("/Postular-Conductor");
     }, 1500);
@@ -164,12 +200,17 @@ function DatosVehiculo() {
             <label className="form-label fw-semibold">Placa:</label>
             <input
               type="text"
-              className="form-control"
-              placeholder="Introduce la placa"
+              className={`form-control ${
+                errors.placa ? "is-invalid" : form.placa && "is-valid"
+              }`}
+              placeholder="Ejemplo: ABC-123"
               value={form.placa}
-              onChange={(e) => setForm({ ...form, placa: e.target.value })}
+              onChange={(e) => handleChange("placa", e.target.value)}
               required
             />
+            {errors.placa && (
+              <div className="text-danger small mt-1">{errors.placa}</div>
+            )}
           </div>
 
           <div className="col-md-6">
@@ -212,14 +253,21 @@ function DatosVehiculo() {
             <label className="form-label fw-semibold">Año de fabricación:</label>
             <input
               type="text"
-              className="form-control"
+              className={`form-control ${
+                errors.anioFabricacion
+                  ? "is-invalid"
+                  : form.anioFabricacion && "is-valid"
+              }`}
               placeholder="Ejemplo: 2019"
               value={form.anioFabricacion}
-              onChange={(e) =>
-                setForm({ ...form, anioFabricacion: e.target.value })
-              }
+              onChange={(e) => handleChange("anioFabricacion", e.target.value)}
               required
             />
+            {errors.anioFabricacion && (
+              <div className="text-danger small mt-1">
+                {errors.anioFabricacion}
+              </div>
+            )}
           </div>
 
           {[
@@ -281,10 +329,7 @@ function DatosVehiculo() {
                 src={img}
                 alt={key}
                 className="img-fluid rounded border shadow-sm"
-                style={{
-                  maxHeight: "200px",
-                  objectFit: "contain",
-                }}
+                style={{ maxHeight: "200px", objectFit: "contain" }}
               />
             </div>
             <p className="text-muted mb-3">{descripcion}</p>
@@ -309,16 +354,7 @@ function DatosVehiculo() {
         </Modal>
       ))}
 
-      <ToastContainer
-        position="top-right"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        draggable
-        pauseOnHover
-        theme="light"
-      />
+      <ToastContainer position="top-right" autoClose={2000} theme="light" />
     </>
   );
 }

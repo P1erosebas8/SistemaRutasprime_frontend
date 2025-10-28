@@ -140,7 +140,7 @@ function PostularConductor() {
       localStorage.removeItem("datosConductor");
       localStorage.removeItem("datosVehiculo");
 
-      setTimeout(() => navigate("/profile"), 1500);
+      setTimeout(() => window.location.reload(), 1500);
     } catch (err) {
       console.error(err);
       toast.error(err.message || "Error al enviar la solicitud");
