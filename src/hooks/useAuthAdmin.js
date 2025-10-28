@@ -28,8 +28,8 @@ export function useAuthAdmin() {
 
   const getAdminProfile = async () => {
     try {
-      const response = await apiRequest("/admin/profile", "GET", null, true);
-      return response.data;
+      const response = await apiRequest("/user/profile", "GET", null, true, true);
+      return response.data.data; 
     } catch (err) {
       toast.error("No se pudo obtener el perfil del administrador");
       throw err;
