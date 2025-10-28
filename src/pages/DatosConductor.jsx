@@ -6,6 +6,10 @@ import HeroSection from "../components/HeroSection";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import imgFotoPersonaLicencia from "../assets/registroconductor/fotopersonalicencia.jpg";
+import imgFotoLicencia from "../assets/registroconductor/fotolicencia.jpg";
+import imgAntecedentesPenales from "../assets/registroconductor/antecedentespenales.jpg";
+
 function DatosConductor() {
   const { getProfile } = useAuth();
   const navigate = useNavigate();
@@ -30,6 +34,24 @@ function DatosConductor() {
     fotoLicencia: false,
     antecedentesPenales: false,
   });
+
+  const modalInfo = {
+    fotoPersonaLicencia: {
+      img: imgFotoPersonaLicencia,
+      descripcion:
+        "Sube una fotografía tuya sosteniendo tu licencia de conducir. Tu rostro y el documento deben ser claramente visibles.",
+    },
+    fotoLicencia: {
+      img: imgFotoLicencia,
+      descripcion:
+        "Sube una imagen clara y legible de tu licencia de conducir (Preferencia juntelas en un pdf).",
+    },
+    antecedentesPenales: {
+      img: imgAntecedentesPenales,
+      descripcion:
+        "Adjunta el documento oficial de tus antecedentes penales emitido recientemente.",
+    },
+  };
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -203,9 +225,7 @@ function DatosConductor() {
           </div>
 
           <div className="col-md-6">
-            <label className="form-label fw-semibold">
-              Fecha de nacimiento
-            </label>
+            <label className="form-label fw-semibold">Fecha de nacimiento</label>
             <input
               type="date"
               className="form-control"
@@ -269,10 +289,14 @@ function DatosConductor() {
           <Modal.Header closeButton>
             <Modal.Title>{label}</Modal.Title>
           </Modal.Header>
-          <Modal.Body>
-            <p className="text-muted">
-              Sube un archivo PDF o imagen (JPG/PNG) para tu {label.toLowerCase()}.
-            </p>
+          <Modal.Body className="text-center">
+            <img
+              src={modalInfo[key].img}
+              alt={label}
+              className="img-fluid rounded mb-3"
+              style={{ maxHeight: "220px", objectFit: "cover" }}
+            />
+            <p className="text-muted mb-3">{modalInfo[key].descripcion}</p>
             <input
               type="file"
               accept=".pdf,.jpg,.jpeg,.png"

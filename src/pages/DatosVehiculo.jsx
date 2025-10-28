@@ -4,6 +4,10 @@ import { useNavigate } from "react-router-dom";
 import HeroSection from "../components/HeroSection";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import imgTarjetaPropiedad from "../assets/registrovehiculo/tarjeta_propiedad.jpg";
+import imgTarjetaCirculacion from "../assets/registrovehiculo/tarjeta_circulacion.jpg";
+import imgSoat from "../assets/registrovehiculo/soat.jpg";
+import imgRevisionTecnica from "../assets/registrovehiculo/revision_tecnica.jpg";
 
 function DatosVehiculo() {
   const navigate = useNavigate();
@@ -33,6 +37,29 @@ function DatosVehiculo() {
     revisionTecnica: false,
   });
 
+  const modalInfo = {
+    tarjetaPropiedad: {
+      img: imgTarjetaPropiedad,
+      descripcion:
+        "Sube una imagen o PDF de la tarjeta de propiedad de tu vehículo. Asegúrate de que el documento sea legible y completo.",
+    },
+    tarjetaCirculacion: {
+      img: imgTarjetaCirculacion,
+      descripcion:
+        "Adjunta una copia clara de la tarjeta de circulación. Puede ser una foto o un archivo PDF.",
+    },
+    soat: {
+      img: imgSoat,
+      descripcion:
+        "Sube tu SOAT vigente. El documento debe mostrar claramente las fechas de vigencia y los datos del vehículo.",
+    },
+    revisionTecnica: {
+      img: imgRevisionTecnica,
+      descripcion:
+        "Adjunta el comprobante de revisión técnica más reciente de tu vehículo.",
+    },
+  };
+
   useEffect(() => {
     const savedData = JSON.parse(localStorage.getItem("datosVehiculo"));
     if (savedData) {
@@ -44,7 +71,6 @@ function DatosVehiculo() {
   const handleFileChange = (e, field) => {
     const file = e.target.files[0];
     if (!file) return;
-
     if (file.size > 5 * 1024 * 1024) {
       toast.error("El archivo excede el tamaño máximo de 5MB", {
         position: "top-right",
@@ -53,7 +79,6 @@ function DatosVehiculo() {
       });
       return;
     }
-
     const reader = new FileReader();
     reader.onloadend = () => {
       setForm({ ...form, [field]: reader.result });
@@ -81,7 +106,6 @@ function DatosVehiculo() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     if (!form.placa || !form.marca || !form.color || !form.anioFabricacion) {
       toast.warn("Completa todos los campos del vehículo", {
         position: "top-right",
@@ -90,7 +114,6 @@ function DatosVehiculo() {
       });
       return;
     }
-
     if (
       !uploaded.tarjetaPropiedad ||
       !uploaded.tarjetaCirculacion ||
@@ -104,18 +127,15 @@ function DatosVehiculo() {
       });
       return;
     }
-
     localStorage.setItem(
       "datosVehiculo",
       JSON.stringify({ form, uploaded, completado: true })
     );
-
     toast.success("Datos del vehículo guardados correctamente", {
       position: "top-right",
       autoClose: 2000,
       theme: "colored",
     });
-
     setTimeout(() => {
       navigate("/Postular-Conductor");
     }, 1500);
@@ -237,12 +257,7 @@ function DatosVehiculo() {
         </form>
       </div>
 
-      {[
-        { key: "tarjetaPropiedad", title: "Tarjeta de propiedad" },
-        { key: "tarjetaCirculacion", title: "Tarjeta de circulación" },
-        { key: "soat", title: "Soat" },
-        { key: "revisionTecnica", title: "Revisión técnica" },
-      ].map(({ key, title }) => (
+      {Object.entries(modalInfo).map(([key, { img, descripcion }]) => (
         <Modal
           key={key}
           show={modals[key]}
@@ -250,13 +265,29 @@ function DatosVehiculo() {
           centered
         >
           <Modal.Header closeButton>
-            <Modal.Title>{title}</Modal.Title>
+            <Modal.Title>
+              {key === "tarjetaPropiedad"
+                ? "Tarjeta de propiedad"
+                : key === "tarjetaCirculacion"
+                ? "Tarjeta de circulación"
+                : key === "soat"
+                ? "SOAT"
+                : "Revisión técnica"}
+            </Modal.Title>
           </Modal.Header>
-          <Modal.Body>
-            <p className="text-muted">
-              Sube un archivo PDF o imagen (JPG/PNG) correspondiente a tu{" "}
-              {title.toLowerCase()}.
-            </p>
+          <Modal.Body className="text-center">
+            <div className="d-flex justify-content-center mb-3">
+              <img
+                src={img}
+                alt={key}
+                className="img-fluid rounded border shadow-sm"
+                style={{
+                  maxHeight: "200px",
+                  objectFit: "contain",
+                }}
+              />
+            </div>
+            <p className="text-muted mb-3">{descripcion}</p>
             <input
               type="file"
               accept=".pdf,.jpg,.jpeg,.png"
