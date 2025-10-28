@@ -29,6 +29,7 @@ import LogInAdmin from "./pages/LogInAdmin"
 import DashBoardUsuarios from "./pages/DashBoardUsuarios"
 import DashBoardConductores from "./pages/DashBoardConductores"
 import DashBoardPrincipal from "./pages/DashBoardPrincipal"
+import AdminContactanos from "./pages/AdminContactanos";
 import DashBoardAdministradores from "./pages/DashBoardadminisitradores";
 
 function App() {
@@ -60,6 +61,7 @@ function App() {
             <Route path="/DashBoardPrincipal" element={<DashBoardPrincipal />} />
             <Route path="/DashBoardUsuarios" element={<DashBoardUsuarios />} />
             <Route path="/DashBoardConductores/*" element={<DashBoardConductores />} />
+            <Route path="/admin/contactanos" element={<AdminContactanos />} />
             <Route path="/DashBoardAdministradores" element={<DashBoardAdministradores/>} />
           </Route>
         </Routes>
