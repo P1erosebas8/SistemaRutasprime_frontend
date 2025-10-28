@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 function PostularConductor() {
-  const { getProfile, logout, applyConductor } = useAuth();
+  const { getProfile, logout, applyConductor, getSolicitudStatus } = useAuth();
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [datosConductorGuardados, setDatosConductorGuardados] = useState(false);
@@ -19,6 +19,24 @@ function PostularConductor() {
       try {
         const data = await getProfile();
         setUser(data);
+
+        const estadoResponse = await getSolicitudStatus();
+        const params = new URLSearchParams(window.location.search);
+        const isRetry = params.get("retry") === "true";
+        
+        if (estadoResponse.success && estadoResponse.data?.estado) {
+          const estado = estadoResponse.data.estado.toUpperCase();
+        
+          if (["PENDIENTE", "APROBADO"].includes(estado)) {
+            navigate("/solicitud-estado");
+            return;
+          }
+        
+          if (estado === "RECHAZADO" && !isRetry) {
+            navigate("/solicitud-estado");
+            return;
+          }
+        }                   
 
         const datosConductor = JSON.parse(localStorage.getItem("datosConductor"));
         if (datosConductor?.form && datosConductor?.uploaded) {
