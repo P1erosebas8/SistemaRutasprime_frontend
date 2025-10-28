@@ -41,6 +41,31 @@ export const validators = {
     }
     return null;
   },
+  numeroLicenciaConducir: (value) => {
+    if (!value) return "Campo obligatorio";
+    if (!/^[A-Za-z]\d{8}$/.test(value)) {
+      return "Formato inválido. Ejemplo: Q70398332";
+    }
+    return null;
+  },
+  fechaNacimiento: (value) => {
+    if (!value) return "La fecha de nacimiento es obligatoria";
+
+    const birthDate = new Date(value);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    const d = today.getDate() - birthDate.getDate();
+
+    if (m < 0 || (m === 0 && d < 0)) {
+      age--;
+    }
+
+    if (isNaN(age)) return "Fecha inválida";
+    if (age < 18) return "Debes tener al menos 18 años";
+
+    return null;
+  },
 };
 
 export const validateProfileUpdate = ({ nombres, apellidos, direccion }) => {
@@ -86,6 +111,33 @@ export const contactValidators = {
   message: (value) => {
     if (!value.trim()) return "El mensaje no puede estar vacío";
     if (value.trim().length < 10) return "Debe tener al menos 10 caracteres";
+    return null;
+  },
+};
+
+export const vehiculoValidators = {
+  placa: (value) => {
+    if (!value) return "La placa es obligatoria";
+    const regex = /^([A-Z]{3}-?\d{3}|[A-Z]{1}\d{1}[A-Z]{1}-?\d{3})$/i;
+    if (!regex.test(value)) {
+      return "Formato inválido. Ejemplo: ABC-123 o A1B-234";
+    }
+
+    return null;
+  },
+
+  anioFabricacion: (value) => {
+    if (!value) return "El año de fabricación es obligatorio";
+
+    if (!/^\d{4}$/.test(value)) {
+      return "El año debe tener exactamente 4 dígitos";
+    }
+    const currentYear = new Date().getFullYear();
+    const year = parseInt(value, 10);
+    if (year < 1995) return "El año no puede ser menor a 1995";
+    if (year > currentYear)
+      return `El año no puede ser mayor a ${currentYear}`;
+
     return null;
   },
 };

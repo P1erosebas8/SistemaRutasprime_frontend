@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import HeroSection from "../components/HeroSection";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { validators } from "../utils/validators";
 
 import imgFotoPersonaLicencia from "../assets/registroconductor/fotopersonalicencia.jpg";
 import imgFotoLicencia from "../assets/registroconductor/fotolicencia.jpg";
@@ -34,6 +35,8 @@ function DatosConductor() {
     fotoLicencia: false,
     antecedentesPenales: false,
   });
+
+  const [errors, setErrors] = useState({});
 
   const modalInfo = {
     fotoPersonaLicencia: {
@@ -133,8 +136,16 @@ function DatosConductor() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!form.fechaNacimiento || !form.numeroLicenciaConducir) {
-      toast.warn("Completa todos los campos obligatorios", {
+    const fechaError = validators.fechaNacimiento(form.fechaNacimiento);
+    const licenciaError = validators.numeroLicenciaConducir(form.numeroLicenciaConducir);
+
+    if (fechaError || licenciaError) {
+      setErrors({
+        fechaNacimiento: fechaError,
+        numeroLicenciaConducir: licenciaError,
+      });
+
+      toast.error("Corrige los errores antes de continuar", {
         position: "top-right",
         autoClose: 2500,
         theme: "colored",
@@ -198,57 +209,75 @@ function DatosConductor() {
         <form className="row g-4" onSubmit={handleSubmit}>
           <div className="col-md-4">
             <label className="form-label fw-semibold">Nombre(s)</label>
-            <input
-              type="text"
-              className="form-control"
-              value={user?.nombres}
-              readOnly
-            />
+            <input type="text" className="form-control" value={user?.nombres} readOnly />
           </div>
           <div className="col-md-4">
             <label className="form-label fw-semibold">Apellidos</label>
-            <input
-              type="text"
-              className="form-control"
-              value={user?.apellidos}
-              readOnly
-            />
+            <input type="text" className="form-control" value={user?.apellidos} readOnly />
           </div>
           <div className="col-md-4">
             <label className="form-label fw-semibold">Número de DNI</label>
-            <input
-              type="text"
-              className="form-control"
-              value={user?.dniRuc}
-              readOnly
-            />
+            <input type="text" className="form-control" value={user?.dniRuc} readOnly />
           </div>
 
           <div className="col-md-6">
             <label className="form-label fw-semibold">Fecha de nacimiento</label>
             <input
               type="date"
-              className="form-control"
+              placeholder="Selecciona tu fecha de nacimiento"
+              className={`form-control ${errors.fechaNacimiento ? "is-invalid" : ""}`}
               required
               value={form.fechaNacimiento}
-              onChange={(e) =>
-                setForm({ ...form, fechaNacimiento: e.target.value })
-              }
+              onChange={(e) => {
+                const value = e.target.value;
+                setForm({ ...form, fechaNacimiento: value });
+                setErrors({ ...errors, fechaNacimiento: validators.fechaNacimiento(value) });
+              }}
             />
+            {errors.fechaNacimiento && (
+              <div style={{ color: "red", fontSize: "0.9rem", marginTop: "4px" }}>
+                {errors.fechaNacimiento}
+              </div>
+            )}
           </div>
+
           <div className="col-md-6">
-            <label className="form-label fw-semibold">
-              Número de Licencia de Conducir
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              required
-              value={form.numeroLicenciaConducir}
-              onChange={(e) =>
-                setForm({ ...form, numeroLicenciaConducir: e.target.value })
-              }
-            />
+            <label className="form-label fw-semibold">Número de Licencia de Conducir</label>
+            <div style={{ position: "relative" }}>
+              <input
+                type="text"
+                placeholder="Ejemplo: B12345678"
+                className={`form-control ${errors.numeroLicenciaConducir ? "is-invalid" : ""}`}
+                required
+                value={form.numeroLicenciaConducir}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setForm({ ...form, numeroLicenciaConducir: value });
+                  setErrors({
+                    ...errors,
+                    numeroLicenciaConducir: validators.numeroLicenciaConducir(value),
+                  });
+                }}
+              />
+              {errors.numeroLicenciaConducir && (
+                <i
+                  className="bi bi-exclamation-circle-fill"
+                  style={{
+                    position: "absolute",
+                    right: "12px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    color: "red",
+                    fontSize: "1.1rem",
+                  }}
+                ></i>
+              )}
+            </div>
+            {errors.numeroLicenciaConducir && (
+              <div style={{ color: "red", fontSize: "0.9rem", marginTop: "4px" }}>
+                {errors.numeroLicenciaConducir}
+              </div>
+            )}
           </div>
 
           {fileFields.map(({ key, label }) => (
