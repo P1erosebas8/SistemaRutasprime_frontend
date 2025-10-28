@@ -1,7 +1,14 @@
 const API_URL = "http://localhost:8080/api";
 
-export async function apiRequest(endpoint, method = "GET", body = null, auth = false, isAdmin = false) {
-  const headers = { "Content-Type": "application/json" };
+export async function apiRequest(
+  endpoint,
+  method = "GET",
+  body = null,
+  auth = false,
+  isAdmin = false,
+  isFormData = false
+) {
+  const headers = {};
 
   if (auth) {
     const tokenKey = isAdmin ? "adminToken" : "token";
@@ -9,10 +16,18 @@ export async function apiRequest(endpoint, method = "GET", body = null, auth = f
     if (token) headers["Authorization"] = `Bearer ${token}`;
   }
 
+  if (!isFormData) {
+    headers["Content-Type"] = "application/json";
+  }
+
   const res = await fetch(`${API_URL}${endpoint}`, {
     method,
     headers,
-    body: body ? JSON.stringify(body) : null,
+    body: body
+      ? isFormData
+        ? body
+        : JSON.stringify(body)
+      : null,
   });
 
   let data;
@@ -29,5 +44,5 @@ export async function apiRequest(endpoint, method = "GET", body = null, auth = f
     throw new Error(errorMessage);
   }
 
-  return { data }; 
+  return { data };
 }

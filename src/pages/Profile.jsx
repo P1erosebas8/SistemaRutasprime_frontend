@@ -158,7 +158,13 @@ function Profile() {
               <button className="btn btn-info" onClick={() => setShowPassword(true)}>
                 Cambiar contraseña
               </button>
-              <button className="btn btn-danger ms-auto" onClick={handleLogout}>
+              <button
+                className="btn btn-success ms-auto"
+                onClick={() => navigate("/postular-conductor")}
+              >
+                Postular a Conductor
+              </button>
+              <button className="btn btn-danger" onClick={handleLogout}>
                 Cerrar sesión
               </button>
             </div>

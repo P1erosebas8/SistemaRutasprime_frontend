@@ -9,24 +9,23 @@ export function useAuth() {
     setLoading(true);
     try {
       const response = await apiRequest("/auth/public/login", "POST", { email, password });
-
       const token = response?.data?.data?.token;
       const roles = response?.data?.data?.roles || [];
-      
+
       if (!token) throw new Error("No se recibió token del servidor");
-      
+
       localStorage.setItem("token", token);
-      localStorage.setItem("roles", JSON.stringify(roles)); 
-      
+      localStorage.setItem("roles", JSON.stringify(roles));
+
       toast.success("Inicio de sesión exitoso");
-      return response.data;   
+      return response.data;
     } catch (err) {
       toast.error("Usuario o contraseña incorrectos");
       throw err;
     } finally {
       setLoading(false);
     }
-  };  
+  };
 
   const register = async (form) => {
     setLoading(true);
@@ -50,8 +49,8 @@ export function useAuth() {
       toast.error("No se pudo obtener el perfil");
       throw err;
     }
-  };  
-  
+  };
+
   const updateProfile = async (updates) => {
     setLoading(true);
     try {
@@ -85,6 +84,20 @@ export function useAuth() {
     }
   };
 
+  const applyConductor = async (formData) => {
+    setLoading(true);
+    try {
+      const response = await apiRequest("/conductor/apply", "POST", formData, true, false, true);
+      toast.success("Solicitud enviada correctamente");
+      return response.data;
+    } catch (err) {
+      toast.error(err.message || "Error al enviar la solicitud");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("roles");
@@ -100,7 +113,8 @@ export function useAuth() {
     getProfile,
     updateProfile,
     changePassword,
+    applyConductor,
     logout,
-    isAuthenticated, 
+    isAuthenticated,
   };
 }
