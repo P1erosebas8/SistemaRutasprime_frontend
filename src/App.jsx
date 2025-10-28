@@ -59,7 +59,7 @@ function App() {
           <Route element={<AdminLayout />}>
             <Route path="/DashBoardPrincipal" element={<DashBoardPrincipal />} />
             <Route path="/DashBoardUsuarios" element={<DashBoardUsuarios />} />
-            <Route path="/DashBoardConductores" element={<DashBoardConductores />} />
+            <Route path="/DashBoardConductores/*" element={<DashBoardConductores />} />
             <Route path="/DashBoardAdministradores" element={<DashBoardAdministradores/>} />
           </Route>
         </Routes>

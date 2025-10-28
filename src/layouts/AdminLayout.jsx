@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import SidebarAdmin from "../components/SidebarAdmin";
 import { Outlet } from "react-router-dom";
+import { DriversProvider } from "../contexts/DriversContext";
 
 export default function AdminLayout() {
   const [isOpen, setIsOpen] = useState(true);
@@ -27,7 +28,9 @@ export default function AdminLayout() {
           backgroundColor: "#1e2a52",
         }}
       >
-        <Outlet />
+        <DriversProvider>
+          <Outlet />
+        </DriversProvider>
       </div>
     </div>
   );
