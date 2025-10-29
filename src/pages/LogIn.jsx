@@ -18,8 +18,7 @@ function LogIn() {
     try {
       await login(email, password);
       navigate("/profile");
-    } catch {
-    }
+    } catch { /* empty */ }
   };
 
   return (

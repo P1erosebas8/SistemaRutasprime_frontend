@@ -42,6 +42,8 @@ function Inicio() {
         backgroundPosition="center 40%"
         botonTexto="Conocenos"
         botonLink="/AcercaDe"
+        // Agregamos el nuevo botón de Transportistas
+        
       />
       <ListaConImagen
         features={listaInicio}
