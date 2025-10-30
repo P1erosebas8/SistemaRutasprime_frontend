@@ -178,7 +178,7 @@ function SidebarAdmin({ isOpen, setIsOpen }) {
           </div>
 
           <NavLink
-            to="/admin/registro-viajes"
+            to="/DashBoardRegistroViajes"
             className={({ isActive }) =>
               `nav-link d-flex align-items-center text-white mb-2 ${isActive ? "fw-bold text-info" : ""}`
             }
@@ -193,7 +193,7 @@ function SidebarAdmin({ isOpen, setIsOpen }) {
           </NavLink>
 
           <NavLink
-            to="/admin/contactanos"
+            to="/DashBoardContactanos"
             className={({ isActive }) =>
               `nav-link d-flex align-items-center text-white mb-2 ${isActive ? "fw-bold text-info" : ""}`
             }
@@ -206,6 +206,7 @@ function SidebarAdmin({ isOpen, setIsOpen }) {
             <FaEnvelope className="me-2" />
             {isOpen && "Contáctanos"}
           </NavLink>
+
         </Nav>
       </div>
 
