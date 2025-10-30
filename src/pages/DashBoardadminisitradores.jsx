@@ -9,16 +9,22 @@ import {
   FaIdCard,
   FaPhoneAlt,
   FaIdBadge,
+  FaFileExcel,
+  FaLock,
 } from "react-icons/fa";
 import { Modal, Button, Form, Spinner } from "react-bootstrap";
+import { toast } from "react-toastify";
 import { useAdminUsers } from "../hooks/useAdminUsers";
+import { validators } from "../utils/validators";
 
 export default function DashBoardAdministradores() {
-  const { admins, loading, setAdmins } = useAdminUsers();
+  const { admins, loading, setAdmins, exportarExcel, crearAdmin } = useAdminUsers();
 
   const [buscar, setBuscar] = useState("");
   const [mostrarModal, setMostrarModal] = useState(false);
   const [editarAdmin, setEditarAdmin] = useState(null);
+  const [errorServidor, setErrorServidor] = useState("");
+  const [errores, setErrores] = useState({});
 
   const [formData, setFormData] = useState({
     id: null,
@@ -27,6 +33,7 @@ export default function DashBoardAdministradores() {
     celular: "",
     email: "",
     dniRuc: "",
+    password: "",
     rol: "ADMIN",
     fechaRegistro: "",
   });
@@ -41,12 +48,16 @@ export default function DashBoardAdministradores() {
       celular: "",
       email: "",
       dniRuc: "",
+      password: "",
       rol: "ADMIN",
       fechaRegistro: "",
     });
+    setErrores({});
+    setErrorServidor("");
   };
 
   const mostrar = (admin = null) => {
+    setErrorServidor("");
     if (admin) {
       setEditarAdmin(admin);
       setFormData({
@@ -56,6 +67,7 @@ export default function DashBoardAdministradores() {
         celular: admin.celular,
         email: admin.email,
         dniRuc: admin.dniRuc,
+        password: "",
         rol: admin.rol || "ADMIN",
         fechaRegistro: admin.fechaRegistro || "",
       });
@@ -64,27 +76,72 @@ export default function DashBoardAdministradores() {
   };
 
   const actualizarModal = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (validators[name]) {
+      const error = validators[name](value);
+      setErrores((prev) => ({ ...prev, [name]: error }));
+    } else {
+      setErrores((prev) => ({ ...prev, [name]: null }));
+    }
+
+    setErrorServidor("");
   };
 
-  const guardarModal = () => {
+  const validarCampos = () => {
+    const nuevosErrores = {};
+    Object.keys(formData).forEach((campo) => {
+      if (validators[campo]) {
+        const error = validators[campo](formData[campo]);
+        if (error) nuevosErrores[campo] = error;
+      }
+    });
+
+    setErrores(nuevosErrores);
+    return Object.keys(nuevosErrores).length === 0;
+  };
+
+  const guardarModal = async () => {
+    setErrorServidor("");
+
+    if (!validarCampos()) {
+      toast.warning("Corrige los errores antes de continuar");
+      return;
+    }
+
     if (editarAdmin) {
       setAdmins((prev) =>
         prev.map((a) => (a.id === editarAdmin.id ? { ...a, ...formData } : a))
       );
-    } else {
-      const nuevo = {
-        id: formData.id ?? Date.now(),
-        nombres: formData.nombres,
-        apellidos: formData.apellidos,
-        celular: formData.celular,
-        email: formData.email,
-        dniRuc: formData.dniRuc,
-        rol: formData.rol || "ADMIN",
-        fechaRegistro: new Date().toLocaleDateString(),
-      };
-      setAdmins((prev) => [nuevo, ...prev]);
+      cerrarModal();
+      return;
     }
+
+    const result = await crearAdmin({
+      nombres: formData.nombres,
+      apellidos: formData.apellidos,
+      celular: formData.celular,
+      email: formData.email,
+      direccion: "No especificada",
+      dniRuc: formData.dniRuc,
+      password: formData.password,
+    });
+
+    if (!result.success) {
+      setErrorServidor(result.message);
+      return;
+    }
+
+    setAdmins((prev) => [
+      {
+        id: Date.now(),
+        ...formData,
+        fechaRegistro: new Date().toLocaleDateString(),
+      },
+      ...prev,
+    ]);
+
     cerrarModal();
   };
 
@@ -95,29 +152,28 @@ export default function DashBoardAdministradores() {
   };
 
   const query = buscar.trim().toLowerCase();
-  const filteredData = admins.filter((a) => {
-    if (!query) return true;
-    return a.dniRuc?.toLowerCase().includes(query);
-  });
+  const filteredData = admins.filter((a) =>
+    query ? a.dniRuc?.toLowerCase().includes(query) : true
+  );
 
   return (
-    <div
-      className="text-white p-4 min-vh-100"
-      style={{ backgroundColor: "#1e2a52" }}
-    >
+    <div className="text-white p-4 min-vh-100" style={{ backgroundColor: "#1e2a52" }}>
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2 className="fw-bold mb-0">Gestión de Administradores</h2>
-        <button className="btn btn-success" onClick={() => mostrar()}>
-          <FaPlus className="me-2" />
-          Agregar Administrador
-        </button>
+        <div className="d-flex gap-2">
+          <button className="btn btn-success" onClick={() => mostrar()}>
+            <FaPlus className="me-2" />
+            Agregar Administrador
+          </button>
+          <button className="btn btn-outline-light" onClick={exportarExcel}>
+            <FaFileExcel className="me-2" />
+            Descargar tabla de usuarios para Excel
+          </button>
+        </div>
       </div>
 
       <div className="mb-3 position-relative" style={{ maxWidth: "420px" }}>
-        <FaSearch
-          className="position-absolute text-secondary"
-          style={{ top: "10px", left: "10px" }}
-        />
+        <FaSearch className="position-absolute text-secondary" style={{ top: "10px", left: "10px" }} />
         <input
           type="text"
           placeholder="Buscar por DNI"
@@ -192,115 +248,81 @@ export default function DashBoardAdministradores() {
               </tbody>
             </table>
           </div>
-
-          <div
-            className="text-end text-secondary mt-3"
-            style={{ fontSize: "0.85rem" }}
-          >
+          <div className="text-end text-secondary mt-3" style={{ fontSize: "0.85rem" }}>
             Mostrando {filteredData.length} de {admins.length} administradores
           </div>
         </>
       )}
 
       <Modal show={mostrarModal} onHide={cerrarModal} centered>
-        <Modal.Header
-          closeButton
-          style={{ backgroundColor: "#2d3b6a", color: "white" }}
-        >
-          <Modal.Title>
-            {editarAdmin ? "Actualizar Administrador" : "Agregar Administrador"}
-          </Modal.Title>
+        <Modal.Header closeButton style={{ backgroundColor: "#2d3b6a", color: "white" }}>
+          <Modal.Title>{editarAdmin ? "Actualizar Administrador" : "Agregar Administrador"}</Modal.Title>
         </Modal.Header>
         <Modal.Body style={{ backgroundColor: "#1e2a52", color: "white" }}>
+          {errorServidor && (
+            <div className="alert alert-danger text-center py-2">{errorServidor}</div>
+          )}
+
           <Form>
-            <Form.Group className="mb-3">
-              <Form.Label>
-                <FaUserShield className="me-2" />
-                Nombres
-              </Form.Label>
-              <Form.Control
-                type="text"
-                name="nombres"
-                value={formData.nombres}
-                onChange={actualizarModal}
-                placeholder="Ingrese los nombres"
-              />
-            </Form.Group>
+            {[
+              { label: "Nombres", name: "nombres", icon: <FaUserShield /> },
+              { label: "Apellidos", name: "apellidos", icon: <FaUserShield /> },
+              { label: "Correo", name: "email", icon: <FaEnvelope /> },
+              { label: "Celular", name: "celular", icon: <FaPhoneAlt /> },
+              { label: "DNI / RUC", name: "dniRuc", icon: <FaIdCard /> },
+            ].map(({ label, name, icon }) => (
+              <Form.Group className="mb-3" key={name}>
+                <Form.Label>
+                  {icon} {label}
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  name={name}
+                  value={formData[name]}
+                  onChange={actualizarModal}
+                  className={errores[name] ? "border-danger" : ""}
+                  placeholder={`Ingrese ${label.toLowerCase()}`}
+                />
+                {errores[name] && (
+                  <Form.Text className="text-danger fw-bold">
+                    {errores[name]}
+                  </Form.Text>
+                )}
+              </Form.Group>
+            ))}
+
+            {!editarAdmin && (
+              <Form.Group className="mb-3">
+                <Form.Label>
+                  <FaLock className="me-2" />
+                  Contraseña
+                </Form.Label>
+                <Form.Control
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={actualizarModal}
+                  className={errores.password ? "border-danger" : ""}
+                  placeholder="Ingrese la contraseña"
+                />
+                {errores.password && (
+                  <Form.Text className="text-danger fw-bold">
+                    {errores.password}
+                  </Form.Text>
+                )}
+              </Form.Group>
+            )}
 
             <Form.Group className="mb-3">
               <Form.Label>
-                <FaUserShield className="me-2" />
-                Apellidos
+                <FaIdBadge className="me-2" /> Rol
               </Form.Label>
-              <Form.Control
-                type="text"
-                name="apellidos"
-                value={formData.apellidos}
-                onChange={actualizarModal}
-                placeholder="Ingrese los apellidos"
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>
-                <FaEnvelope className="me-2" />
-                Correo
-              </Form.Label>
-              <Form.Control
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={actualizarModal}
-                placeholder="Ingrese el correo"
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>
-                <FaPhoneAlt className="me-2" />
-                Celular
-              </Form.Label>
-              <Form.Control
-                type="text"
-                name="celular"
-                value={formData.celular}
-                onChange={actualizarModal}
-                placeholder="Ingrese el celular"
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>
-                <FaIdCard className="me-2" />
-                DNI / RUC
-              </Form.Label>
-              <Form.Control
-                type="text"
-                name="dniRuc"
-                value={formData.dniRuc}
-                onChange={actualizarModal}
-                placeholder="Ingrese DNI o RUC"
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>
-                <FaIdBadge className="me-2" />
-                Rol
-              </Form.Label>
-              <Form.Control
-                type="text"
-                name="rol"
-                value={formData.rol}
-                disabled
-                readOnly
-              />
-              <Form.Text className="text-info">
-                El rol por defecto es "ADMIN"
-              </Form.Text>
+              <Form.Control type="text" name="rol" value={formData.rol} disabled readOnly />
+              <Form.Text className="text-info">El rol por defecto es "ADMIN"</Form.Text>
             </Form.Group>
           </Form>
         </Modal.Body>
+
         <Modal.Footer style={{ backgroundColor: "#2d3b6a" }}>
           <Button variant="secondary" onClick={cerrarModal}>
             Cancelar
@@ -317,6 +339,7 @@ export default function DashBoardAdministradores() {
           .modal-content { border: 2px solid #40518b; }
           .form-control { background-color: #2d3b6a; color: white; border: none; }
           .form-control:focus { box-shadow: 0 0 5px #4e8ef7; }
+          .border-danger { border: 2px solid #ff4d4d !important; }
           .btn-outline-light { border: none; background-color: #40518b; color: white; }
           .btn-outline-light:hover { background-color: #4e8ef7; }
         `}

@@ -61,7 +61,7 @@ export default function AprobarConductores() {
 
   const filteredData = solicitudes.filter((s) => {
     const query = buscar.trim().toLowerCase();
-    return s.dniRuc.toLowerCase().includes(query); 
+    return s.dniRuc.toLowerCase().includes(query);
   });
 
   return (
@@ -119,13 +119,12 @@ export default function AprobarConductores() {
                     <td>{s.anioFabricacion}</td>
                     <td>
                       <span
-                        className={`badge ${
-                          s.estado === "PENDIENTE"
+                        className={`badge ${s.estado === "PENDIENTE"
                             ? "bg-warning"
                             : s.estado === "APROBADO"
-                            ? "bg-success"
-                            : "bg-danger"
-                        }`}
+                              ? "bg-success"
+                              : "bg-danger"
+                          }`}
                       >
                         {s.estado}
                       </span>
@@ -309,15 +308,14 @@ export default function AprobarConductores() {
                         item.estado === "APROBADO"
                           ? "#19875433"
                           : item.estado === "RECHAZADO"
-                          ? "#dc354533"
-                          : "#ffc10733",
-                      borderLeft: `4px solid ${
-                        item.estado === "APROBADO"
+                            ? "#dc354533"
+                            : "#ffc10733",
+                      borderLeft: `4px solid ${item.estado === "APROBADO"
                           ? "#28a745"
                           : item.estado === "RECHAZADO"
-                          ? "#dc3545"
-                          : "#ffc107"
-                      }`,
+                            ? "#dc3545"
+                            : "#ffc107"
+                        }`,
                     }}
                   >
                     <div className="d-flex justify-content-between align-items-center mb-2">
