@@ -24,12 +24,14 @@ import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicLayout from "./layouts/PublicLayout";
 import AdminLayout from "./layouts/AdminLayout";
-import DashboardAdmin from "./pages/DashboardAdmin";
 import LogInAdmin from "./pages/LogInAdmin"
 import DashBoardUsuarios from "./pages/DashBoardUsuarios"
-import DashBoardConductores from "./pages/DashBoardConductores"
+import ListarConductores from "./pages/DashBoardConductores/ListarConductores";
+import AprobarConductores from "./pages/DashBoardConductores/AprobarConductores";
 import DashBoardPrincipal from "./pages/DashBoardPrincipal"
 import DashBoardAdministradores from "./pages/DashBoardadminisitradores";
+import DashBoardRegistroViajes from "./pages/DashBoardRegistroViajes";
+import DashBoardContactanos from "./pages/DashBoardContactanos";
 import PostularConductor from "./pages/PostularConductor";
 import DatosConductor from "./pages/DatosConductor";
 import DatosVehiculo from "./pages/DatosVehiculo";
@@ -67,8 +69,11 @@ function App() {
           <Route element={<AdminLayout />}>
             <Route path="/DashBoardPrincipal" element={<DashBoardPrincipal />} />
             <Route path="/DashBoardUsuarios" element={<DashBoardUsuarios />} />
-            <Route path="/DashBoardConductores" element={<DashBoardConductores />} />
             <Route path="/DashBoardAdministradores" element={<DashBoardAdministradores />} />
+            <Route path="/DashBoardConductores/listar" element={<ListarConductores />} />
+            <Route path="/DashBoardConductores/aprobar" element={<AprobarConductores />} />
+            <Route path="/DashBoardRegistroViajes" element={<DashBoardRegistroViajes />} />
+            <Route path="/DashBoardContactanos" element={<DashBoardContactanos />} />
           </Route>
         </Routes>
       </Router>

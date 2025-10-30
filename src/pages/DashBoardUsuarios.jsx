@@ -10,18 +10,13 @@ import {
     FaIdCard,
     FaLock,
 } from "react-icons/fa";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Form, Spinner } from "react-bootstrap";
+import { useClientes } from "../hooks/useClientes";
 
 export default function DashBoardUsuarios() {
     const [buscar, setBuscar] = useState("");
     const [mostrarModal, setMostrarModal] = useState(false);
     const [editarUsuario, setEditarUsuario] = useState(null);
-
-    const [usuarios, setUsuarios] = useState([
-        { codigo: "U001", nombre: "Juan", apellido: "Pérez", correo: "juanperez@asd.com", telefono: "987654321", dni: "12345678", contraseña: "1234" },
-        { codigo: "U002", nombre: "María", apellido: "García", correo: "maria@asd.com", telefono: "912345678", dni: "87654321", contraseña: "abcd" },
-    ]);
-
     const [formData, setFormData] = useState({
         nombre: "",
         apellido: "",
@@ -31,10 +26,20 @@ export default function DashBoardUsuarios() {
         contraseña: "",
     });
 
+    const { clientes, loading, getClientes } = useClientes();
+    const usuarios = clientes;
+
     const CerrarModal = () => {
         setMostrarModal(false);
         setEditarUsuario(null);
-        setFormData({ nombre: "", apellido: "", correo: "", telefono: "", dni: "", contraseña: "" });
+        setFormData({
+            nombre: "",
+            apellido: "",
+            correo: "",
+            telefono: "",
+            dni: "",
+            contraseña: "",
+        });
     };
 
     const Mostar = (usuario = null) => {
@@ -50,33 +55,30 @@ export default function DashBoardUsuarios() {
     };
 
     const GuardarModal = () => {
-        if (editarUsuario) {
-            setUsuarios(usuarios.map((u) => (u.codigo === editarUsuario.codigo ? { ...editarUsuario, ...formData } : u)));
-        } else {
-            const nuevo = { ...formData, codigo: `U${(usuarios.length + 1).toString().padStart(3, "0")}` };
-            setUsuarios([...usuarios, nuevo]);
-        }
         CerrarModal();
     };
 
     const Borrar = (codigo) => {
         if (window.confirm("¿Deseas eliminar este usuario?")) {
-            setUsuarios(usuarios.filter((u) => u.codigo !== codigo));
+            console.log("Eliminar", codigo);
         }
     };
 
-    const filteredData = usuarios.filter(
-        (u) =>
-            u.codigo.toLowerCase().includes(buscar.toLowerCase()) ||
-            u.nombre.toLowerCase().includes(buscar.toLowerCase()) ||
-            u.apellido.toLowerCase().includes(buscar.toLowerCase()) ||
-            u.correo.toLowerCase().includes(buscar.toLowerCase())
-    );
+    const filteredData = usuarios.filter((u) => {
+        const query = buscar.trim().toLowerCase();
+        return (
+            u.codigo.toLowerCase().includes(query) ||
+            u.nombre.toLowerCase().includes(query) ||
+            u.apellido.toLowerCase().includes(query) ||
+            u.correo.toLowerCase().includes(query) ||
+            (u.dni && u.dni.toLowerCase().includes(query))
+        );
+    });
 
     return (
         <div className="text-white p-4 min-vh-100" style={{ backgroundColor: "#1e2a52" }}>
             <div className="d-flex justify-content-between align-items-center mb-4">
-                <h2 className="fw-bold mb-0">Gestión de Usuarios</h2>
+                <h2 className="fw-bold mb-0">Gestión de Clientes</h2>
                 <button className="btn btn-success" onClick={() => Mostar()}>
                     <FaPlus className="me-2" />
                     Agregar Usuario
@@ -84,10 +86,13 @@ export default function DashBoardUsuarios() {
             </div>
 
             <div className="mb-3 position-relative" style={{ maxWidth: "350px" }}>
-                <FaSearch className="position-absolute text-secondary" style={{ top: "10px", left: "10px" }} />
+                <FaSearch
+                    className="position-absolute text-secondary"
+                    style={{ top: "10px", left: "10px" }}
+                />
                 <input
                     type="text"
-                    placeholder="Buscar usuario..."
+                    placeholder="Buscar por DNI"
                     value={buscar}
                     onChange={(e) => setBuscar(e.target.value)}
                     className="form-control ps-5"
@@ -99,49 +104,62 @@ export default function DashBoardUsuarios() {
                 />
             </div>
 
-            <div className="table-responsive">
-                <table className="table table-dark table-hover align-middle text-white">
-                    <thead>
-                        <tr style={{ backgroundColor: "#344675" }}>
-                            <th>Código</th>
-                            <th>Nombre</th>
-                            <th>Apellido</th>
-                            <th>Correo</th>
-                            <th>Teléfono</th>
-                            <th>DNI / RUC</th>
-                            <th className="text-center">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredData.length > 0 ? (
-                            filteredData.map((u, index) => (
-                                <tr key={index}>
-                                    <td>{u.codigo}</td>
-                                    <td>{u.nombre}</td>
-                                    <td>{u.apellido}</td>
-                                    <td>{u.correo}</td>
-                                    <td>{u.telefono}</td>
-                                    <td>{u.dni}</td>
-                                    <td className="text-center">
-                                        <button className="btn btn-sm btn-outline-warning me-2" onClick={() => Mostar(u)}>
-                                            <FaEdit /> Editar
-                                        </button>
-                                        <button className="btn btn-sm btn-outline-danger" onClick={() => Borrar(u.codigo)}>
-                                            <FaTrash /> Eliminar
-                                        </button>
+            {loading ? (
+                <div className="text-center py-5">
+                    <Spinner animation="border" variant="light" />
+                    <p className="mt-3">Cargando clientes...</p>
+                </div>
+            ) : (
+                <div className="table-responsive">
+                    <table className="table table-dark table-hover align-middle text-white">
+                        <thead>
+                            <tr style={{ backgroundColor: "#344675" }}>
+                                <th>Código</th>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Correo</th>
+                                <th>Teléfono</th>
+                                <th>DNI</th>
+                                <th className="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredData.length > 0 ? (
+                                filteredData.map((u, index) => (
+                                    <tr key={index}>
+                                        <td>{u.codigo}</td>
+                                        <td>{u.nombre}</td>
+                                        <td>{u.apellido}</td>
+                                        <td>{u.correo}</td>
+                                        <td>{u.telefono}</td>
+                                        <td>{u.dni}</td>
+                                        <td className="text-center">
+                                            <button
+                                                className="btn btn-sm btn-outline-warning me-2"
+                                                onClick={() => Mostar(u)}
+                                            >
+                                                <FaEdit /> Editar
+                                            </button>
+                                            <button
+                                                className="btn btn-sm btn-outline-danger"
+                                                onClick={() => Borrar(u.codigo)}
+                                            >
+                                                <FaTrash /> Eliminar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="7" className="text-center text-secondary py-4">
+                                        No se encontraron usuarios
                                     </td>
                                 </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan="7" className="text-center text-secondary py-4">
-                                    No se encontraron usuarios
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            )}
 
             <div className="text-end text-secondary mt-3" style={{ fontSize: "0.85rem" }}>
                 Mostrando {filteredData.length} de {usuarios.length} usuarios
