@@ -69,6 +69,17 @@ Ejecuta los siguientes comandos con `npm run ...`:
 | **preview** | Previsualiza el build localmente. |
 | **lint** | Revisa el código con ESLint. |
 
+---
+
+## 💡 Funcionalidades principales
+* Registro y login de usuarios  
+* Vista de rutas o mapa interactivo  
+* Envío de formularios de solicitud de conductor.  
+* Panel administrativo (pendientes, aprobados, rechazados).
+* Integración con API backend (Spring Boot). 
+* Validaciones básicas y notificaciones visuales.
+---
+
 ## 📂 Estructura del Proyecto
 ```
 src/
