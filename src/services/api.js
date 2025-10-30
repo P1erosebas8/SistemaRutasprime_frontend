@@ -6,7 +6,8 @@ export async function apiRequest(
   body = null,
   auth = false,
   isAdmin = false,
-  isFormData = false
+  isFormData = false,
+  isFile = false
 ) {
   const headers = {};
 
@@ -16,7 +17,7 @@ export async function apiRequest(
     if (token) headers["Authorization"] = `Bearer ${token}`;
   }
 
-  if (!isFormData) {
+  if (!isFormData && !isFile) {
     headers["Content-Type"] = "application/json";
   }
 
@@ -30,6 +31,20 @@ export async function apiRequest(
       : null,
   });
 
+  if (!res.ok) {
+    let msg = "Error en la petición";
+    try {
+      const err = await res.json();
+      if (err?.message) msg = err.message;
+    } catch { }
+    throw new Error(msg);
+  }
+
+  if (isFile) {
+    const blob = await res.blob();
+    return { blob };
+  }
+
   let data;
   try {
     data = await res.json();
@@ -37,12 +52,7 @@ export async function apiRequest(
     data = null;
   }
 
-  if (!res.ok) {
-    let errorMessage = "Error en la petición";
-    if (data?.message) errorMessage = data.message;
-    else if (typeof data === "string") errorMessage = data;
-    throw new Error(errorMessage);
-  }
-
   return { data };
 }
+
+export { API_URL };

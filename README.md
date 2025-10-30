@@ -189,6 +189,7 @@ Algunas veces se requerira instalar otras dependecias, en caso no se descarguen 
 ```bash
 npm install react-toastify
 npm install lucide-react
+npm install framer-motion
 ```
 ## 💡 Notas finales
 - El Frontend está diseñado para integrarse directamente con el **Backend de RutasPrime**.  
