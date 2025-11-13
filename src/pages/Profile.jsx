@@ -7,6 +7,7 @@ import { apiRequest } from "../services/api";
 import PasswordInput from "../components/Auth/PasswordInput";
 import HeroSection from "../components/HeroSection";
 import { validators } from "../utils/validators";
+import ElegCliConduc from "./ElegCliConduc";
 
 function Profile() {
   const { getProfile, logout } = useAuth();
@@ -157,6 +158,12 @@ function Profile() {
               </button>
               <button className="btn btn-info" onClick={() => setShowPassword(true)}>
                 Cambiar contraseña
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={() => navigate("/ElegCliConduc")}
+              >
+                Elegir tipo de usuario
               </button>
               <button
                 className="btn btn-success ms-auto"

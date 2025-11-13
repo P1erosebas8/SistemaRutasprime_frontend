@@ -36,6 +36,9 @@ import PostularConductor from "./pages/PostularConductor";
 import DatosConductor from "./pages/DatosConductor";
 import DatosVehiculo from "./pages/DatosVehiculo";
 import SolicitudEstado from "./pages/ExtraConductor/SolicitudEstado";
+import ElegCliConduc from "./pages/ElegCliConduc";
+import UsoAplicacionLayout from "./layouts/UsoAplicacionLayout";
+import ClienteUI from "./pages/clienteUI";
 
 function App() {
   return (
@@ -65,6 +68,11 @@ function App() {
             <Route path="/DatosConductor" element={<DatosConductor />} />
             <Route path="/DatosVehiculo" element={<DatosVehiculo />} />
             <Route path="/solicitud-estado" element={<ProtectedRoute><SolicitudEstado /></ProtectedRoute>} />
+            <Route path="/ElegCliConduc" element={<ElegCliConduc />} />
+          </Route>
+          <Route element={<UsoAplicacionLayout />}>
+            <Route path="/clienteUI" element={<ClienteUI />} />
+            <Route path="/conductorUI" element={<conductorUI />} />
           </Route>
           <Route element={<AdminLayout />}>
             <Route path="/DashBoardPrincipal" element={<DashBoardPrincipal />} />
