@@ -39,6 +39,7 @@ import SolicitudEstado from "./pages/ExtraConductor/SolicitudEstado";
 import ElegCliConduc from "./pages/ElegCliConduc";
 import UsoAplicacionLayout from "./layouts/UsoAplicacionLayout";
 import ClienteUI from "./pages/clienteUI";
+import ConductorUI from "./pages/conductorUI";
 
 function App() {
   return (
@@ -72,7 +73,7 @@ function App() {
           </Route>
           <Route element={<UsoAplicacionLayout />}>
             <Route path="/clienteUI" element={<ClienteUI />} />
-            <Route path="/conductorUI" element={<conductorUI />} />
+            <Route path="/conductorUI" element={<ConductorUI />} />
           </Route>
           <Route element={<AdminLayout />}>
             <Route path="/DashBoardPrincipal" element={<DashBoardPrincipal />} />
