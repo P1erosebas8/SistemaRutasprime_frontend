@@ -4,7 +4,8 @@ import 'leaflet/dist/leaflet.css'
 
 const ConductorUI = () => {
     const [position, setPosition] = useState([-12.0464, -77.0428])
-    const [expandedOrder, setExpandedOrder] = useState(null)
+    const [selectedOrder, setSelectedOrder] = useState(null)
+    const [showDetail, setShowDetail] = useState(false)
     const [showStats, setShowStats] = useState(false)
 
     useEffect(() => {
@@ -71,8 +72,14 @@ const ConductorUI = () => {
         setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status: 'rechazado' } : o)))
     }
 
-    const toggleOrderExpand = (id) => {
-        setExpandedOrder(expandedOrder === id ? null : id)
+    const openOrderDetail = (order) => {
+      setSelectedOrder(order)
+      setShowDetail(true)
+    }
+
+    const closeOrderDetail = () => {
+      setSelectedOrder(null)
+      setShowDetail(false)
     }
     return (
         <div style={{ position: 'relative', minHeight: '100vh' }}>
@@ -124,43 +131,80 @@ const ConductorUI = () => {
                 )}
 
                 <div className="orders-list">
-                    {orders.map((o) => (
-                        <div key={o.id} className={`order-card ${o.status} ${expandedOrder === o.id ? 'expanded' : ''}`}>
-                            <div 
-                                className="order-header"
-                                onClick={() => toggleOrderExpand(o.id)}
-                                style={{ cursor: 'pointer' }}
-                            >
-                                <div className="order-top">
-                                    <div>
-                                        <div className="person">{o.persona}</div>
-                                        <div className="meta">{o.distance} • {o.eta}</div>
-                                    </div>
-                                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                        <div className="badge">{o.status}</div>
-                                        <span className="expand-icon">{expandedOrder === o.id ? '▼' : '▶'}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {expandedOrder === o.id && (
-                                <>
-                                    <div className="order-body">
-                                        <div><strong>Inicio:</strong> {o.inicio}</div>
-                                        <div><strong>Destino:</strong> {o.destino}</div>
-                                        <div><strong>Tipo:</strong> {o.tipo}</div>
-                                        <div><strong>Comentarios:</strong> {o.comentarios}</div>
-                                    </div>
-
-                                    <div className="order-actions">
-                                        <button onClick={() => acceptOrder(o.id)} disabled={o.status !== 'disponible'} className="btn-accept">Aceptar • {o.price}</button>
-                                        <button onClick={() => rejectOrder(o.id)} disabled={o.status !== 'disponible'} className="btn-reject">Rechazar</button>
-                                    </div>
-                                </>
-                            )}
+                  {orders.map((o) => (
+                    <div key={o.id} className={`order-card ${o.status}`}>
+                      <div 
+                        className="order-header"
+                        onClick={() => openOrderDetail(o)}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <div className="order-top">
+                          <div>
+                            <div className="person">{o.persona}</div>
+                            <div className="meta">{o.distance} • {o.eta}</div>
+                          </div>
+                          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                            <div className="badge">{o.status}</div>
+                            <span className="expand-icon">▶</span>
+                          </div>
                         </div>
-                    ))}
+                      </div>
+                    </div>
+                  ))}
                 </div>
+
+                {showDetail && selectedOrder && (
+                  <div className="order-detail-overlay" onClick={(e) => e.target === e.currentTarget && closeOrderDetail()}>
+                    <div className="order-detail-card">
+                      <div className="detail-header">
+                        <button className="detail-back" onClick={closeOrderDetail}>←</button>
+                        <h3>Detalles de la reserva</h3>
+                      </div>
+
+                      <div className="detail-map">
+                        <MapContainer center={position} zoom={13} scrollWheelZoom={false} style={{height: '140px', borderRadius: '10px'}}>
+                          <TileLayer
+                            attribution="&copy; OpenStreetMap contributors"
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                          />
+                        </MapContainer>
+                      </div>
+
+                      <div className="detail-body">
+                        <div className="detail-time">Hoy, ahora</div>
+
+                        <div className="fare">{selectedOrder.price} <span className="fare-sub">para ti</span></div>
+                        <div className="rate-row"><span>S/. 3.20/km</span> · <span>S/. 97.65/h</span></div>
+
+                        <div className="provider">Rutas Prime</div>
+
+                        <div className="timeline">
+                          <div className="timeline-item">
+                            <div className="dot purple" />
+                            <div className="timeline-content">
+                              <div className="time">23:40 h</div>
+                              <div className="address">{selectedOrder.inicio}</div>
+                            </div>
+                          </div>
+
+                          <div className="timeline-item">
+                            <div className="dot" />
+                            <div className="timeline-content">
+                              <div className="time small">{selectedOrder.eta} · {selectedOrder.distance}</div>
+                              <div className="address">{selectedOrder.destino}</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div style={{marginTop:10, color:'rgba(233,240,251,0.8)'}} className="comments"><strong>Comentarios:</strong> {selectedOrder.comentarios}</div>
+                      </div>
+
+                      <div className="detail-actions">
+                        <button className="accept-full" onClick={() => { acceptOrder(selectedOrder.id); closeOrderDetail(); }}>Aceptar reserva</button>
+                      </div>
+                    </div>
+                  </div>
+                )}
             </aside>
 
             <style>{`
@@ -360,8 +404,112 @@ const ConductorUI = () => {
           .orders-sidebar { right:12px; width:320px }
         }
 
+        /* Mobile-friendly adjustments */
         @media(max-width:640px){
-          .orders-sidebar { position: absolute; left: 8px; right:8px; top:auto; bottom:0; width:auto; border-radius:12px 12px 0 0; max-height:50vh }
+          .orders-sidebar {
+            position: fixed;
+            left: 8px;
+            right: 8px;
+            top: auto;
+            bottom: 0;
+            width: calc(100% - 16px);
+            border-radius: 12px 12px 0 0;
+            max-height: 60vh;
+            padding: 12px;
+            z-index: 1400;
+          }
+
+          /* Reduce map height so the bottom sheet fits */
+          .conductor-map {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 60vh;
+          }
+
+          .orders-list {
+            max-height: calc(60vh - 140px);
+            overflow: auto;
+            margin-top: 8px;
+          }
+
+          .order-card {
+            margin-bottom: 10px;
+            border-radius: 10px;
+          }
+
+          .order-header { padding: 10px }
+          .order-body { padding: 0 10px 10px; font-size: 14px }
+
+          /* Stack action buttons vertically for touch */
+          .order-actions { flex-direction: column; gap: 8px; padding: 10px }
+          .btn-accept, .btn-reject { width: 100%; }
+
+          .btn-stats { padding: 6px 10px; font-size: 14px }
+        }
+
+        @media(max-width:480px){
+          .orders-sidebar { left: 6px; right: 6px; width: calc(100% - 12px); max-height: 65vh }
+          .conductor-map { height: calc(100vh - 65vh) }
+          .person { font-size: 15px }
+          .meta { font-size: 12px }
+          .btn-stats { font-size: 14px; padding: 8px 10px }
+        }
+
+        /* Order detail overlay */
+        .order-detail-overlay {
+          position: fixed;
+          inset: 0;
+          background: rgba(2,6,23,0.6);
+          display: flex;
+          align-items: flex-end;
+          justify-content: center;
+          z-index: 2000;
+          padding: 16px;
+        }
+
+        .order-detail-card {
+          width: 100%;
+          max-width: 720px;
+          border-radius: 14px;
+          background: #0e1723;
+          color: #e9f0fb;
+          overflow: hidden;
+          box-shadow: 0 30px 80px rgba(2,6,23,0.6);
+        }
+
+        .detail-header { display:flex; align-items:center; gap:12px; padding:14px 16px }
+        .detail-back { background:transparent; border:none; color:#e9f0fb; font-size:20px; cursor:pointer }
+        .detail-header h3 { margin:0; font-size:16px }
+
+        .detail-map { padding: 0 16px 12px }
+
+        .detail-body { padding: 8px 16px 16px }
+        .fare { font-size:28px; font-weight:700; color:#fff }
+        .fare-sub { font-size:12px; color: rgba(233,240,251,0.7); margin-left:8px }
+        .ride-meta { color: rgba(233,240,251,0.7); margin-top:6px }
+        .addresses { margin-top:12px; font-size:14px; color: rgba(233,240,251,0.95) }
+
+        .detail-time { color: rgba(233,240,251,0.7); font-size:13px; margin-bottom:6px }
+        .rate-row { color: rgba(233,240,251,0.6); margin-top:6px; font-size:13px }
+        .provider { margin-top:12px; padding:10px 12px; background: rgba(255,255,255,0.02); border-radius:10px; font-weight:600 }
+
+        .timeline { margin-top:12px; padding: 6px 4px 12px 18px; border-left: 2px solid rgba(102,126,234,0.12) }
+        .timeline-item { display:flex; gap:10px; align-items:flex-start; margin-bottom:14px }
+        .dot { width:12px; height:12px; border-radius:50%; background: rgba(255,255,255,0.6); margin-left:-16px; margin-top:6px }
+        .dot.purple { background: linear-gradient(90deg,#8e24aa,#6a1b9a); box-shadow: 0 4px 12px rgba(142,36,170,0.25) }
+        .timeline-content { color: rgba(233,240,251,0.95); font-size:14px }
+        .timeline-content .time { color: rgba(233,240,251,0.6); font-size:13px; margin-bottom:6px }
+        .timeline-content .time.small { font-size:13px; color: rgba(233,240,251,0.7) }
+        .timeline-content .address { font-size:15px; font-weight:600; line-height:1.2 }
+
+        .detail-actions { padding: 12px; }
+        .accept-full { width:100%; padding:14px; border-radius:10px; background: linear-gradient(90deg,#6a1b9a,#8e24aa); color:#fff; border:none; font-weight:700; font-size:16px; cursor:pointer }
+
+        @media(min-width:900px){
+          .order-detail-overlay { align-items: center }
+          .order-detail-card { width: 80%; }
         }
       `}</style>
         </div>
