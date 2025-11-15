@@ -161,10 +161,6 @@ const ConductorUI = () => {
                         <h3>Detalles de la reserva</h3>
                       </div>
 
-                      <div className="detail-map">
-                        <div className="detail-map-placeholder" />
-                      </div>
-
                       <div className="detail-body">
                         <div className="detail-time">Hoy, ahora</div>
 
@@ -478,13 +474,8 @@ const ConductorUI = () => {
         .detail-back { background:transparent; border:none; color:#e9f0fb; font-size:20px; cursor:pointer }
         .detail-header h3 { margin:0; font-size:16px }
 
-        .detail-map { padding: 0 16px 12px }
-        .detail-map-placeholder {
-          height: 140px;
-          border-radius: 10px;
-          background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-          border: 1px solid rgba(255,255,255,0.03);
-        }
+        .detail-map { display: none; }
+        .detail-map-placeholder { display: none; }
 
         .detail-body { padding: 8px 16px 16px }
         .fare { font-size:28px; font-weight:700; color:#fff }
