@@ -162,12 +162,7 @@ const ConductorUI = () => {
                       </div>
 
                       <div className="detail-map">
-                        <MapContainer center={position} zoom={13} scrollWheelZoom={false} style={{height: '140px', borderRadius: '10px'}}>
-                          <TileLayer
-                            attribution="&copy; OpenStreetMap contributors"
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                          />
-                        </MapContainer>
+                        <div className="detail-map-placeholder" />
                       </div>
 
                       <div className="detail-body">
@@ -484,6 +479,12 @@ const ConductorUI = () => {
         .detail-header h3 { margin:0; font-size:16px }
 
         .detail-map { padding: 0 16px 12px }
+        .detail-map-placeholder {
+          height: 140px;
+          border-radius: 10px;
+          background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+          border: 1px solid rgba(255,255,255,0.03);
+        }
 
         .detail-body { padding: 8px 16px 16px }
         .fare { font-size:28px; font-weight:700; color:#fff }
