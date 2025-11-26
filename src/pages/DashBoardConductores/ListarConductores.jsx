@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  FaPlus,
   FaEdit,
   FaTrash,
   FaSearch,
@@ -8,7 +7,7 @@ import {
   FaEnvelope,
   FaPhone,
   FaIdCard,
-  FaUserTag,
+  FaUserTag
 } from "react-icons/fa";
 import { Modal, Button, Form, Spinner } from "react-bootstrap";
 import { useConductoresClientes } from "../../hooks/useConductoresClientes";
@@ -16,14 +15,17 @@ import { useConductoresClientes } from "../../hooks/useConductoresClientes";
 export default function ListarConductores() {
   const [buscar, setBuscar] = useState("");
   const [mostrarModal, setMostrarModal] = useState(false);
+  const [mostrarModalEliminar, setMostrarModalEliminar] = useState(false);
+  const [usuarioAEliminar, setUsuarioAEliminar] = useState(null);
   const [editarUsuario, setEditarUsuario] = useState(null);
+
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
     correo: "",
     telefono: "",
     dni: "",
-    roles: "",
+    roles: ""
   });
 
   const { usuarios, loading } = useConductoresClientes();
@@ -37,16 +39,24 @@ export default function ListarConductores() {
       correo: "",
       telefono: "",
       dni: "",
-      roles: "",
+      roles: ""
     });
   };
 
-  const Mostar = (usuario = null) => {
-    if (usuario) {
-      setEditarUsuario(usuario);
-      setFormData(usuario);
-    }
+  const MostrarEditar = (usuario) => {
+    setEditarUsuario(usuario);
+    setFormData(usuario);
     setMostrarModal(true);
+  };
+
+  const MostrarEliminar = (usuario) => {
+    setUsuarioAEliminar(usuario);
+    setMostrarModalEliminar(true);
+  };
+
+  const CerrarModalEliminar = () => {
+    setUsuarioAEliminar(null);
+    setMostrarModalEliminar(false);
   };
 
   const ActualizarModal = (e) => {
@@ -57,10 +67,8 @@ export default function ListarConductores() {
     CerrarModal();
   };
 
-  const Borrar = (codigo) => {
-    if (window.confirm("¿Deseas eliminar este usuario?")) {
-      console.log("Eliminar", codigo);
-    }
+  const ConfirmarEliminar = () => {
+    CerrarModalEliminar();
   };
 
   const filteredData = usuarios.filter((u) => {
@@ -72,10 +80,6 @@ export default function ListarConductores() {
     <div className="text-white p-4 min-vh-100" style={{ backgroundColor: "#1e2a52" }}>
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2 className="fw-bold mb-0">Conductores y Clientes</h2>
-        <button className="btn btn-success" onClick={() => Mostar()}>
-          <FaPlus className="me-2" />
-          Agregar Usuario
-        </button>
       </div>
 
       <div className="mb-3 position-relative" style={{ maxWidth: "350px" }}>
@@ -92,7 +96,7 @@ export default function ListarConductores() {
           style={{
             backgroundColor: "#2d3b6a",
             color: "white",
-            border: "1px solid #40518b",
+            border: "1px solid #40518b"
           }}
         />
       </div>
@@ -133,13 +137,13 @@ export default function ListarConductores() {
                     <td className="text-center">
                       <button
                         className="btn btn-sm btn-outline-warning me-2"
-                        onClick={() => Mostar(u)}
+                        onClick={() => MostrarEditar(u)}
                       >
                         <FaEdit /> Editar
                       </button>
                       <button
                         className="btn btn-sm btn-outline-danger"
-                        onClick={() => Borrar(u.codigo)}
+                        onClick={() => MostrarEliminar(u)}
                       >
                         <FaTrash /> Eliminar
                       </button>
@@ -164,7 +168,7 @@ export default function ListarConductores() {
 
       <Modal show={mostrarModal} onHide={CerrarModal} centered>
         <Modal.Header closeButton style={{ backgroundColor: "#2d3b6a", color: "white" }}>
-          <Modal.Title>{editarUsuario ? "Actualizar Usuario" : "Agregar Usuario"}</Modal.Title>
+          <Modal.Title>Actualizar Usuario</Modal.Title>
         </Modal.Header>
         <Modal.Body style={{ backgroundColor: "#1e2a52", color: "white" }}>
           <Form>
@@ -175,7 +179,6 @@ export default function ListarConductores() {
                 name="nombre"
                 value={formData.nombre}
                 onChange={ActualizarModal}
-                placeholder="Ingrese el nombre"
               />
             </Form.Group>
 
@@ -186,7 +189,6 @@ export default function ListarConductores() {
                 name="apellido"
                 value={formData.apellido}
                 onChange={ActualizarModal}
-                placeholder="Ingrese el apellido"
               />
             </Form.Group>
 
@@ -197,7 +199,6 @@ export default function ListarConductores() {
                 name="correo"
                 value={formData.correo}
                 onChange={ActualizarModal}
-                placeholder="Ingrese el correo"
               />
             </Form.Group>
 
@@ -208,7 +209,6 @@ export default function ListarConductores() {
                 name="telefono"
                 value={formData.telefono}
                 onChange={ActualizarModal}
-                placeholder="Ingrese el teléfono"
               />
             </Form.Group>
 
@@ -219,7 +219,6 @@ export default function ListarConductores() {
                 name="dni"
                 value={formData.dni}
                 onChange={ActualizarModal}
-                placeholder="Ingrese el DNI o RUC"
               />
             </Form.Group>
 
@@ -230,12 +229,27 @@ export default function ListarConductores() {
           </Form>
         </Modal.Body>
         <Modal.Footer style={{ backgroundColor: "#2d3b6a" }}>
-          <Button variant="secondary" onClick={CerrarModal}>
-            Cancelar
-          </Button>
-          <Button variant="success" onClick={GuardarModal}>
-            {editarUsuario ? "Actualizar" : "Guardar"}
-          </Button>
+          <Button variant="secondary" onClick={CerrarModal}>Cancelar</Button>
+          <Button variant="success" onClick={GuardarModal}>Actualizar</Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={mostrarModalEliminar} onHide={CerrarModalEliminar} centered>
+        <Modal.Header closeButton style={{ backgroundColor: "#812d2d", color: "white" }}>
+          <Modal.Title>Confirmar Eliminación</Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ backgroundColor: "#1e2a52", color: "white" }}>
+          {usuarioAEliminar && (
+            <p className="mb-0 fs-5 text-center">
+              ¿Estás seguro que deseas eliminar al usuario:
+              <br />
+              <strong>{usuarioAEliminar.nombre} {usuarioAEliminar.apellido}</strong>?
+            </p>
+          )}
+        </Modal.Body>
+        <Modal.Footer style={{ backgroundColor: "#2d3b6a" }}>
+          <Button variant="secondary" onClick={CerrarModalEliminar}>Cancelar</Button>
+          <Button variant="danger" onClick={ConfirmarEliminar}>Eliminar</Button>
         </Modal.Footer>
       </Modal>
 

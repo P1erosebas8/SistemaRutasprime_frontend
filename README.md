@@ -33,13 +33,51 @@ Incluye un diseño **responsivo**, navegación con **React Router**, y component
 
 Definidas en `package.json`:
 
-* **react** → Librería principal para la UI.
-* **react-dom** → Renderizado en el navegador.
-* **react-router-dom** → Manejo de rutas y navegación.
-* **react-bootstrap** → Componentes listos para usar con Bootstrap 5.
-* **bootstrap** → Estilos base de Bootstrap.
-* **vite** → Bundler y servidor de desarrollo rápido.
+### 🧩 **Principales**
+* **react** → Librería principal para la UI.  
+* **react-dom** → Renderizado en el navegador.  
+* **react-router-dom** → Manejo de rutas y navegación.  
+* **react-bootstrap** → Componentes listos para usar con Bootstrap 5.  
+* **bootstrap** → Estilos base de Bootstrap.  
+* **bootstrap-icons** → Íconos oficiales de Bootstrap.  
+* **react-icons** → Biblioteca de íconos (FontAwesome, Material, etc.).  
+* **lucide-react** → Íconos minimalistas SVG para React.  
+* **framer-motion** → Librería para animaciones fluidas.  
+* **react-toastify** → Notificaciones tipo “toast” fáciles de usar.  
 
+---
+
+### 🧱 **Desarrollo**
+* **vite** → Bundler y servidor de desarrollo rápido.  
+* **@vitejs/plugin-react** → Soporte de React para Vite.  
+* **eslint** → Analizador de código para detectar errores de estilo o sintaxis.  
+* **@eslint/js** → Configuración base de ESLint.  
+* **eslint-plugin-react-hooks** → Reglas específicas para hooks de React.  
+* **eslint-plugin-react-refresh** → Soporte para recarga en caliente de React.  
+* **globals** → Lista de variables globales para ESLint.  
+* **@types/react** → Tipos TypeScript para React.  
+* **@types/react-dom** → Tipos TypeScript para ReactDOM.  
+
+---
+### 🧠 **Scripts disponibles**
+Ejecuta los siguientes comandos con `npm run ...`:
+
+| Comando | Descripción |
+|----------|--------------|
+| **dev** | Inicia el servidor de desarrollo. |
+| **build** | Construye el proyecto para producción. |
+| **preview** | Previsualiza el build localmente. |
+| **lint** | Revisa el código con ESLint. |
+
+---
+
+## 💡 Funcionalidades principales
+* Registro y login de usuarios  
+* Vista de rutas o mapa interactivo  
+* Envío de formularios de solicitud de conductor.  
+* Panel administrativo (pendientes, aprobados, rechazados).
+* Integración con API backend (Spring Boot). 
+* Validaciones básicas y notificaciones visuales.
 ---
 
 ## 📂 Estructura del Proyecto
@@ -52,8 +90,24 @@ src/
 │   └── HeroSection.jsx
 │   └── ListadoConImagen.jsx
 │   └── MyFooter.jsx
+│   └── ScrollTop.jsx
 │   └── ...
+├── hooks
+│   ├── useAdminUsers.js
+│   └── useAuth.js
+│   └── useAuthAdmin.js
+│   └── useConductoresClientes.js
+│   └── useContactAdmin.js
+│   └── ...
+├── layouts
+│   ├── AdminLayout.jsx
+│   └── PublicLayout.jsx
 ├── pages/ # Páginas principales (Home, Rutas, Ciudades, Soporte, Contacto)
+│   └── DashBoardConductores
+│   │   └── AprobarConductores.jsx
+│   │   └── ListarConductores.jsx
+│   └── ExtraConductor
+│       └── SolicitudEstado.jsx
 │   └── AcercaDe.jsx
 │   └── Contactanos.jsx
 │   └── inicio.jsx
@@ -61,6 +115,10 @@ src/
 │   └── reclamaciones.jsx
 │   └── terminos.jsx
 │   └── ...
+├── services
+│   ├── api.js
+├── utils
+│   ├── validators.js
 ├── App.jsx # Configuración de rutas y layout principal
 ├── main.jsx # Punto de entrada de la aplicación
 └── index.css # Estilos globales
@@ -190,6 +248,7 @@ Algunas veces se requerira instalar otras dependecias, en caso no se descarguen 
 npm install react-toastify
 npm install lucide-react
 npm install framer-motion
+npm install chart.js react-chartjs-2
 ```
 ## 💡 Notas finales
 - El Frontend está diseñado para integrarse directamente con el **Backend de RutasPrime**.  

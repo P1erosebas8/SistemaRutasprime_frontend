@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-    FaPlus,
     FaEdit,
     FaTrash,
     FaSearch,
@@ -8,7 +7,7 @@ import {
     FaEnvelope,
     FaPhone,
     FaIdCard,
-    FaLock,
+    FaLock
 } from "react-icons/fa";
 import { Modal, Button, Form, Spinner } from "react-bootstrap";
 import { useClientes } from "../hooks/useClientes";
@@ -16,17 +15,20 @@ import { useClientes } from "../hooks/useClientes";
 export default function DashBoardUsuarios() {
     const [buscar, setBuscar] = useState("");
     const [mostrarModal, setMostrarModal] = useState(false);
+    const [mostrarModalEliminar, setMostrarModalEliminar] = useState(false);
+    const [usuarioAEliminar, setUsuarioAEliminar] = useState(null);
     const [editarUsuario, setEditarUsuario] = useState(null);
+
     const [formData, setFormData] = useState({
         nombre: "",
         apellido: "",
         correo: "",
         telefono: "",
         dni: "",
-        contraseña: "",
+        contraseña: ""
     });
 
-    const { clientes, loading, getClientes } = useClientes();
+    const { clientes, loading } = useClientes();
     const usuarios = clientes;
 
     const CerrarModal = () => {
@@ -38,16 +40,24 @@ export default function DashBoardUsuarios() {
             correo: "",
             telefono: "",
             dni: "",
-            contraseña: "",
+            contraseña: ""
         });
     };
 
-    const Mostar = (usuario = null) => {
-        if (usuario) {
-            setEditarUsuario(usuario);
-            setFormData(usuario);
-        }
+    const MostrarEditar = (usuario) => {
+        setEditarUsuario(usuario);
+        setFormData(usuario);
         setMostrarModal(true);
+    };
+
+    const MostrarEliminar = (usuario) => {
+        setUsuarioAEliminar(usuario);
+        setMostrarModalEliminar(true);
+    };
+
+    const CerrarModalEliminar = () => {
+        setUsuarioAEliminar(null);
+        setMostrarModalEliminar(false);
     };
 
     const ActualizarModal = (e) => {
@@ -58,10 +68,9 @@ export default function DashBoardUsuarios() {
         CerrarModal();
     };
 
-    const Borrar = (codigo) => {
-        if (window.confirm("¿Deseas eliminar este usuario?")) {
-            console.log("Eliminar", codigo);
-        }
+    const ConfirmarEliminar = () => {
+        console.log("Eliminando:", usuarioAEliminar.codigo);
+        CerrarModalEliminar();
     };
 
     const filteredData = usuarios.filter((u) => {
@@ -79,10 +88,6 @@ export default function DashBoardUsuarios() {
         <div className="text-white p-4 min-vh-100" style={{ backgroundColor: "#1e2a52" }}>
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <h2 className="fw-bold mb-0">Gestión de Clientes</h2>
-                <button className="btn btn-success" onClick={() => Mostar()}>
-                    <FaPlus className="me-2" />
-                    Agregar Usuario
-                </button>
             </div>
 
             <div className="mb-3 position-relative" style={{ maxWidth: "350px" }}>
@@ -99,7 +104,7 @@ export default function DashBoardUsuarios() {
                     style={{
                         backgroundColor: "#2d3b6a",
                         color: "white",
-                        border: "1px solid #40518b",
+                        border: "1px solid #40518b"
                     }}
                 />
             </div>
@@ -136,13 +141,13 @@ export default function DashBoardUsuarios() {
                                         <td className="text-center">
                                             <button
                                                 className="btn btn-sm btn-outline-warning me-2"
-                                                onClick={() => Mostar(u)}
+                                                onClick={() => MostrarEditar(u)}
                                             >
                                                 <FaEdit /> Editar
                                             </button>
                                             <button
                                                 className="btn btn-sm btn-outline-danger"
-                                                onClick={() => Borrar(u.codigo)}
+                                                onClick={() => MostrarEliminar(u)}
                                             >
                                                 <FaTrash /> Eliminar
                                             </button>
@@ -167,7 +172,7 @@ export default function DashBoardUsuarios() {
 
             <Modal show={mostrarModal} onHide={CerrarModal} centered>
                 <Modal.Header closeButton style={{ backgroundColor: "#2d3b6a", color: "white" }}>
-                    <Modal.Title>{editarUsuario ? "Actualizar Usuario" : "Agregar Usuario"}</Modal.Title>
+                    <Modal.Title>Actualizar Usuario</Modal.Title>
                 </Modal.Header>
                 <Modal.Body style={{ backgroundColor: "#1e2a52", color: "white" }}>
                     <Form>
@@ -178,7 +183,6 @@ export default function DashBoardUsuarios() {
                                 name="nombre"
                                 value={formData.nombre}
                                 onChange={ActualizarModal}
-                                placeholder="Ingrese el nombre"
                             />
                         </Form.Group>
 
@@ -189,7 +193,6 @@ export default function DashBoardUsuarios() {
                                 name="apellido"
                                 value={formData.apellido}
                                 onChange={ActualizarModal}
-                                placeholder="Ingrese el apellido"
                             />
                         </Form.Group>
 
@@ -200,7 +203,6 @@ export default function DashBoardUsuarios() {
                                 name="correo"
                                 value={formData.correo}
                                 onChange={ActualizarModal}
-                                placeholder="Ingrese el correo"
                             />
                         </Form.Group>
 
@@ -211,7 +213,6 @@ export default function DashBoardUsuarios() {
                                 name="contraseña"
                                 value={formData.contraseña}
                                 onChange={ActualizarModal}
-                                placeholder="Ingrese la contraseña"
                             />
                         </Form.Group>
 
@@ -222,7 +223,6 @@ export default function DashBoardUsuarios() {
                                 name="telefono"
                                 value={formData.telefono}
                                 onChange={ActualizarModal}
-                                placeholder="Ingrese el número"
                             />
                         </Form.Group>
 
@@ -233,28 +233,46 @@ export default function DashBoardUsuarios() {
                                 name="dni"
                                 value={formData.dni}
                                 onChange={ActualizarModal}
-                                placeholder="Ingrese el DNI o RUC"
                             />
                         </Form.Group>
                     </Form>
                 </Modal.Body>
                 <Modal.Footer style={{ backgroundColor: "#2d3b6a" }}>
-                    <Button variant="secondary" onClick={CerrarModal}>
+                    <Button variant="secondary" onClick={CerrarModal}>Cancelar</Button>
+                    <Button variant="success" onClick={GuardarModal}>Actualizar</Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={mostrarModalEliminar} onHide={CerrarModalEliminar} centered>
+                <Modal.Header closeButton style={{ backgroundColor: "#812d2d", color: "white" }}>
+                    <Modal.Title>Confirmar Eliminación</Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{ backgroundColor: "#1e2a52", color: "white" }}>
+                    {usuarioAEliminar && (
+                        <p className="mb-0 fs-5 text-center">
+                            ¿Estás seguro que deseas eliminar al usuario:
+                            <br />
+                            <strong>{usuarioAEliminar.nombre} {usuarioAEliminar.apellido}</strong>?
+                        </p>
+                    )}
+                </Modal.Body>
+                <Modal.Footer style={{ backgroundColor: "#2d3b6a" }}>
+                    <Button variant="secondary" onClick={CerrarModalEliminar}>
                         Cancelar
                     </Button>
-                    <Button variant="success" onClick={GuardarModal}>
-                        {editarUsuario ? "Actualizar" : "Guardar"}
+                    <Button variant="danger" onClick={ConfirmarEliminar}>
+                        Eliminar
                     </Button>
                 </Modal.Footer>
             </Modal>
 
             <style>
                 {`
-          input::placeholder { color: white !important; opacity: 1; }
-          .modal-content { border: 2px solid #40518b; }
-          .form-control { background-color: #2d3b6a; color: white; border: none; }
-          .form-control:focus { box-shadow: 0 0 5px #4e8ef7; }
-        `}
+                input::placeholder { color: white !important; opacity: 1; }
+                .modal-content { border: 2px solid #40518b; }
+                .form-control { background-color: #2d3b6a; color: white; border: none; }
+                .form-control:focus { box-shadow: 0 0 5px #4e8ef7; }
+                `}
             </style>
         </div>
     );

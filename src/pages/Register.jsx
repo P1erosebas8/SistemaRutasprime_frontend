@@ -88,23 +88,18 @@ function Register() {
                   style={{ maxHeight: "250px", objectFit: "contain" }}
                 />
                 <p className="text-light small text-start">
-                  <strong>Importante:</strong> Escribe tus{" "}
-                  <strong>nombres</strong> y <strong>apellidos</strong> exactamente
-                  como aparecen en tu DNI.
+                  <strong>Importante:</strong> Escribe tus <strong>nombres</strong> y{" "}
+                  <strong>apellidos</strong> exactamente como aparecen en tu DNI.
                   <br />
                   Se recomienda ingresar tu{" "}
-                  <strong>dirección tal cual figura en el documento</strong>, ya que
-                  el sistema valida tus datos con <strong>RENIEC</strong>.
+                  <strong>dirección tal cual figura en el documento</strong>, ya que el
+                  sistema valida tus datos con <strong>RENIEC</strong>.
                 </p>
               </div>
             </div>
 
             <div className="col-lg-6">
-              <form
-                className="mx-auto"
-                style={{ maxWidth: "600px" }}
-                onSubmit={handleSubmit}
-              >
+              <form className="mx-auto" style={{ maxWidth: "600px" }} onSubmit={handleSubmit}>
                 <div className="row g-3">
                   <div className="col-md-6">
                     <input
@@ -115,9 +110,7 @@ function Register() {
                       onChange={handleChange}
                       required
                     />
-                    {errors.nombres && (
-                      <div className="invalid-feedback">{errors.nombres}</div>
-                    )}
+                    {errors.nombres && <div className="invalid-feedback">{errors.nombres}</div>}
                   </div>
 
                   <div className="col-md-6">
@@ -129,9 +122,7 @@ function Register() {
                       onChange={handleChange}
                       required
                     />
-                    {errors.apellidos && (
-                      <div className="invalid-feedback">{errors.apellidos}</div>
-                    )}
+                    {errors.apellidos && <div className="invalid-feedback">{errors.apellidos}</div>}
                   </div>
 
                   <div className="col-md-6">
@@ -143,9 +134,7 @@ function Register() {
                       onChange={handleChange}
                       required
                     />
-                    {errors.celular && (
-                      <div className="invalid-feedback">{errors.celular}</div>
-                    )}
+                    {errors.celular && <div className="invalid-feedback">{errors.celular}</div>}
                   </div>
 
                   <div className="col-md-6">
@@ -158,9 +147,7 @@ function Register() {
                       onChange={handleChange}
                       required
                     />
-                    {errors.email && (
-                      <div className="invalid-feedback">{errors.email}</div>
-                    )}
+                    {errors.email && <div className="invalid-feedback">{errors.email}</div>}
                   </div>
 
                   <div className="col-md-6">
@@ -172,9 +159,7 @@ function Register() {
                       onChange={handleChange}
                       required
                     />
-                    {errors.direccion && (
-                      <div className="invalid-feedback">{errors.direccion}</div>
-                    )}
+                    {errors.direccion && <div className="invalid-feedback">{errors.direccion}</div>}
                   </div>
 
                   <div className="col-md-6">
@@ -186,9 +171,7 @@ function Register() {
                       onChange={handleChange}
                       required
                     />
-                    {errors.dniRuc && (
-                      <div className="invalid-feedback">{errors.dniRuc}</div>
-                    )}
+                    {errors.dniRuc && <div className="invalid-feedback">{errors.dniRuc}</div>}
                   </div>
 
                   <div className="col-12">
@@ -199,9 +182,7 @@ function Register() {
                       placeholder="Contraseña"
                       withStrength={true}
                     />
-                    {errors.password && (
-                      <div className="text-danger small">{errors.password}</div>
-                    )}
+                    {errors.password && <div className="text-danger small">{errors.password}</div>}
                   </div>
                 </div>
 
@@ -225,6 +206,15 @@ function Register() {
                     ¿Ya tienes cuenta?{" "}
                     <Link to="/login" className="text-decoration-none text-info">
                       Inicia sesión
+                    </Link>
+                  </small>
+
+                  <br />
+
+                  <small className="mt-2 d-block">
+                    ¿Eres empresa?{" "}
+                    <Link to="/FormularioEmpresa" className="text-decoration-none text-warning">
+                      Regístrate aquí
                     </Link>
                   </small>
                 </div>

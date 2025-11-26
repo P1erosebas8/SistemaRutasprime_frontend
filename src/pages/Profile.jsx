@@ -2,23 +2,20 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button, Form } from "react-bootstrap";
-import { toast } from "react-toastify";
-import { apiRequest } from "../services/api";
 import PasswordInput from "../components/Auth/PasswordInput";
 import HeroSection from "../components/HeroSection";
-import { validators } from "../utils/validators";
+import { validateProfileUpdate } from "../utils/validators";
 
 function Profile() {
-  const { getProfile, logout } = useAuth();
+  const { getProfile, logout, updateProfile, changePassword } = useAuth();
   const [user, setUser] = useState(null);
   const [showUpdate, setShowUpdate] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const [formUpdate, setFormUpdate] = useState({
-    nombres: "",
-    apellidos: "",
     direccion: "",
+    celular: "",
   });
 
   const [oldPassword, setOldPassword] = useState("");
@@ -36,9 +33,8 @@ function Profile() {
         const data = await getProfile();
         setUser(data);
         setFormUpdate({
-          nombres: data.nombres,
-          apellidos: data.apellidos,
           direccion: data.direccion,
+          celular: data.celular,
         });
       } catch {
         logout();
@@ -56,36 +52,21 @@ function Profile() {
   const handleChangeUpdate = (e) => {
     const { name, value } = e.target;
     setFormUpdate({ ...formUpdate, [name]: value });
-
-    if (validators[name]) {
-      const errorMsg = validators[name](value);
-      setErrors((prev) => ({ ...prev, [name]: errorMsg }));
-    }
+    const validationError = validateProfileUpdate({ ...formUpdate, [name]: value });
+    setErrors(validationError || {});
   };
 
   const handleUpdateProfile = async () => {
-    const newErrors = {};
-    Object.keys(formUpdate).forEach((field) => {
-      if (validators[field]) {
-        const errorMsg = validators[field](formUpdate[field]);
-        if (errorMsg) newErrors[field] = errorMsg;
-      }
-    });
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      toast.error("Por favor corrige los errores antes de guardar");
+    const validationErrors = validateProfileUpdate(formUpdate);
+    if (validationErrors) {
+      setErrors(validationErrors);
       return;
     }
-
     setLoadingUpdate(true);
     try {
-      await apiRequest("/user/update", "PUT", formUpdate, true);
-      toast.success("Perfil actualizado");
+      await updateProfile(formUpdate);
       setUser({ ...user, ...formUpdate });
       setShowUpdate(false);
-    } catch {
-      toast.error("Error al actualizar perfil");
     } finally {
       setLoadingUpdate(false);
     }
@@ -93,28 +74,18 @@ function Profile() {
 
   const handleChangePassword = async () => {
     if (!oldPassword || !newPassword || !confirmPassword) {
-      toast.error("Completa todos los campos");
       return;
     }
     if (newPassword !== confirmPassword) {
-      toast.error("Las contraseñas no coinciden");
       return;
     }
 
     setLoadingPassword(true);
     try {
-      await apiRequest(
-        "/user/change-password",
-        "PUT",
-        { oldPassword, newPassword },
-        true
-      );
-      toast.success("Contraseña cambiada, inicia sesión de nuevo");
+      await changePassword(oldPassword, newPassword);
       logout();
       setShowPassword(false);
       navigate("/login");
-    } catch {
-      toast.error("Error al cambiar contraseña");
     } finally {
       setLoadingPassword(false);
     }
@@ -145,34 +116,26 @@ function Profile() {
         <div className="container">
           <h2 className="text-center mb-4">Perfil de Usuario</h2>
           <div className="card shadow p-4 text-dark mx-auto" style={{ maxWidth: "700px" }}>
-            <p><strong>Nombre:</strong> {user.nombres} {user.apellidos}</p>
-            <p><strong>Email:</strong> {user.email}</p>
-            <p><strong>Celular:</strong> {user.celular}</p>
-            <p><strong>Dirección:</strong> {user.direccion}</p>
+            <p><strong>Nombre:</strong> {user.nombres}</p>
+            <p><strong>Apellidos:</strong> {user.apellidos}</p>
             <p><strong>DNI:</strong> {user.dniRuc}</p>
+            <p><strong>Email:</strong> {user.email}</p>
+            <p><strong>Dirección:</strong> {user.direccion}</p>
+            <p><strong>Celular:</strong> {user.celular}</p>
 
             <div className="d-flex gap-2 mt-3">
-              <button className="btn btn-warning" onClick={() => setShowUpdate(true)}>
-                Editar perfil
-              </button>
-              <button className="btn btn-info" onClick={() => setShowPassword(true)}>
-                Cambiar contraseña
-              </button>
-              <button
-                className="btn btn-success ms-auto"
-                onClick={() => navigate("/postular-conductor")}
-              >
-                Postular a Conductor
-              </button>
-              <button className="btn btn-danger" onClick={handleLogout}>
-                Cerrar sesión
-              </button>
+              <button className="btn btn-warning" onClick={() => setShowUpdate(true)}>Editar perfil</button>
+              <button className="btn btn-info" onClick={() => setShowPassword(true)}>Cambiar contraseña</button>
+              {user.roles && user.roles.length > 1 && (
+                <button className="btn btn-primary" onClick={() => navigate("/ElegCliConduc")}>Cambiar tipo de usuario</button>
+              )}
+              <button className="btn btn-success ms-auto" onClick={() => navigate("/postular-conductor")}>Postular a Conductor</button>
+              <button className="btn btn-danger" onClick={handleLogout}>Cerrar sesión</button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Modal Update Profile */}
       <Modal show={showUpdate} onHide={() => setShowUpdate(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Actualizar Perfil</Modal.Title>
@@ -180,33 +143,21 @@ function Profile() {
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3">
-              <Form.Label>Nombres</Form.Label>
-              <Form.Control
-                name="nombres"
-                value={formUpdate.nombres}
-                disabled={loadingUpdate}
-                onChange={handleChangeUpdate}
-                isInvalid={!!errors.nombres}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.nombres}
-              </Form.Control.Feedback>
+              <Form.Label>Nombre</Form.Label>
+              <Form.Control value={user.nombres} readOnly />
             </Form.Group>
-
             <Form.Group className="mb-3">
               <Form.Label>Apellidos</Form.Label>
-              <Form.Control
-                name="apellidos"
-                value={formUpdate.apellidos}
-                disabled={loadingUpdate}
-                onChange={handleChangeUpdate}
-                isInvalid={!!errors.apellidos}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.apellidos}
-              </Form.Control.Feedback>
+              <Form.Control value={user.apellidos} readOnly />
             </Form.Group>
-
+            <Form.Group className="mb-3">
+              <Form.Label>DNI</Form.Label>
+              <Form.Control value={user.dniRuc} readOnly />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Email</Form.Label>
+              <Form.Control value={user.email} readOnly />
+            </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Dirección</Form.Label>
               <Form.Control
@@ -216,35 +167,24 @@ function Profile() {
                 onChange={handleChangeUpdate}
                 isInvalid={!!errors.direccion}
               />
-              <Form.Control.Feedback type="invalid">
-                {errors.direccion}
-              </Form.Control.Feedback>
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Email</Form.Label>
-              <Form.Control value={user.email} readOnly />
+              <Form.Control.Feedback type="invalid">{errors.direccion}</Form.Control.Feedback>
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Celular</Form.Label>
-              <Form.Control value={user.celular} readOnly />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>DNI</Form.Label>
-              <Form.Control value={user.dniRuc} readOnly />
+              <Form.Control
+                name="celular"
+                value={formUpdate.celular}
+                disabled={loadingUpdate}
+                onChange={handleChangeUpdate}
+                isInvalid={!!errors.celular}
+              />
+              <Form.Control.Feedback type="invalid">{errors.celular}</Form.Control.Feedback>
             </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowUpdate(false)} disabled={loadingUpdate}>
-            Cancelar
-          </Button>
-          <Button
-            variant="primary"
-            onClick={handleUpdateProfile}
-            disabled={loadingUpdate}
-            className="d-flex align-items-center justify-content-center"
-          >
+          <Button variant="secondary" onClick={() => setShowUpdate(false)} disabled={loadingUpdate}>Cancelar</Button>
+          <Button variant="primary" onClick={handleUpdateProfile} disabled={loadingUpdate} className="d-flex align-items-center justify-content-center">
             {loadingUpdate ? (
               <>
                 <span className="spinner-border spinner-border-sm me-2"></span>
@@ -257,7 +197,6 @@ function Profile() {
         </Modal.Footer>
       </Modal>
 
-      {/* Modal Change Password */}
       <Modal show={showPassword} onHide={() => setShowPassword(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Cambiar Contraseña</Modal.Title>
@@ -295,15 +234,8 @@ function Profile() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowPassword(false)} disabled={loadingPassword}>
-            Cancelar
-          </Button>
-          <Button
-            variant="success"
-            onClick={handleChangePassword}
-            disabled={loadingPassword}
-            className="d-flex align-items-center justify-content-center"
-          >
+          <Button variant="secondary" onClick={() => setShowPassword(false)} disabled={loadingPassword}>Cancelar</Button>
+          <Button variant="success" onClick={handleChangePassword} disabled={loadingPassword} className="d-flex align-items-center justify-content-center">
             {loadingPassword ? (
               <>
                 <span className="spinner-border spinner-border-sm me-2"></span>

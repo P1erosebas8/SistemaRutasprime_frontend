@@ -68,17 +68,16 @@ export const validators = {
   },
 };
 
-export const validateProfileUpdate = ({ nombres, apellidos, direccion }) => {
-  if (!/^[A-Za-zÁÉÍÓÚÑáéíóúñ ]{3,}$/.test(nombres)) {
-    return "Los nombres deben tener solo letras y al menos 3 caracteres.";
+export const validateProfileUpdate = ({ celular, direccion }) => {
+  const errors = {};
+  if (celular !== undefined && !/^[0-9]{9}$/.test(celular)) {
+    errors.celular = "El celular debe tener exactamente 9 dígitos";
   }
-  if (!/^[A-Za-zÁÉÍÓÚÑáéíóúñ ]{3,}$/.test(apellidos)) {
-    return "Los apellidos deben tener solo letras y al menos 3 caracteres.";
+  const direccionRegex = /^(?!(.*\d+[A-Za-z]+))([A-Za-zÁÉÍÓÚÑáéíóúñ]+\.?\s)+[0-9]+$/;
+  if (direccion !== undefined && !direccionRegex.test(direccion)) {
+    errors.direccion = "La dirección debe tener al menos 2 palabras válidas y terminar con un número (ejemplo: 'Av. Lima 123')";
   }
-  if (!/^(?!(.*\d+[A-Za-z]+))([A-Za-zÁÉÍÓÚÑáéíóúñ]+\.?\s)+[0-9]+$/.test(direccion)) {
-    return "La dirección debe contener mínimo 2 palabras válidas (ej. 'Av. Lima 123').";
-  }
-  return null;
+  return Object.keys(errors).length > 0 ? errors : null;
 };
 
 export const validateChangePassword = ({ oldPassword, newPassword, confirmPassword }) => {
@@ -103,7 +102,7 @@ export const contactValidators = {
   },
   email: (value) => {
     if (!value.trim()) return "El correo es obligatorio";
-    if (!/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.(com|org|net|edu|pe|es|gov)$/.test(value)) {
+    if (!/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.(com|org|net|edu|pe|es|gov|ch)$/.test(value)) {
       return "Formato de correo inválido o dominio no permitido";
     }
     return null;
