@@ -22,6 +22,8 @@ export default function DashBoardAdministradores() {
 
   const [buscar, setBuscar] = useState("");
   const [mostrarModal, setMostrarModal] = useState(false);
+  const [mostrarEliminar, setMostrarEliminar] = useState(false);
+  const [adminEliminar, setAdminEliminar] = useState(null);
   const [editarAdmin, setEditarAdmin] = useState(null);
   const [errorServidor, setErrorServidor] = useState("");
   const [errores, setErrores] = useState({});
@@ -78,14 +80,12 @@ export default function DashBoardAdministradores() {
   const actualizarModal = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-
     if (validators[name]) {
       const error = validators[name](value);
       setErrores((prev) => ({ ...prev, [name]: error }));
     } else {
       setErrores((prev) => ({ ...prev, [name]: null }));
     }
-
     setErrorServidor("");
   };
 
@@ -97,19 +97,16 @@ export default function DashBoardAdministradores() {
         if (error) nuevosErrores[campo] = error;
       }
     });
-
     setErrores(nuevosErrores);
     return Object.keys(nuevosErrores).length === 0;
   };
 
   const guardarModal = async () => {
     setErrorServidor("");
-
     if (!validarCampos()) {
       toast.warning("Corrige los errores antes de continuar");
       return;
     }
-
     if (editarAdmin) {
       setAdmins((prev) =>
         prev.map((a) => (a.id === editarAdmin.id ? { ...a, ...formData } : a))
@@ -117,7 +114,6 @@ export default function DashBoardAdministradores() {
       cerrarModal();
       return;
     }
-
     const result = await crearAdmin({
       nombres: formData.nombres,
       apellidos: formData.apellidos,
@@ -127,12 +123,10 @@ export default function DashBoardAdministradores() {
       dniRuc: formData.dniRuc,
       password: formData.password,
     });
-
     if (!result.success) {
       setErrorServidor(result.message);
       return;
     }
-
     setAdmins((prev) => [
       {
         id: Date.now(),
@@ -141,14 +135,18 @@ export default function DashBoardAdministradores() {
       },
       ...prev,
     ]);
-
     cerrarModal();
   };
 
-  const borrar = (id) => {
-    if (window.confirm("¿Deseas eliminar este administrador?")) {
-      setAdmins((prev) => prev.filter((a) => a.id !== id));
-    }
+  const confirmarEliminar = () => {
+    setAdmins((prev) => prev.filter((a) => a.id !== adminEliminar.id));
+    setMostrarEliminar(false);
+    setAdminEliminar(null);
+  };
+
+  const borrar = (admin) => {
+    setAdminEliminar(admin);
+    setMostrarEliminar(true);
   };
 
   const query = buscar.trim().toLowerCase();
@@ -212,8 +210,8 @@ export default function DashBoardAdministradores() {
               </thead>
               <tbody>
                 {filteredData.length > 0 ? (
-                  filteredData.map((a, index) => (
-                    <tr key={a.id ?? index}>
+                  filteredData.map((a) => (
+                    <tr key={a.id}>
                       <td>{a.id}</td>
                       <td>{a.nombres}</td>
                       <td>{a.apellidos}</td>
@@ -229,9 +227,15 @@ export default function DashBoardAdministradores() {
                         >
                           <FaEdit /> Editar
                         </button>
+
                         <button
                           className="btn btn-sm btn-outline-danger"
-                          onClick={() => borrar(a.id)}
+                          disabled={a.rol === "SUPERADMIN"}
+                          onClick={() => borrar(a)}
+                          style={{
+                            opacity: a.rol === "SUPERADMIN" ? 0.4 : 1,
+                            cursor: a.rol === "SUPERADMIN" ? "not-allowed" : "pointer",
+                          }}
                         >
                           <FaTrash /> Eliminar
                         </button>
@@ -248,6 +252,7 @@ export default function DashBoardAdministradores() {
               </tbody>
             </table>
           </div>
+
           <div className="text-end text-secondary mt-3" style={{ fontSize: "0.85rem" }}>
             Mostrando {filteredData.length} de {admins.length} administradores
           </div>
@@ -258,6 +263,7 @@ export default function DashBoardAdministradores() {
         <Modal.Header closeButton style={{ backgroundColor: "#2d3b6a", color: "white" }}>
           <Modal.Title>{editarAdmin ? "Actualizar Administrador" : "Agregar Administrador"}</Modal.Title>
         </Modal.Header>
+
         <Modal.Body style={{ backgroundColor: "#1e2a52", color: "white" }}>
           {errorServidor && (
             <div className="alert alert-danger text-center py-2">{errorServidor}</div>
@@ -284,9 +290,7 @@ export default function DashBoardAdministradores() {
                   placeholder={`Ingrese ${label.toLowerCase()}`}
                 />
                 {errores[name] && (
-                  <Form.Text className="text-danger fw-bold">
-                    {errores[name]}
-                  </Form.Text>
+                  <Form.Text className="text-danger fw-bold">{errores[name]}</Form.Text>
                 )}
               </Form.Group>
             ))}
@@ -306,9 +310,7 @@ export default function DashBoardAdministradores() {
                   placeholder="Ingrese la contraseña"
                 />
                 {errores.password && (
-                  <Form.Text className="text-danger fw-bold">
-                    {errores.password}
-                  </Form.Text>
+                  <Form.Text className="text-danger fw-bold">{errores.password}</Form.Text>
                 )}
               </Form.Group>
             )}
@@ -329,6 +331,27 @@ export default function DashBoardAdministradores() {
           </Button>
           <Button variant="success" onClick={guardarModal}>
             {editarAdmin ? "Actualizar" : "Guardar"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={mostrarEliminar} onHide={() => setMostrarEliminar(false)} centered>
+        <Modal.Header closeButton style={{ backgroundColor: "#2d3b6a", color: "white" }}>
+          <Modal.Title>Confirmar Eliminación</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body style={{ backgroundColor: "#1e2a52", color: "white" }}>
+          ¿Seguro que deseas eliminar al administrador:
+          <br />
+          <strong>{adminEliminar?.nombres} {adminEliminar?.apellidos}</strong>?
+        </Modal.Body>
+
+        <Modal.Footer style={{ backgroundColor: "#2d3b6a" }}>
+          <Button variant="secondary" onClick={() => setMostrarEliminar(false)}>
+            Cancelar
+          </Button>
+          <Button variant="danger" onClick={confirmarEliminar}>
+            Eliminar
           </Button>
         </Modal.Footer>
       </Modal>

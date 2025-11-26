@@ -16,9 +16,19 @@ function LogIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await login(email, password);
-      navigate("/profile");
-    } catch {
+      const response = await login(email, password);
+      const roles = response?.data?.roles || [];
+
+      if (roles.includes("ROLE_CLIENTE") && roles.includes("ROLE_CONDUCTOR")) {
+        navigate("/ElegCliConduc");
+      } else if (roles.includes("ROLE_CLIENTE")) {
+        navigate("/clienteUI");
+      } else {
+        console.warn("Usuario no tiene roles reconocidos");
+      }
+
+    } catch (error) {
+      console.error("Error al iniciar sesión:", error);
     }
   };
 
@@ -111,7 +121,7 @@ function LogIn() {
                 className="btn btn-link text-info p-0"
               >
                 <Link to="/LogInAdmin" className="text-decoration-none text-info">
-                Iniciar como Administrador
+                  Iniciar como Administrador
                 </Link>
               </button>
             </div>

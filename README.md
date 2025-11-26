@@ -248,6 +248,7 @@ Algunas veces se requerira instalar otras dependecias, en caso no se descarguen 
 npm install react-toastify
 npm install lucide-react
 npm install framer-motion
+npm install chart.js react-chartjs-2
 ```
 ## 💡 Notas finales
 - El Frontend está diseñado para integrarse directamente con el **Backend de RutasPrime**.  

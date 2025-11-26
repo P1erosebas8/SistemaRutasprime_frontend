@@ -1,16 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './App.css'
-import MyNavbar from './components/MyNavbar'
 import PreguntasFrec from "./pages/PreguntasFrec";
 import Contactanos from "./pages/Contactanos";
 import AcercaDe from "./pages/AcercaDe";
-import MyFooter from "./components/MyFooter";
 import Inicio from "./pages/Inicio";
 import Privacidad from "./pages/privacidad";
 import Reclamaciones from "./pages/reclamaciones";
 import Terminos from "./pages/terminos";
 import LogIN from "./pages/LogIn";
-import WhatsappBoton from "./components/WhatsappBoton";
 import ComoRegistroCon from "./pages/Socios1";
 import RequisitosConductor from "./pages/Socios2";
 import Soporte from "./pages/Socios3";
@@ -39,6 +36,8 @@ import SolicitudEstado from "./pages/ExtraConductor/SolicitudEstado";
 import ElegCliConduc from "./pages/ElegCliConduc";
 import UsoAplicacionLayout from "./layouts/UsoAplicacionLayout";
 import ClienteUI from "./pages/clienteUI";
+import ConductorUI from "./pages/conductorUI";
+import FormularioEmpresa from "./pages/FormularioEmpresa";
 
 function App() {
   return (
@@ -69,10 +68,11 @@ function App() {
             <Route path="/DatosVehiculo" element={<DatosVehiculo />} />
             <Route path="/solicitud-estado" element={<ProtectedRoute><SolicitudEstado /></ProtectedRoute>} />
             <Route path="/ElegCliConduc" element={<ElegCliConduc />} />
+            <Route path="/FormularioEmpresa" element={<FormularioEmpresa />} />
           </Route>
           <Route element={<UsoAplicacionLayout />}>
             <Route path="/clienteUI" element={<ClienteUI />} />
-            <Route path="/conductorUI" element={<conductorUI />} />
+            <Route path="/conductorUI" element={<ConductorUI />} />
           </Route>
           <Route element={<AdminLayout />}>
             <Route path="/DashBoardPrincipal" element={<DashBoardPrincipal />} />
