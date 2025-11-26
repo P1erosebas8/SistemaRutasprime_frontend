@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react"
 import { Card, Form, Button, Row, Col, ListGroup, Spinner } from "react-bootstrap"
 import { MapContainer, TileLayer, Marker, Polyline, useMap } from "react-leaflet"
 import L from "leaflet"
-import "leaflet/dist/leaflet.css"
+import "leaflet/dist/leaflet.css" //Evaluando
 
 function ChangeView({ coords, bounds }) {
   const map = useMap()
