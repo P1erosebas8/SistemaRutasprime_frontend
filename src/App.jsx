@@ -38,6 +38,9 @@ import UsoAplicacionLayout from "./layouts/UsoAplicacionLayout";
 import ClienteUI from "./pages/clienteUI";
 import ConductorUI from "./pages/conductorUI";
 import FormularioEmpresa from "./pages/FormularioEmpresa";
+import GananciasConductor from "./pages/GananciasConductor";
+import MisGastos from "./pages/MisGastos";
+import LayoutStatic from "./layouts/LayoutStatic"
 
 function App() {
   return (
@@ -73,6 +76,10 @@ function App() {
           <Route element={<UsoAplicacionLayout />}>
             <Route path="/clienteUI" element={<ClienteUI />} />
             <Route path="/conductorUI" element={<ConductorUI />} />
+          </Route>
+          <Route element={<LayoutStatic />}>
+            <Route path="/ganancias" element={<GananciasConductor />} />
+            <Route path="/mis-gastos" element={<MisGastos />} />
           </Route>
           <Route element={<AdminLayout />}>
             <Route path="/DashBoardPrincipal" element={<DashBoardPrincipal />} />

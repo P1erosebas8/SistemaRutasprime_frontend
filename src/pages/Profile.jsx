@@ -123,14 +123,100 @@ function Profile() {
             <p><strong>Dirección:</strong> {user.direccion}</p>
             <p><strong>Celular:</strong> {user.celular}</p>
 
-            <div className="d-flex gap-2 mt-3">
-              <button className="btn btn-warning" onClick={() => setShowUpdate(true)}>Editar perfil</button>
-              <button className="btn btn-info" onClick={() => setShowPassword(true)}>Cambiar contraseña</button>
-              {user.roles && user.roles.length > 1 && (
-                <button className="btn btn-primary" onClick={() => navigate("/ElegCliConduc")}>Cambiar tipo de usuario</button>
+            <div className="mt-4">
+
+              <h5 className="text-center fw-bold mb-3">Configuración de Cuenta</h5>
+              <div className="row row-cols-1 row-cols-md-2 g-3 mb-4">
+                <div className="col">
+                  <button className="btn btn-warning w-100" onClick={() => setShowUpdate(true)}>
+                    Editar perfil
+                  </button>
+                </div>
+
+                <div className="col">
+                  <button className="btn btn-info w-100" onClick={() => setShowPassword(true)}>
+                    Cambiar contraseña
+                  </button>
+                </div>
+              </div>
+
+              {(user.roles.includes("ROLE_CONDUCTOR") || user.roles.length > 1) && (
+                <>
+                  <h5 className="text-center fw-bold mb-3">Panel Financiero</h5>
+                  <div className="row row-cols-1 row-cols-md-2 g-3 mb-4">
+                    <div className="col">
+                      <button
+                        className="btn btn-dark w-100"
+                        onClick={() => navigate("/ganancias")}
+                      >
+                        Panel de Ganancias
+                      </button>
+                    </div>
+
+                    <div className="col">
+                      <button
+                        className="btn btn-secondary w-100"
+                        onClick={() => navigate("/mis-gastos")}
+                      >
+                        Mis Gastos
+                      </button>
+                    </div>
+                  </div>
+                </>
               )}
-              <button className="btn btn-success ms-auto" onClick={() => navigate("/postular-conductor")}>Postular a Conductor</button>
-              <button className="btn btn-danger" onClick={handleLogout}>Cerrar sesión</button>
+
+              {user.roles.length === 1 && user.roles[0] === "ROLE_CLIENTE" && (
+                <>
+                  <h5 className="text-center fw-bold mb-3">Panel de Gastos</h5>
+                  <div className="row g-3 mb-4">
+                    <div className="col">
+                      <button
+                        className="btn btn-secondary w-100"
+                        onClick={() => navigate("/mis-gastos")}
+                      >
+                        Mis Gastos
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              <h5 className="text-center fw-bold mb-3">Accesos</h5>
+              <div className="row row-cols-1 row-cols-md-2 g-3 mb-4">
+                <div className="col">
+                  {user.roles.length > 1 ? (
+                    <button
+                      className="btn btn-primary w-100"
+                      onClick={() => navigate("/ElegCliConduc")}
+                    >
+                      Elegir Cliente | Conductor
+                    </button>
+                  ) : (
+                    <button
+                      className="btn btn-primary w-100"
+                      onClick={() => navigate("/clienteUI")}
+                    >
+                      Ir al Panel Cliente
+                    </button>
+                  )}
+                </div>
+
+                {user.roles.length === 1 && user.roles[0] === "ROLE_CLIENTE" && (
+                  <div className="col">
+                    <button
+                      className="btn btn-success w-100"
+                      onClick={() => navigate("/postular-conductor")}
+                    >
+                      Postular a Conductor
+                    </button>
+                  </div>
+                )}
+              </div>
+              <div className="text-center mt-4">
+                <button className="btn btn-danger w-50" onClick={handleLogout}>
+                  Cerrar sesión
+                </button>
+              </div>
             </div>
           </div>
         </div>
