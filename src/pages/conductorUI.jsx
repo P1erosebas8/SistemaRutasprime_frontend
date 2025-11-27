@@ -1,22 +1,9 @@
 import { useState, useEffect } from "react";
 import { Card, Button, ListGroup, Spinner } from "react-bootstrap";
-import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from "react-leaflet";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
+import GoogleMapView from "../components/GoogleMapView";
+import { geocodeAddress } from "../services/maps";
 
-function ChangeView({ coords }) {
-  const map = useMap();
-  useEffect(() => {
-    if (coords) map.setView(coords, 13, { animate: true });
-  }, [coords, map]);
-  return null;
-}
-
-const markerIcon = (color = "blue") =>
-  new L.Icon({
-    iconUrl: `https://cdn-icons-png.flaticon.com/512/854/854${color === "red" ? "894" : "892"}.png`,
-    iconSize: [40, 40],
-  });
+// NOTE: Este archivo ahora usa Google Maps a través de `GoogleMapView`.
 
 function ConductorUI() {
   const [position, setPosition] = useState([-12.0464, -77.0428]); // Lima
@@ -39,36 +26,18 @@ function ConductorUI() {
 
   const getCoordinates = async (direccion) => {
     try {
-      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(direccion)}`;
-      const res = await fetch(url);
-      const data = await res.json();
-      if (data.length > 0) {
-        return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
-      } else {
-        alert(`No se encontró ubicación para "${direccion}"`);
-        return null;
-      }
+      const res = await geocodeAddress(direccion);
+      if (res) return [res.lat, res.lng];
+      alert(`No se encontró ubicación para "${direccion}"`);
+      return null;
     } catch (err) {
       console.error(err);
       return null;
     }
   };
 
-  const getRuta = async (origen, destino) => {
-    try {
-      const url = `https://router.project-osrm.org/route/v1/driving/${origen[1]},${origen[0]};${destino[1]},${destino[0]}?overview=full&geometries=geojson`;
-      const res = await fetch(url);
-      const data = await res.json();
-      if (data.routes && data.routes.length > 0) {
-        const coords = data.routes[0].geometry.coordinates.map(([lon, lat]) => [lat, lon]);
-        setRuta(coords);
-      } else {
-        alert("No se pudo obtener la ruta.");
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  // Usaremos Google Directions en el componente GoogleMapView pasando
+  // `directionsRequest` como { origin: {lat,lng}, destination: {lat,lng} }.
 
   const aceptarViaje = async (solicitud) => {
     setLoading(true);
@@ -80,31 +49,30 @@ function ConductorUI() {
       solicitud.destinoCoord = coordDestino;
       setViajeActivo(solicitud);
       setPosition(coordOrigen);
-      await getRuta(coordOrigen, coordDestino);
+      setDirectionsRequest({ origin: { lat: coordOrigen[0], lng: coordOrigen[1] }, destination: { lat: coordDestino[0], lng: coordDestino[1] } });
     }
     setLoading(false);
   };
 
+  const [directionsRequest, setDirectionsRequest] = useState(null);
+
   return (
     <div className="map-container">
-      <MapContainer center={position} zoom={13} className="map-element">
-        <TileLayer
-          attribution='&copy; OpenStreetMap contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      <div className="map-element">
+        <GoogleMapView
+          center={{ lat: position[0], lng: position[1] }}
+          zoom={13}
+          markers={
+            viajeActivo
+              ? [
+                  { position: { lat: viajeActivo.origenCoord[0], lng: viajeActivo.origenCoord[1] } },
+                  { position: { lat: viajeActivo.destinoCoord[0], lng: viajeActivo.destinoCoord[1] } },
+                ]
+              : [{ position: { lat: position[0], lng: position[1] } }]
+          }
+          directions={directionsRequest}
         />
-        <ChangeView coords={position} />
-        {viajeActivo && (
-          <>
-            <Marker position={viajeActivo.origenCoord} icon={markerIcon("blue")}>
-              <Popup>Origen</Popup>
-            </Marker>
-            <Marker position={viajeActivo.destinoCoord} icon={markerIcon("red")}>
-              <Popup>Destino</Popup>
-            </Marker>
-          </>
-        )}
-        {ruta.length > 0 && <Polyline positions={ruta} color="blue" weight={5} />}
-      </MapContainer>
+      </div>
 
       <Card className="floating-card text-light border-0 shadow-lg p-4">
         <h4 className="fw-bold mb-3 text-center">🛻 Solicitudes cercanas</h4>

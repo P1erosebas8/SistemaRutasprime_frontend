@@ -1,20 +1,9 @@
 import { useState, useEffect, useRef } from "react"
 import { Card, Form, Button, Row, Col, ListGroup, Spinner } from "react-bootstrap"
-import { MapContainer, TileLayer, Marker, Polyline, useMap } from "react-leaflet"
-import L from "leaflet"
-import "leaflet/dist/leaflet.css"
+import GoogleMapView from "../components/GoogleMapView"
+import { geocodeAddress, getDirections } from "../services/maps"
 
-function ChangeView({ coords, bounds }) {
-  const map = useMap()
-  useEffect(() => {
-    if (bounds) {
-      map.fitBounds(bounds, { padding: [50, 50] })
-    } else if (coords) {
-      map.setView(coords, 15)
-    }
-  }, [coords, bounds, map])
-  return null
-}
+function ChangeView() { return null } // no-op kept for compatibility
 
 function ClienteUI() {
   const [formData, setFormData] = useState({ origen: "", destino: "", tipo: "", comentarios: "" })
@@ -32,17 +21,7 @@ function ClienteUI() {
   const [bounds, setBounds] = useState(null)
   const [buscando, setBuscando] = useState(false)
 
-  const iconOrigen = new L.DivIcon({
-    html: `<div class='marker-label'>INICIO</div>
-           <img src="https://cdn-icons-png.flaticon.com/512/684/684908.png" style="width:50px;height:50px;">`,
-    className: ""
-  })
-
-  const iconDestino = new L.DivIcon({
-    html: `<div class='marker-label'>DESTINO</div>
-           <img src="https://cdn-icons-png.flaticon.com/512/684/684908.png" style="width:50px;height:50px;filter:hue-rotate(140deg);">`,
-    className: ""
-  })
+  // Not using Leaflet icons anymore (GoogleMapView renders markers)
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -78,13 +57,27 @@ function ClienteUI() {
   useEffect(() => {
     if (origenCoord && destinoCoord) {
       setPrecio(20 + Math.floor(Math.random() * 60))
-      getRuta(origenCoord, destinoCoord)
+      // Intent: usar Google Directions en el mapa en lugar de OSRM para mostrar la ruta
+      (async () => {
+        try {
+          const o = { lat: origenCoord[0], lng: origenCoord[1] }
+          const d = { lat: destinoCoord[0], lng: destinoCoord[1] }
+          const directions = await getDirections(o, d)
+          setRuta([]) // keep compatibility with existing UI; route rendering happens via GoogleMapView
+          setBounds([origenCoord, destinoCoord])
+          setDirectionsRequest({ origin: o, destination: d, result: directions })
+        } catch (err) {
+          console.error(err)
+        }
+      })()
     } else {
       setPrecio(null)
       setRuta([])
       setBounds(null)
     }
   }, [origenCoord, destinoCoord])
+
+  const [directionsRequest, setDirectionsRequest] = useState(null)
 
   let delay
   const searchAddress = (query, setter) => {
@@ -150,15 +143,17 @@ function ClienteUI() {
 
   return (
     <div className="map-container">
-      <MapContainer center={position} zoom={15} className="map-element">
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        <ChangeView coords={position} bounds={bounds} />
-
-        {origenCoord && <Marker position={origenCoord} icon={iconOrigen} />}
-        {destinoCoord && <Marker position={destinoCoord} icon={iconDestino} />}
-
-        {ruta.length > 0 && <Polyline positions={ruta} color="#00d4ff" weight={7} />}
-      </MapContainer>
+      <div className="map-element">
+        <GoogleMapView
+          center={{ lat: position[0], lng: position[1] }}
+          zoom={15}
+          markers={[
+            ...(origenCoord ? [{ position: { lat: origenCoord[0], lng: origenCoord[1] } }] : []),
+            ...(destinoCoord ? [{ position: { lat: destinoCoord[0], lng: destinoCoord[1] } }] : []),
+          ]}
+          directions={directionsRequest}
+        />
+      </div>
 
       {buscando && (
         <div className="searching-overlay">
