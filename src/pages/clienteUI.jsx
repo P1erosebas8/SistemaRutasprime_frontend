@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react"
 import { Card, Form, Button, Row, Col, ListGroup, Spinner } from "react-bootstrap"
 import GoogleMapView from "../components/GoogleMapView"
-import { geocodeAddress, getDirections } from "../services/maps"
+import { geocodeAddress } from "../services/maps"
 
-function ChangeView() { return null } // no-op kept for compatibility
+function ChangeView() { return null } 
 
 function ClienteUI() {
   const [formData, setFormData] = useState({ origen: "", destino: "", tipo: "", comentarios: "" })
@@ -21,7 +21,6 @@ function ClienteUI() {
   const [bounds, setBounds] = useState(null)
   const [buscando, setBuscando] = useState(false)
 
-  // Not using Leaflet icons anymore (GoogleMapView renders markers)
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -56,28 +55,22 @@ function ClienteUI() {
 
   useEffect(() => {
     if (origenCoord && destinoCoord) {
-      setPrecio(20 + Math.floor(Math.random() * 60))
-      // Intent: usar Google Directions en el mapa en lugar de OSRM para mostrar la ruta
-      (async () => {
-        try {
-          const o = { lat: origenCoord[0], lng: origenCoord[1] }
-          const d = { lat: destinoCoord[0], lng: destinoCoord[1] }
-          const directions = await getDirections(o, d)
-          setRuta([]) // keep compatibility with existing UI; route rendering happens via GoogleMapView
-          setBounds([origenCoord, destinoCoord])
-          setDirectionsRequest({ origin: o, destination: d, result: directions })
-        } catch (err) {
-          console.error(err)
-        }
-      })()
+      const o = { lat: origenCoord[0], lng: origenCoord[1] }
+      const d = { lat: destinoCoord[0], lng: destinoCoord[1] }
+      setPrecio(null)
+      setRuta([])
+      setBounds([origenCoord, destinoCoord])
+      setDirectionsRequest({ origin: o, destination: d })
     } else {
       setPrecio(null)
       setRuta([])
       setBounds(null)
+      setDirectionsRequest(null)
     }
   }, [origenCoord, destinoCoord])
 
   const [directionsRequest, setDirectionsRequest] = useState(null)
+  const [awaitingDirectionsOnSubmit, setAwaitingDirectionsOnSubmit] = useState(false)
 
   let delay
   const searchAddress = (query, setter) => {
@@ -121,8 +114,13 @@ function ClienteUI() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!origenCoord || !destinoCoord) return alert("Selecciona ubicaciones válidas.")
+    // trigger directions rendering and wait for onDirections callback to compute price
     setBuscando(true)
-    await getRuta(origenCoord, destinoCoord)
+    setAwaitingDirectionsOnSubmit(true)
+    const o = { lat: origenCoord[0], lng: origenCoord[1] }
+    const d = { lat: destinoCoord[0], lng: destinoCoord[1] }
+    setDirectionsRequest({ origin: o, destination: d })
+    setBounds([origenCoord, destinoCoord])
   }
 
   const handleChange = (e) => {
@@ -151,7 +149,20 @@ function ClienteUI() {
             ...(origenCoord ? [{ position: { lat: origenCoord[0], lng: origenCoord[1] } }] : []),
             ...(destinoCoord ? [{ position: { lat: destinoCoord[0], lng: destinoCoord[1] } }] : []),
           ]}
-          directions={directionsRequest}
+            directions={directionsRequest}
+            onDirections={({ directionsResult, distanceMeters }) => {
+              // compute price from distanceMeters
+              const BASE_FARE = 10
+              const PER_KM = 2.5
+              const km = (distanceMeters || 0) / 1000
+              const computedPrice = Math.max((BASE_FARE + PER_KM * km), 5)
+              setPrecio(parseFloat(computedPrice.toFixed(2)))
+              // if the price was awaited by a submit action, stop the searching overlay
+              if (awaitingDirectionsOnSubmit) {
+                setBuscando(false)
+                setAwaitingDirectionsOnSubmit(false)
+              }
+            }}
         />
       </div>
 
