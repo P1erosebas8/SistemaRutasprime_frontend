@@ -1,13 +1,9 @@
 import React, { useState } from "react";
 import {
   FaEdit,
-  FaTrash,
   FaSearch,
-  FaUser,
-  FaEnvelope,
-  FaPhone,
-  FaIdCard,
-  FaUserTag
+  FaMapMarkerAlt,
+  FaHashtag
 } from "react-icons/fa";
 import { Modal, Button, Form, Spinner } from "react-bootstrap";
 import { useConductoresClientes } from "../../hooks/useConductoresClientes";
@@ -15,60 +11,58 @@ import { useConductoresClientes } from "../../hooks/useConductoresClientes";
 export default function ListarConductores() {
   const [buscar, setBuscar] = useState("");
   const [mostrarModal, setMostrarModal] = useState(false);
-  const [mostrarModalEliminar, setMostrarModalEliminar] = useState(false);
-  const [usuarioAEliminar, setUsuarioAEliminar] = useState(null);
   const [editarUsuario, setEditarUsuario] = useState(null);
+  const [cargandoActualizar, setCargandoActualizar] = useState(false);
 
   const [formData, setFormData] = useState({
-    nombre: "",
-    apellido: "",
-    correo: "",
-    telefono: "",
-    dni: "",
-    roles: ""
+    direccion: "",
+    numero: ""
   });
 
-  const { usuarios, loading } = useConductoresClientes();
+  const { usuarios, loading, actualizarUsuario } = useConductoresClientes();
 
   const CerrarModal = () => {
     setMostrarModal(false);
     setEditarUsuario(null);
     setFormData({
-      nombre: "",
-      apellido: "",
-      correo: "",
-      telefono: "",
-      dni: "",
-      roles: ""
+      direccion: "",
+      numero: ""
     });
   };
 
   const MostrarEditar = (usuario) => {
     setEditarUsuario(usuario);
-    setFormData(usuario);
+    setFormData({
+      direccion: usuario.direccion || "",
+      numero: usuario.numero || ""
+    });
     setMostrarModal(true);
-  };
-
-  const MostrarEliminar = (usuario) => {
-    setUsuarioAEliminar(usuario);
-    setMostrarModalEliminar(true);
-  };
-
-  const CerrarModalEliminar = () => {
-    setUsuarioAEliminar(null);
-    setMostrarModalEliminar(false);
   };
 
   const ActualizarModal = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const GuardarModal = () => {
-    CerrarModal();
-  };
-
-  const ConfirmarEliminar = () => {
-    CerrarModalEliminar();
+  const GuardarModal = async () => {
+    if (!editarUsuario) return;
+    
+    const datosActualizar = {
+      nombres: editarUsuario.nombre,
+      apellidos: editarUsuario.apellido,
+      email: editarUsuario.correo,
+      celular: editarUsuario.telefono,
+      dniRuc: editarUsuario.dni,
+      direccion: formData.direccion,
+      numero: formData.numero
+    };
+    
+    setCargandoActualizar(true);
+    const resultado = await actualizarUsuario(editarUsuario.id, datosActualizar);
+    setCargandoActualizar(false);
+    
+    if (resultado.success) {
+      CerrarModal();
+    }
   };
 
   const filteredData = usuarios.filter((u) => {
@@ -124,8 +118,8 @@ export default function ListarConductores() {
             </thead>
             <tbody>
               {filteredData.length > 0 ? (
-                filteredData.map((u, index) => (
-                  <tr key={index}>
+                filteredData.map((u) => (
+                  <tr key={u.id}>
                     <td>{u.codigo}</td>
                     <td>{u.nombre}</td>
                     <td>{u.apellido}</td>
@@ -136,16 +130,10 @@ export default function ListarConductores() {
                     <td>{u.fechaRegistro}</td>
                     <td className="text-center">
                       <button
-                        className="btn btn-sm btn-outline-warning me-2"
+                        className="btn btn-sm btn-outline-warning"
                         onClick={() => MostrarEditar(u)}
                       >
                         <FaEdit /> Editar
-                      </button>
-                      <button
-                        className="btn btn-sm btn-outline-danger"
-                        onClick={() => MostrarEliminar(u)}
-                      >
-                        <FaTrash /> Eliminar
                       </button>
                     </td>
                   </tr>
@@ -173,83 +161,49 @@ export default function ListarConductores() {
         <Modal.Body style={{ backgroundColor: "#1e2a52", color: "white" }}>
           <Form>
             <Form.Group className="mb-3">
-              <Form.Label><FaUser className="me-2" />Nombre</Form.Label>
+              <Form.Label><FaMapMarkerAlt className="me-2" />Dirección</Form.Label>
               <Form.Control
                 type="text"
-                name="nombre"
-                value={formData.nombre}
+                name="direccion"
+                value={formData.direccion}
                 onChange={ActualizarModal}
+                placeholder="Ingrese la dirección"
               />
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label><FaUser className="me-2" />Apellido</Form.Label>
+              <Form.Label><FaHashtag className="me-2" />Número</Form.Label>
               <Form.Control
                 type="text"
-                name="apellido"
-                value={formData.apellido}
+                name="numero"
+                value={formData.numero}
                 onChange={ActualizarModal}
+                placeholder="Ingrese el número"
               />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label><FaEnvelope className="me-2" />Correo</Form.Label>
-              <Form.Control
-                type="email"
-                name="correo"
-                value={formData.correo}
-                onChange={ActualizarModal}
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label><FaPhone className="me-2" />Teléfono</Form.Label>
-              <Form.Control
-                type="text"
-                name="telefono"
-                value={formData.telefono}
-                onChange={ActualizarModal}
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label><FaIdCard className="me-2" />DNI o RUC</Form.Label>
-              <Form.Control
-                type="text"
-                name="dni"
-                value={formData.dni}
-                onChange={ActualizarModal}
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label><FaUserTag className="me-2" />Roles</Form.Label>
-              <Form.Control type="text" name="roles" value={formData.roles} disabled />
             </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer style={{ backgroundColor: "#2d3b6a" }}>
-          <Button variant="secondary" onClick={CerrarModal}>Cancelar</Button>
-          <Button variant="success" onClick={GuardarModal}>Actualizar</Button>
-        </Modal.Footer>
-      </Modal>
-
-      <Modal show={mostrarModalEliminar} onHide={CerrarModalEliminar} centered>
-        <Modal.Header closeButton style={{ backgroundColor: "#812d2d", color: "white" }}>
-          <Modal.Title>Confirmar Eliminación</Modal.Title>
-        </Modal.Header>
-        <Modal.Body style={{ backgroundColor: "#1e2a52", color: "white" }}>
-          {usuarioAEliminar && (
-            <p className="mb-0 fs-5 text-center">
-              ¿Estás seguro que deseas eliminar al usuario:
-              <br />
-              <strong>{usuarioAEliminar.nombre} {usuarioAEliminar.apellido}</strong>?
-            </p>
-          )}
-        </Modal.Body>
-        <Modal.Footer style={{ backgroundColor: "#2d3b6a" }}>
-          <Button variant="secondary" onClick={CerrarModalEliminar}>Cancelar</Button>
-          <Button variant="danger" onClick={ConfirmarEliminar}>Eliminar</Button>
+          <Button variant="secondary" onClick={CerrarModal} disabled={cargandoActualizar}>
+            Cancelar
+          </Button>
+          <Button variant="success" onClick={GuardarModal} disabled={cargandoActualizar}>
+            {cargandoActualizar ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                  className="me-2"
+                />
+                Actualizando...
+              </>
+            ) : (
+              "Actualizar"
+            )}
+          </Button>
         </Modal.Footer>
       </Modal>
 
