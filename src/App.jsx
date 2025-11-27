@@ -40,7 +40,9 @@ import ConductorUI from "./pages/conductorUI";
 import FormularioEmpresa from "./pages/FormularioEmpresa";
 import GananciasConductor from "./pages/GananciasConductor";
 import MisGastos from "./pages/MisGastos";
-import LayoutStatic from "./layouts/LayoutStatic"
+import LayoutStatic from "./layouts/LayoutStatic";
+import ListarEmpresas from "./pages/DashBoardEmpresas/ListarEmpresas";
+import AprobarEmpresas from "./pages/DashBoardEmpresas/AprobarEmpresas"
 
 function App() {
   return (
@@ -87,6 +89,8 @@ function App() {
             <Route path="/DashBoardAdministradores" element={<DashBoardAdministradores />} />
             <Route path="/DashBoardConductores/listar" element={<ListarConductores />} />
             <Route path="/DashBoardConductores/aprobar" element={<AprobarConductores />} />
+            <Route path="/DashBoardEmpresas/listar" element={<ListarEmpresas />} />
+            <Route path="/DashBoardEmpresas/aprobar" element={<AprobarEmpresas />} />
             <Route path="/DashBoardRegistroViajes" element={<DashBoardRegistroViajes />} />
             <Route path="/DashBoardContactanos" element={<DashBoardContactanos />} />
           </Route>
