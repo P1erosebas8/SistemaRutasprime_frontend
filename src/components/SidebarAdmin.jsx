@@ -10,6 +10,7 @@ import {
   FaUserShield,
   FaClock,
   FaEnvelope,
+  FaTh
 } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuthAdmin } from "../hooks/useAuthAdmin";
@@ -24,6 +25,8 @@ function SidebarAdmin({ isOpen, setIsOpen }) {
   const [adminData, setAdminData] = useState(null);
   const [dateTime, setDateTime] = useState(new Date());
   const [showSubmenu, setShowSubmenu] = useState(false);
+  const [showSubmenuE, setShowSubmenuE] = useState(false);
+
 
   useEffect(() => {
     const interval = setInterval(() => setDateTime(new Date()), 1000);
@@ -171,6 +174,63 @@ function SidebarAdmin({ isOpen, setIsOpen }) {
                   >
                     <FaVoteYea className="me-2" style={{ minWidth: "18px", textAlign: "center" }} />
                     <span>Aprobar usuarios</span>
+                  </NavLink>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <div>
+            <div
+              className="nav-link d-flex align-items-center text-white mb-2"
+              style={{
+                justifyContent: isOpen ? "flex-start" : "center",
+                cursor: "pointer",
+                fontSize: isOpen ? "1rem" : "1.4rem",
+              }}
+              onClick={() => setShowSubmenuE(!showSubmenuE)}
+            >
+              <span
+                style={{
+                  fontSize: isOpen ? "1.1rem" : "1.6rem",
+                  marginRight: isOpen ? "10px" : "0px",
+                  transition: "all 0.2s ease",
+                }}
+              >
+                <FaTh  />
+              </span>
+              {isOpen && "Empresas"}
+            </div>
+
+            <AnimatePresence>
+              {isOpen && showSubmenuE && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="ms-4 mt-2"
+                >
+                  <NavLink
+                    to="/DashBoardEmpresas/listar"
+                    className={({ isActive }) =>
+                      `nav-link text-white mb-2 d-flex align-items-center ${isActive ? "fw-bold text-info" : ""}`
+                    }
+                    style={{ fontSize: "0.95rem" }}
+                  >
+                    <FaUser className="me-2" style={{ minWidth: "18px", textAlign: "center" }} />
+                    <span>Listar empresas</span>
+                  </NavLink>
+
+                  <NavLink
+                    to="/DashBoardEmpresas/aprobar"
+                    className={({ isActive }) =>
+                      `nav-link text-white mb-2 d-flex align-items-center ${isActive ? "fw-bold text-info" : ""}`
+                    }
+                    style={{ fontSize: "0.95rem" }}
+                  >
+                    <FaVoteYea className="me-2" style={{ minWidth: "18px", textAlign: "center" }} />
+                    <span>Aprobar empresas</span>
                   </NavLink>
                 </motion.div>
               )}
