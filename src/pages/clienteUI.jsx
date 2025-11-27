@@ -72,16 +72,48 @@ function ClienteUI() {
   const [directionsRequest, setDirectionsRequest] = useState(null)
   const [awaitingDirectionsOnSubmit, setAwaitingDirectionsOnSubmit] = useState(false)
 
-  let delay
+  // Improved search: persistent debounce, request cancellation and simple cache
+  const searchTimer = useRef(null)
+  const abortRef = useRef(null)
+  const cacheRef = useRef(new Map())
+
   const searchAddress = (query, setter) => {
-    clearTimeout(delay)
-    delay = setTimeout(async () => {
-      if (!query) return setter([])
-      const url = `https://nominatim.openstreetmap.org/search?format=json&countrycodes=pe&q=${encodeURIComponent(query)}`
-      const res = await fetch(url)
-      let data = await res.json()
-      setter(data.slice(0, 3))
-    }, 250)
+    // only search from 3 characters to reduce load
+    if (!query || query.trim().length < 3) {
+      setter([])
+      return
+    }
+
+    // cache hit
+    const key = query.trim()
+    if (cacheRef.current.has(key)) {
+      setter(cacheRef.current.get(key))
+      return
+    }
+
+    // cancel previous inflight request
+    if (abortRef.current) {
+      try { abortRef.current.abort() } catch (e) { /* ignore */ }
+      abortRef.current = null
+    }
+
+    clearTimeout(searchTimer.current)
+    searchTimer.current = setTimeout(async () => {
+      try {
+        abortRef.current = new AbortController()
+        const url = `https://nominatim.openstreetmap.org/search?format=json&countrycodes=pe&q=${encodeURIComponent(key)}&limit=5`
+        const res = await fetch(url, { signal: abortRef.current.signal })
+        const data = await res.json()
+        const items = Array.isArray(data) ? data.slice(0, 5) : []
+        cacheRef.current.set(key, items)
+        setter(items)
+      } catch (err) {
+        if (err.name === "AbortError") return
+        console.error(err)
+      } finally {
+        abortRef.current = null
+      }
+    }, 300)
   }
 
   const handleSelectSuggestion = (item, tipo) => {
