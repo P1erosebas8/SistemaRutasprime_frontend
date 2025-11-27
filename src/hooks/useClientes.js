@@ -11,8 +11,8 @@ export function useClientes() {
     try {
       const response = await apiRequest("/user/clientes", "GET", null, true, true);
 
-      const dataFiltrada = response.data.data.map((u, index) => ({
-        codigo: `C${(index + 1).toString().padStart(3, "0")}`,
+      const dataFiltrada = response.data.data.map((u) => ({
+        id: u.id,
         nombre: u.nombres,
         apellido: u.apellidos,
         correo: u.email,

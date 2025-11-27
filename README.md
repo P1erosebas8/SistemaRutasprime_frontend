@@ -249,6 +249,7 @@ npm install react-toastify
 npm install lucide-react
 npm install framer-motion
 npm install chart.js react-chartjs-2
+npm install @react-google-maps/api
 ```
 ## 💡 Notas finales
 - El Frontend está diseñado para integrarse directamente con el **Backend de RutasPrime**.  

@@ -25,7 +25,6 @@ export function useAdminUsers() {
       setAdmins(dataFiltrada);
     } catch (err) {
       toast.error("No se pudieron obtener los administradores");
-      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -40,30 +39,86 @@ export function useAdminUsers() {
         true,
         true
       );
-
       if (response.data.success) {
         toast.success("Administrador creado exitosamente");
         return { success: true };
       }
-
       return {
         success: false,
         message: response.data.message || "Error desconocido del servidor",
       };
     } catch (err) {
-      console.error("Error al crear admin:", err);
-
       let mensaje = "Error del servidor";
       if (err.response?.data?.message) {
         mensaje = err.response.data.message;
       } else if (err.message) {
         mensaje = err.message;
       }
-
       return { success: false, message: mensaje };
     }
   };
 
+  const actualizarUsuario = async (id, datosActualizar) => {
+    try {
+      const response = await apiRequest(
+        `/user/update/${id}`,
+        "PUT",
+        datosActualizar,
+        true,
+        true
+      );
+      if (response.data.success) {
+        toast.success("Usuario actualizado exitosamente");
+        getAdmins();
+        return { success: true };
+      }
+      toast.error(response.data.message || "Error al actualizar el usuario");
+      return {
+        success: false,
+        message: response.data.message || "Error desconocido del servidor",
+      };
+    } catch (err) {
+      let mensaje = "Error del servidor";
+      if (err.response?.data?.message) {
+        mensaje = err.response.data.message;
+      } else if (err.message) {
+        mensaje = err.message;
+      }
+      toast.error(mensaje);
+      return { success: false, message: mensaje };
+    }
+  };
+
+  const eliminarUsuario = async (id) => {
+    try {
+      const response = await apiRequest(
+        `/user/${id}`,
+        "DELETE",
+        null,
+        true,
+        true
+      );
+      if (response.data.success) {
+        toast.success("Usuario eliminado exitosamente");
+        getAdmins();
+        return { success: true };
+      }
+      toast.error(response.data.message || "Error al eliminar el usuario");
+      return {
+        success: false,
+        message: response.data.message || "Error desconocido del servidor",
+      };
+    } catch (err) {
+      let mensaje = "Error del servidor";
+      if (err.response?.data?.message) {
+        mensaje = err.response.data.message;
+      } else if (err.message) {
+        mensaje = err.message;
+      }
+      toast.error(mensaje);
+      return { success: false, message: mensaje };
+    }
+  };
 
   const exportarExcel = async () => {
     try {
@@ -76,24 +131,19 @@ export function useAdminUsers() {
         false,
         true
       );
-
       if (!blob) throw new Error("El archivo no fue generado correctamente");
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
-
       const fecha = new Date();
       const nombreArchivo = `usuarios_${fecha.toISOString().split("T")[0]}.xlsx`;
-
       link.href = url;
       link.download = nombreArchivo;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-
       toast.success(`Descarga de Excel iniciada (${nombreArchivo})`);
     } catch (error) {
-      console.error(error);
       toast.error("No se pudo descargar el archivo Excel");
     }
   };
@@ -102,5 +152,14 @@ export function useAdminUsers() {
     getAdmins();
   }, []);
 
-  return { admins, loading, getAdmins, setAdmins, exportarExcel, crearAdmin };
+  return {
+    admins,
+    loading,
+    getAdmins,
+    setAdmins,
+    exportarExcel,
+    crearAdmin,
+    actualizarUsuario,
+    eliminarUsuario,
+  };
 }

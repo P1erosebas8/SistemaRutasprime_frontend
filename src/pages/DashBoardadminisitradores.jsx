@@ -11,6 +11,7 @@ import {
   FaIdBadge,
   FaFileExcel,
   FaLock,
+  FaMapMarkerAlt,
 } from "react-icons/fa";
 import { Modal, Button, Form, Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
@@ -18,7 +19,7 @@ import { useAdminUsers } from "../hooks/useAdminUsers";
 import { validators } from "../utils/validators";
 
 export default function DashBoardAdministradores() {
-  const { admins, loading, setAdmins, exportarExcel, crearAdmin } = useAdminUsers();
+  const { admins, loading, setAdmins, exportarExcel, crearAdmin, actualizarUsuario, eliminarUsuario } = useAdminUsers();
 
   const [buscar, setBuscar] = useState("");
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -27,6 +28,7 @@ export default function DashBoardAdministradores() {
   const [editarAdmin, setEditarAdmin] = useState(null);
   const [errorServidor, setErrorServidor] = useState("");
   const [errores, setErrores] = useState({});
+  const [guardando, setGuardando] = useState(false);
 
   const [formData, setFormData] = useState({
     id: null,
@@ -36,6 +38,7 @@ export default function DashBoardAdministradores() {
     email: "",
     dniRuc: "",
     password: "",
+    direccion: "",
     rol: "ADMIN",
     fechaRegistro: "",
   });
@@ -51,6 +54,7 @@ export default function DashBoardAdministradores() {
       email: "",
       dniRuc: "",
       password: "",
+      direccion: "",
       rol: "ADMIN",
       fechaRegistro: "",
     });
@@ -70,6 +74,7 @@ export default function DashBoardAdministradores() {
         email: admin.email,
         dniRuc: admin.dniRuc,
         password: "",
+        direccion: admin.direccion || "",
         rol: admin.rol || "ADMIN",
         fechaRegistro: admin.fechaRegistro || "",
       });
@@ -91,12 +96,24 @@ export default function DashBoardAdministradores() {
 
   const validarCampos = () => {
     const nuevosErrores = {};
-    Object.keys(formData).forEach((campo) => {
-      if (validators[campo]) {
-        const error = validators[campo](formData[campo]);
-        if (error) nuevosErrores[campo] = error;
-      }
-    });
+    
+    if (editarAdmin) {
+      const camposEditar = ['celular', 'direccion'];
+      camposEditar.forEach((campo) => {
+        if (validators[campo]) {
+          const error = validators[campo](formData[campo]);
+          if (error) nuevosErrores[campo] = error;
+        }
+      });
+    } else {
+      Object.keys(formData).forEach((campo) => {
+        if (validators[campo]) {
+          const error = validators[campo](formData[campo]);
+          if (error) nuevosErrores[campo] = error;
+        }
+      });
+    }
+    
     setErrores(nuevosErrores);
     return Object.keys(nuevosErrores).length === 0;
   };
@@ -107,41 +124,48 @@ export default function DashBoardAdministradores() {
       toast.warning("Corrige los errores antes de continuar");
       return;
     }
-    if (editarAdmin) {
-      setAdmins((prev) =>
-        prev.map((a) => (a.id === editarAdmin.id ? { ...a, ...formData } : a))
-      );
+
+    setGuardando(true);
+
+    try {
+      if (editarAdmin) {
+        const result = await actualizarUsuario(editarAdmin.id, {
+          direccion: formData.direccion,
+          celular: formData.celular,
+        });
+        if (!result.success) {
+          setErrorServidor(result.message);
+          return;
+        }
+        cerrarModal();
+        return;
+      }
+
+      const result = await crearAdmin({
+        nombres: formData.nombres,
+        apellidos: formData.apellidos,
+        celular: formData.celular,
+        email: formData.email,
+        direccion: formData.direccion || "No especificada",
+        dniRuc: formData.dniRuc,
+        password: formData.password,
+      });
+      if (!result.success) {
+        setErrorServidor(result.message);
+        return;
+      }
       cerrarModal();
-      return;
+    } finally {
+      setGuardando(false);
     }
-    const result = await crearAdmin({
-      nombres: formData.nombres,
-      apellidos: formData.apellidos,
-      celular: formData.celular,
-      email: formData.email,
-      direccion: "No especificada",
-      dniRuc: formData.dniRuc,
-      password: formData.password,
-    });
-    if (!result.success) {
-      setErrorServidor(result.message);
-      return;
-    }
-    setAdmins((prev) => [
-      {
-        id: Date.now(),
-        ...formData,
-        fechaRegistro: new Date().toLocaleDateString(),
-      },
-      ...prev,
-    ]);
-    cerrarModal();
   };
 
-  const confirmarEliminar = () => {
-    setAdmins((prev) => prev.filter((a) => a.id !== adminEliminar.id));
-    setMostrarEliminar(false);
-    setAdminEliminar(null);
+  const confirmarEliminar = async () => {
+    const result = await eliminarUsuario(adminEliminar.id);
+    if (result.success) {
+      setMostrarEliminar(false);
+      setAdminEliminar(null);
+    }
   };
 
   const borrar = (admin) => {
@@ -270,67 +294,122 @@ export default function DashBoardAdministradores() {
           )}
 
           <Form>
-            {[
-              { label: "Nombres", name: "nombres", icon: <FaUserShield /> },
-              { label: "Apellidos", name: "apellidos", icon: <FaUserShield /> },
-              { label: "Correo", name: "email", icon: <FaEnvelope /> },
-              { label: "Celular", name: "celular", icon: <FaPhoneAlt /> },
-              { label: "DNI / RUC", name: "dniRuc", icon: <FaIdCard /> },
-            ].map(({ label, name, icon }) => (
-              <Form.Group className="mb-3" key={name}>
-                <Form.Label>
-                  {icon} {label}
-                </Form.Label>
-                <Form.Control
-                  type="text"
-                  name={name}
-                  value={formData[name]}
-                  onChange={actualizarModal}
-                  className={errores[name] ? "border-danger" : ""}
-                  placeholder={`Ingrese ${label.toLowerCase()}`}
-                />
-                {errores[name] && (
-                  <Form.Text className="text-danger fw-bold">{errores[name]}</Form.Text>
-                )}
-              </Form.Group>
-            ))}
+            {editarAdmin ? (
+              <>
+                <Form.Group className="mb-3">
+                  <Form.Label>
+                    <FaMapMarkerAlt className="me-2" />
+                    Dirección
+                  </Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="direccion"
+                    value={formData.direccion}
+                    onChange={actualizarModal}
+                    className={errores.direccion ? "border-danger" : ""}
+                    placeholder="Ingrese dirección"
+                  />
+                  {errores.direccion && (
+                    <Form.Text className="text-danger fw-bold">{errores.direccion}</Form.Text>
+                  )}
+                </Form.Group>
 
-            {!editarAdmin && (
-              <Form.Group className="mb-3">
-                <Form.Label>
-                  <FaLock className="me-2" />
-                  Contraseña
-                </Form.Label>
-                <Form.Control
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={actualizarModal}
-                  className={errores.password ? "border-danger" : ""}
-                  placeholder="Ingrese la contraseña"
-                />
-                {errores.password && (
-                  <Form.Text className="text-danger fw-bold">{errores.password}</Form.Text>
-                )}
-              </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>
+                    <FaPhoneAlt className="me-2" />
+                    Celular
+                  </Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="celular"
+                    value={formData.celular}
+                    onChange={actualizarModal}
+                    className={errores.celular ? "border-danger" : ""}
+                    placeholder="Ingrese celular"
+                  />
+                  {errores.celular && (
+                    <Form.Text className="text-danger fw-bold">{errores.celular}</Form.Text>
+                  )}
+                </Form.Group>
+              </>
+            ) : (
+              <>
+                {[
+                  { label: "Nombres", name: "nombres", icon: <FaUserShield /> },
+                  { label: "Apellidos", name: "apellidos", icon: <FaUserShield /> },
+                  { label: "Correo", name: "email", icon: <FaEnvelope /> },
+                  { label: "Celular", name: "celular", icon: <FaPhoneAlt /> },
+                  { label: "DNI / RUC", name: "dniRuc", icon: <FaIdCard /> },
+                  { label: "Dirección", name: "direccion", icon: <FaMapMarkerAlt /> },
+                ].map(({ label, name, icon }) => (
+                  <Form.Group className="mb-3" key={name}>
+                    <Form.Label>
+                      {icon} {label}
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      name={name}
+                      value={formData[name]}
+                      onChange={actualizarModal}
+                      className={errores[name] ? "border-danger" : ""}
+                      placeholder={`Ingrese ${label.toLowerCase()}`}
+                    />
+                    {errores[name] && (
+                      <Form.Text className="text-danger fw-bold">{errores[name]}</Form.Text>
+                    )}
+                  </Form.Group>
+                ))}
+
+                <Form.Group className="mb-3">
+                  <Form.Label>
+                    <FaLock className="me-2" />
+                    Contraseña
+                  </Form.Label>
+                  <Form.Control
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={actualizarModal}
+                    className={errores.password ? "border-danger" : ""}
+                    placeholder="Ingrese la contraseña"
+                  />
+                  {errores.password && (
+                    <Form.Text className="text-danger fw-bold">{errores.password}</Form.Text>
+                  )}
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label>
+                    <FaIdBadge className="me-2" /> Rol
+                  </Form.Label>
+                  <Form.Control type="text" name="rol" value={formData.rol} disabled readOnly />
+                  <Form.Text className="text-info">El rol por defecto es "ADMIN"</Form.Text>
+                </Form.Group>
+              </>
             )}
-
-            <Form.Group className="mb-3">
-              <Form.Label>
-                <FaIdBadge className="me-2" /> Rol
-              </Form.Label>
-              <Form.Control type="text" name="rol" value={formData.rol} disabled readOnly />
-              <Form.Text className="text-info">El rol por defecto es "ADMIN"</Form.Text>
-            </Form.Group>
           </Form>
         </Modal.Body>
 
         <Modal.Footer style={{ backgroundColor: "#2d3b6a" }}>
-          <Button variant="secondary" onClick={cerrarModal}>
+          <Button variant="secondary" onClick={cerrarModal} disabled={guardando}>
             Cancelar
           </Button>
-          <Button variant="success" onClick={guardarModal}>
-            {editarAdmin ? "Actualizar" : "Guardar"}
+          <Button variant="success" onClick={guardarModal} disabled={guardando}>
+            {guardando ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                  className="me-2"
+                />
+                Procesando...
+              </>
+            ) : (
+              editarAdmin ? "Actualizar" : "Guardar"
+            )}
           </Button>
         </Modal.Footer>
       </Modal>
