@@ -18,10 +18,12 @@ import Register from "./pages/Register";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Profile from "./pages/Profile";
+import ProfileEmpresa from "./pages/ProfileEmpresa";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicLayout from "./layouts/PublicLayout";
 import AdminLayout from "./layouts/AdminLayout";
 import LogInAdmin from "./pages/LogInAdmin"
+import LogInEmpresa from "./pages/LogInEmpresa";
 import DashBoardUsuarios from "./pages/DashBoardUsuarios"
 import ListarConductores from "./pages/DashBoardConductores/ListarConductores";
 import AprobarConductores from "./pages/DashBoardConductores/AprobarConductores";
@@ -43,6 +45,7 @@ import MisGastos from "./pages/MisGastos";
 import LayoutStatic from "./layouts/LayoutStatic";
 import ListarEmpresas from "./pages/DashBoardEmpresas/ListarEmpresas";
 import AprobarEmpresas from "./pages/DashBoardEmpresas/AprobarEmpresas"
+
 
 function App() {
   return (
@@ -67,7 +70,9 @@ function App() {
             <Route path="/reclamaciones" element={<Reclamaciones />} />
             <Route path="/terminos" element={<Terminos />} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/profile-empresa" element={<ProfileEmpresa />} />
             <Route path="/LogInAdmin" element={<LogInAdmin />} />
+            <Route path="/LogInEmpresa" element={<LogInEmpresa />} />
             <Route path="/postular-conductor" element={<PostularConductor />} />
             <Route path="/DatosConductor" element={<DatosConductor />} />
             <Route path="/DatosVehiculo" element={<DatosVehiculo />} />
@@ -100,5 +105,6 @@ function App() {
     </>
   )
 }
+
 
 export default App

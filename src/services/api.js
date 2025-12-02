@@ -1,5 +1,6 @@
 const API_URL = "http://localhost:8080/api";
 
+
 export async function apiRequest(
   endpoint,
   method = "GET",
@@ -7,19 +8,28 @@ export async function apiRequest(
   auth = false,
   isAdmin = false,
   isFormData = false,
-  isFile = false
+  isFile = false,
+  isEmpresa = false
 ) {
   const headers = {};
 
+
   if (auth) {
-    const tokenKey = isAdmin ? "adminToken" : "token";
-    const token = localStorage.getItem(tokenKey);
+    let token;
+    if (isEmpresa) {
+      token = localStorage.getItem("empresaToken");
+    } else {
+      const tokenKey = isAdmin ? "adminToken" : "token";
+      token = localStorage.getItem(tokenKey);
+    }
     if (token) headers["Authorization"] = `Bearer ${token}`;
   }
+
 
   if (!isFormData && !isFile) {
     headers["Content-Type"] = "application/json";
   }
+
 
   const res = await fetch(`${API_URL}${endpoint}`, {
     method,
@@ -31,6 +41,7 @@ export async function apiRequest(
       : null,
   });
 
+
   if (!res.ok) {
     let msg = "Error en la petición";
     try {
@@ -40,10 +51,12 @@ export async function apiRequest(
     throw new Error(msg);
   }
 
+
   if (isFile) {
     const blob = await res.blob();
     return { blob };
   }
+
 
   let data;
   try {
@@ -52,7 +65,9 @@ export async function apiRequest(
     data = null;
   }
 
+
   return { data };
 }
+
 
 export { API_URL };
