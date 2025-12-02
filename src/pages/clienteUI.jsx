@@ -3,8 +3,10 @@ import { Card, Form, Button, Row, Col, ListGroup, Spinner, Toast, ToastContainer
 import GoogleMapView from "../components/GoogleMapView"
 import { apiRequest } from "../services/api"
 import { guardarViajeCliente, obtenerEstadisticasCliente } from "../services/storageService"
+import Collapse from 'react-bootstrap/Collapse';
 
 function ClienteUI() {
+  const [mostrarForm, setMostrarForm] = useState(true);
   const [formData, setFormData] = useState({ 
     nombre: "",
     apellido: "",
@@ -685,160 +687,177 @@ function ClienteUI() {
       )}
 
       {!viajeSolicitado && (
-        <Card className="floating-card p-4 text-light">
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <h4 className="fw-bold">Solicitar un servicio</h4>
-            <Button className="invert-btn" onClick={invertir}>⇅</Button>
+        <Card className="floating-card p-4 text-light " style={{zoom: "0.80"}}>
+          <div className="text-end">
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => setMostrarForm(!mostrarForm)}
+              className="mb-2"
+              style={{backgroundColor:"#16a094ff"}}
+            >
+              {mostrarForm ? "Ocultar formulario 🔼" : "Mostrar formulario 🔽"}
+            </Button>
           </div>
 
-          {precio && distancia && (
-            <div className="price-box mb-3">
-              <div>
-                <span className="price-title">Distancia:</span>
-                <span className="price-subtitle"> {distancia} km</span>
+          <Collapse in={mostrarForm}>
+            <div>
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h4 className="fw-bold">Solicitar un servicio</h4>
+                <Button className="invert-btn" onClick={invertir}>⇅</Button>
               </div>
-              <div>
-                <span className="price-title">Costo estimado:</span>
-                <span className="price-value"> S/ {precio}</span>
-              </div>
+
+              {precio && distancia && (
+                <div className="price-box mb-3">
+                  <div>
+                    <span className="price-title">Distancia:</span>
+                    <span className="price-subtitle"> {distancia} km</span>
+                  </div>
+                  <div>
+                    <span className="price-title">Costo estimado:</span>
+                    <span className="price-value"> S/ {precio}</span>
+                  </div>
+                </div>
+              )}
+
+              <Form onSubmit={handleSubmit}>
+                <Row className="g-4">
+
+                  <Col xs={12} md={6}>
+                    <Form.Group>
+                      <Form.Label className="fw-semibold">Nombre</Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="nombre"
+                        value={formData.nombre}
+                        onChange={handleChange}
+                        placeholder="Tu nombre"
+                        isInvalid={!!errors.nombre}
+                        required
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.nombre}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+
+                  <Col xs={12} md={6}>
+                    <Form.Group>
+                      <Form.Label className="fw-semibold">Apellido</Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="apellido"
+                        value={formData.apellido}
+                        onChange={handleChange}
+                        placeholder="Tu apellido"
+                        isInvalid={!!errors.apellido}
+                        required
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.apellido}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+
+                  <Col xs={12}>
+                    <Form.Group>
+                      <Form.Label className="fw-semibold">Email</Form.Label>
+                      <Form.Control
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="tu@email.com"
+                        isInvalid={!!errors.email}
+                        required
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.email}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+
+                  <Col xs={12} md={6} className="position-relative">
+                    <Form.Group>
+                      <Form.Label className="fw-semibold">Punto de inicio</Form.Label>
+                      <Form.Control
+                        ref={origenRef}
+                        type="text"
+                        name="origen"
+                        value={formData.origen}
+                        onChange={handleChange}
+                        required
+                      />
+                      {sugOrigen.length > 0 && (
+                        <ListGroup className="suggest-box" style={{ width: anchoOrigen }}>
+                          {sugOrigen.map((s, i) => (
+                            <ListGroup.Item key={i} action onClick={() => handleSelectSuggestion(s, "origen")}>
+                              {s.display_name}
+                            </ListGroup.Item>
+                          ))}
+                        </ListGroup>
+                      )}
+                    </Form.Group>
+                  </Col>
+
+                  <Col xs={12} md={6} className="position-relative">
+                    <Form.Group>
+                      <Form.Label className="fw-semibold">Destino</Form.Label>
+                      <Form.Control
+                        ref={destinoRef}
+                        type="text"
+                        name="destino"
+                        value={formData.destino}
+                        onChange={handleChange}
+                        required
+                      />
+                      {sugDestino.length > 0 && (
+                        <ListGroup className="suggest-box" style={{ width: anchoDestino }}>
+                          {sugDestino.map((s, i) => (
+                            <ListGroup.Item key={i} action onClick={() => handleSelectSuggestion(s, "destino")}>
+                              {s.display_name}
+                            </ListGroup.Item>
+                          ))}
+                        </ListGroup>
+                      )}
+                    </Form.Group>
+                  </Col>
+
+                  <Col xs={12} md={4}>
+                    <Form.Group>
+                      <Form.Label className="fw-semibold">Tipo de carga</Form.Label>
+                      <Form.Select name="tipo" value={formData.tipo} onChange={handleChange} required>
+                        <option value="">Seleccionar...</option>
+                        <option>Mudanza</option>
+                        <option>Productos grandes</option>
+                        <option>Industrial</option>
+                        <option>Comercial</option>
+                      </Form.Select>
+                    </Form.Group>
+                  </Col>
+
+                  <Col xs={12} md={8}>
+                    <Form.Group>
+                      <Form.Label className="fw-semibold">Comentarios adicionales</Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        rows={1}
+                        name="comentarios"
+                        value={formData.comentarios}
+                        onChange={handleChange}
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+
+                <div className="text-end mt-3">
+                  <Button type="submit" className="fw-bold px-4 py-2" variant="info" disabled={buscando}>
+                    Continuar al pago
+                  </Button>
+                </div>
+              </Form>
             </div>
-          )}
-
-          <Form onSubmit={handleSubmit}>
-            <Row className="g-4">
-              <Col xs={12} md={6}>
-                <Form.Group>
-                  <Form.Label className="fw-semibold">Nombre</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="nombre"
-                    value={formData.nombre}
-                    onChange={handleChange}
-                    placeholder="Tu nombre"
-                    isInvalid={!!errors.nombre}
-                    required
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.nombre}
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Col>
-
-              <Col xs={12} md={6}>
-                <Form.Group>
-                  <Form.Label className="fw-semibold">Apellido</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="apellido"
-                    value={formData.apellido}
-                    onChange={handleChange}
-                    placeholder="Tu apellido"
-                    isInvalid={!!errors.apellido}
-                    required
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.apellido}
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Col>
-
-              <Col xs={12}>
-                <Form.Group>
-                  <Form.Label className="fw-semibold">Email</Form.Label>
-                  <Form.Control
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="tu@email.com"
-                    isInvalid={!!errors.email}
-                    required
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.email}
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Col>
-
-              <Col xs={12} md={6} className="position-relative">
-                <Form.Group>
-                  <Form.Label className="fw-semibold">Punto de inicio</Form.Label>
-                  <Form.Control
-                    ref={origenRef}
-                    type="text"
-                    name="origen"
-                    value={formData.origen}
-                    onChange={handleChange}
-                    required
-                  />
-                  {sugOrigen.length > 0 && (
-                    <ListGroup className="suggest-box" style={{ width: anchoOrigen }}>
-                      {sugOrigen.map((s, i) => (
-                        <ListGroup.Item key={i} action onClick={() => handleSelectSuggestion(s, "origen")}>
-                          {s.display_name}
-                        </ListGroup.Item>
-                      ))}
-                    </ListGroup>
-                  )}
-                </Form.Group>
-              </Col>
-
-              <Col xs={12} md={6} className="position-relative">
-                <Form.Group>
-                  <Form.Label className="fw-semibold">Destino</Form.Label>
-                  <Form.Control
-                    ref={destinoRef}
-                    type="text"
-                    name="destino"
-                    value={formData.destino}
-                    onChange={handleChange}
-                    required
-                  />
-                  {sugDestino.length > 0 && (
-                    <ListGroup className="suggest-box" style={{ width: anchoDestino }}>
-                      {sugDestino.map((s, i) => (
-                        <ListGroup.Item key={i} action onClick={() => handleSelectSuggestion(s, "destino")}>
-                          {s.display_name}
-                        </ListGroup.Item>
-                      ))}
-                    </ListGroup>
-                  )}
-                </Form.Group>
-              </Col>
-
-              <Col xs={12} md={4}>
-                <Form.Group>
-                  <Form.Label className="fw-semibold">Tipo de carga</Form.Label>
-                  <Form.Select name="tipo" value={formData.tipo} onChange={handleChange} required>
-                    <option value="">Seleccionar...</option>
-                    <option>Mudanza</option>
-                    <option>Productos grandes</option>
-                    <option>Industrial</option>
-                    <option>Comercial</option>
-                  </Form.Select>
-                </Form.Group>
-              </Col>
-
-              <Col xs={12} md={8}>
-                <Form.Group>
-                  <Form.Label className="fw-semibold">Comentarios adicionales</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={1}
-                    name="comentarios"
-                    value={formData.comentarios}
-                    onChange={handleChange}
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-
-            <div className="text-end mt-3">
-              <Button type="submit" className="fw-bold px-4 py-2" variant="info" disabled={buscando}>
-                Continuar al pago
-              </Button>
-            </div>
-          </Form>
+          </Collapse>
         </Card>
       )}
 
