@@ -7,14 +7,14 @@ import Collapse from 'react-bootstrap/Collapse';
 
 function ClienteUI() {
   const [mostrarForm, setMostrarForm] = useState(true);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState({ 
     nombre: "",
     apellido: "",
     email: "",
-    origen: "",
-    destino: "",
-    tipo: "",
-    comentarios: ""
+    origen: "", 
+    destino: "", 
+    tipo: "", 
+    comentarios: "" 
   })
   const [origenCoord, setOrigenCoord] = useState(null)
   const [destinoCoord, setDestinoCoord] = useState(null)
@@ -64,7 +64,7 @@ function ClienteUI() {
   useEffect(() => {
     const verificarViajeActivo = async () => {
       const emailGuardado = localStorage.getItem("clienteEmail")
-
+      
       if (!emailGuardado) {
         setCargandoViajeActivo(false)
         return
@@ -73,11 +73,11 @@ function ClienteUI() {
       try {
         console.log("Verificando viaje activo para:", emailGuardado)
         const response = await apiRequest(`/viajes/activo?email=${emailGuardado}`, "GET", null, false)
-
+        
         if (response.data?.tieneViajeActivo && response.data?.viaje) {
           const viaje = response.data.viaje
           console.log("Viaje activo encontrado:", viaje)
-
+          
           setFormData({
             nombre: viaje.nombre,
             apellido: viaje.apellido,
@@ -87,14 +87,14 @@ function ClienteUI() {
             tipo: viaje.tipo,
             comentarios: viaje.comentarios || ""
           })
-
+          
           setOrigenCoord([viaje.origenLat, viaje.origenLng])
           setDestinoCoord([viaje.destinoLat, viaje.destinoLng])
           setDistancia(viaje.distanciaKm)
           setPrecio(viaje.precio)
           setPosition([viaje.origenLat, viaje.origenLng])
           setBounds([[viaje.origenLat, viaje.origenLng], [viaje.destinoLat, viaje.destinoLng]])
-
+          
           setViajeSolicitado(true)
           setViajeData({
             id: viaje.id,
@@ -110,7 +110,7 @@ function ClienteUI() {
             estado: viaje.estado,
             pagoExitoso: true
           })
-
+          
           iniciarPollingEstado(viaje.id)
         } else {
           console.log("No hay viaje activo")
@@ -139,10 +139,10 @@ function ClienteUI() {
     pollingViajeInterval.current = setInterval(async () => {
       try {
         const response = await apiRequest(`/viajes/${viajeId}`, "GET", null, false)
-
+        
         if (response.data?.success && response.data?.viaje) {
           const viajeActualizado = response.data.viaje
-
+          
           setViajeData(prev => ({
             ...prev,
             estado: viajeActualizado.estado
@@ -178,12 +178,12 @@ function ClienteUI() {
   useEffect(() => {
     if (window.Culqi) {
       window.Culqi.publicKey = CULQI_PUBLIC_KEY
-
-      window.culqi = async function () {
+      
+      window.culqi = async function() {
         if (window.Culqi.token) {
           const token = window.Culqi.token.id
           const email = window.Culqi.token.email
-
+          
           try {
             const paymentData = {
               token: token,
@@ -204,12 +204,12 @@ function ClienteUI() {
             }
 
             const response = await apiRequest("/pagos/procesar", "POST", paymentData, false)
-
+            
             window.Culqi.close()
-
+            
             if (response.data?.success) {
               localStorage.setItem("clienteEmail", formData.email || email)
-
+              
               const viajeParaGuardar = {
                 id: response.data.data.viajeId,
                 origen: formData.origen,
@@ -220,16 +220,16 @@ function ClienteUI() {
                 chargeId: response.data.data.id,
                 estado: response.data.data.estado
               };
-
+              
               guardarViajeCliente(viajeParaGuardar);
               setEstadisticas(obtenerEstadisticasCliente());
-
+              
               setPagoExitoso(true)
-
+              
               setTimeout(() => {
                 setPagoExitoso(false)
                 setBuscando(true)
-
+                
                 setTimeout(() => {
                   setBuscando(false)
                   setViajeSolicitado(true)
@@ -247,13 +247,13 @@ function ClienteUI() {
                     estado: response.data.data.estado,
                     pagoExitoso: true
                   })
-
+                  
                   iniciarPollingEstado(response.data.data.viajeId)
                 }, 5000)
               }, 2000)
             } else {
               let friendlyError = "Error al procesar el pago"
-
+              
               if (response.data?.message) {
                 try {
                   const parsed = JSON.parse(response.data.message.replace("Error de Culqi: ", ""))
@@ -263,10 +263,10 @@ function ClienteUI() {
                   friendlyError = response.data.message
                 }
               }
-
+              
               setErrorMessage(friendlyError)
               setPagoFallido(true)
-
+              
               setTimeout(() => {
                 setPagoFallido(false)
                 setErrorMessage("")
@@ -274,9 +274,9 @@ function ClienteUI() {
             }
           } catch (error) {
             window.Culqi.close()
-
+            
             let friendlyError = "Error al procesar el pago"
-
+            
             if (error.message) {
               try {
                 const parsed = JSON.parse(error.message)
@@ -286,10 +286,10 @@ function ClienteUI() {
                 friendlyError = error.message
               }
             }
-
+            
             setErrorMessage(friendlyError)
             setPagoFallido(true)
-
+            
             setTimeout(() => {
               setPagoFallido(false)
               setErrorMessage("")
@@ -303,10 +303,10 @@ function ClienteUI() {
           const culqiError = window.Culqi.error
           const errorCode = culqiError?.decline_code || culqiError?.merchant_message
           const friendlyError = errorMessages[errorCode] || culqiError?.user_message || "Error al procesar el pago"
-
+          
           setErrorMessage(friendlyError)
           setPagoFallido(true)
-
+          
           setTimeout(() => {
             setPagoFallido(false)
             setErrorMessage("")
@@ -323,7 +323,7 @@ function ClienteUI() {
           const coords = [pos.coords.latitude, pos.coords.longitude]
           setPosition(coords)
           setOrigenCoord(coords)
-
+          
           const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords[0]}&lon=${coords[1]}`
           const res = await fetch(url)
           const data = await res.json()
@@ -331,7 +331,7 @@ function ClienteUI() {
             setFormData((prev) => ({ ...prev, origen: data.display_name }))
           }
         },
-        () => { }
+        () => {}
       )
     }
   }, [])
@@ -446,42 +446,42 @@ function ClienteUI() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
+    
     const newErrors = {}
     const nombreError = validateName(formData.nombre, "nombre")
     const apellidoError = validateName(formData.apellido, "apellido")
     const emailError = validateEmail(formData.email)
-
+    
     if (nombreError) newErrors.nombre = nombreError
     if (apellidoError) newErrors.apellido = apellidoError
     if (emailError) newErrors.email = emailError
-
+    
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
       setToastMessage("Por favor, corrige los errores en el formulario")
       setShowToast(true)
       return
     }
-
+    
     if (!origenCoord || !destinoCoord) {
       setToastMessage("Selecciona ubicaciones válidas")
       setShowToast(true)
       return
     }
-
+    
     if (!precio) {
       setToastMessage("Espera a que se calcule el precio")
       setShowToast(true)
       return
     }
-
+    
     window.Culqi.settings({
       title: 'Servicio de Transporte',
       description: `Viaje de ${distancia} km - ${formData.tipo}`,
       currency: 'PEN',
       amount: Math.round(precio * 100)
     })
-
+    
     window.Culqi.options({
       style: {
         logo: 'https://culqi.com/LogoCulqi.png',
@@ -499,13 +499,13 @@ function ClienteUI() {
         yape: false
       }
     })
-
+    
     window.Culqi.open()
   }
 
   const handleChange = (e) => {
     const { name, value } = e.target
-
+    
     if (name === "nombre" || name === "apellido") {
       const regex = /^[a-záéíóúñA-ZÁÉÍÓÚÑ\s]*$/
       if (!regex.test(value)) {
@@ -517,13 +517,13 @@ function ClienteUI() {
         setErrors(newErrors)
       }
     }
-
+    
     if (name === "email") {
       const newErrors = { ...errors }
       delete newErrors.email
       setErrors(newErrors)
     }
-
+    
     setFormData({ ...formData, [name]: value })
     if (name === "origen") searchAddress(value, setSugOrigen)
     if (name === "destino") searchAddress(value, setSugDestino)
@@ -671,7 +671,7 @@ function ClienteUI() {
             {viajeData.chargeId && (
               <div className="info-row">
                 <span className="info-label">ID de Pago:</span>
-                <span className="info-value" style={{ fontSize: '11px' }}>{viajeData.chargeId}</span>
+                <span className="info-value" style={{fontSize: '11px'}}>{viajeData.chargeId}</span>
               </div>
             )}
           </div>
@@ -687,7 +687,7 @@ function ClienteUI() {
       )}
 
       {!viajeSolicitado && (
-        <Card className="floating-card p-4 text-light " style={{zoom: "0.75"}}>
+        <Card className="floating-card p-4 text-light " style={{zoom: "0.80"}}>
           <div className="text-end">
             <Button
               size="sm"
@@ -860,7 +860,6 @@ function ClienteUI() {
           </Collapse>
         </Card>
       )}
-
 
       <style>{`
         .map-container { position: relative; width: 100%; height: 100vh; }
