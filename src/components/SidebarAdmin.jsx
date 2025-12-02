@@ -238,21 +238,6 @@ function SidebarAdmin({ isOpen, setIsOpen }) {
           </div>
 
           <NavLink
-            to="/DashBoardRegistroViajes"
-            className={({ isActive }) =>
-              `nav-link d-flex align-items-center text-white mb-2 ${isActive ? "fw-bold text-info" : ""}`
-            }
-            style={{
-              justifyContent: isOpen ? "flex-start" : "center",
-              fontSize: isOpen ? "1rem" : "1.4rem",
-              transition: "all 0.2s ease",
-            }}
-          >
-            <FaRoute className="me-2" />
-            {isOpen && "Registro de Viajes"}
-          </NavLink>
-
-          <NavLink
             to="/DashBoardContactanos"
             className={({ isActive }) =>
               `nav-link d-flex align-items-center text-white mb-2 ${isActive ? "fw-bold text-info" : ""}`

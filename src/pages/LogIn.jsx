@@ -6,6 +6,7 @@ import { useNavigate, Link } from "react-router-dom";
 import ResetPasswordModal from "../components/Auth/ResetPasswordModal";
 import PasswordInput from "../components/Auth/PasswordInput";
 
+
 function LogIn() {
   const { login, loading } = useAuth();
   const [email, setEmail] = useState("");
@@ -13,11 +14,13 @@ function LogIn() {
   const [showReset, setShowReset] = useState(false);
   const navigate = useNavigate();
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await login(email, password);
       const roles = response?.data?.roles || [];
+
 
       if (roles.includes("ROLE_CLIENTE") && roles.includes("ROLE_CONDUCTOR")) {
         navigate("/ElegCliConduc");
@@ -27,10 +30,12 @@ function LogIn() {
         console.warn("Usuario no tiene roles reconocidos");
       }
 
+
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
     }
   };
+
 
   return (
     <>
@@ -44,6 +49,7 @@ function LogIn() {
         backgroundPosition="center top"
       />
 
+
       <section
         className="py-5 text-white"
         style={{ backgroundColor: "#0a1e33" }}
@@ -56,7 +62,6 @@ function LogIn() {
             onSubmit={handleSubmit}
           >
             <div className="row g-3">
-              {/* Email */}
               <div className="col-12">
                 <input
                   type="email"
@@ -68,7 +73,7 @@ function LogIn() {
                 />
               </div>
 
-              {/* Password con ojito */}
+
               <div className="col-12">
                 <PasswordInput
                   name="password"
@@ -79,7 +84,7 @@ function LogIn() {
               </div>
             </div>
 
-            {/* Botón con loader */}
+
             <button
               type="submit"
               className="btn btn-primary w-100 mt-3 d-flex align-items-center justify-content-center"
@@ -95,7 +100,7 @@ function LogIn() {
               )}
             </button>
 
-            {/* Link: recuperar contraseña */}
+
             <div className="text-center mt-3">
               <button
                 type="button"
@@ -106,7 +111,7 @@ function LogIn() {
               </button>
             </div>
 
-            {/* Link al registro */}
+
             <div className="text-center mt-3">
               <small>
                 ¿No tienes cuenta?{" "}
@@ -129,10 +134,11 @@ function LogIn() {
         </div>
       </section>
 
-      {/* Modal Reset Password */}
+
       <ResetPasswordModal show={showReset} onHide={() => setShowReset(false)} />
     </>
   );
 }
+
 
 export default LogIn;
