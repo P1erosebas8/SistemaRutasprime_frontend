@@ -3,16 +3,18 @@ import { Card, Form, Button, Row, Col, ListGroup, Spinner, Toast, ToastContainer
 import GoogleMapView from "../components/GoogleMapView"
 import { apiRequest } from "../services/api"
 import { guardarViajeCliente, obtenerEstadisticasCliente } from "../services/storageService"
+import Collapse from 'react-bootstrap/Collapse';
 
 function ClienteUI() {
-  const [formData, setFormData] = useState({ 
+  const [mostrarForm, setMostrarForm] = useState(true);
+  const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
     email: "",
-    origen: "", 
-    destino: "", 
-    tipo: "", 
-    comentarios: "" 
+    origen: "",
+    destino: "",
+    tipo: "",
+    comentarios: ""
   })
   const [origenCoord, setOrigenCoord] = useState(null)
   const [destinoCoord, setDestinoCoord] = useState(null)
@@ -62,7 +64,7 @@ function ClienteUI() {
   useEffect(() => {
     const verificarViajeActivo = async () => {
       const emailGuardado = localStorage.getItem("clienteEmail")
-      
+
       if (!emailGuardado) {
         setCargandoViajeActivo(false)
         return
@@ -71,11 +73,11 @@ function ClienteUI() {
       try {
         console.log("Verificando viaje activo para:", emailGuardado)
         const response = await apiRequest(`/viajes/activo?email=${emailGuardado}`, "GET", null, false)
-        
+
         if (response.data?.tieneViajeActivo && response.data?.viaje) {
           const viaje = response.data.viaje
           console.log("Viaje activo encontrado:", viaje)
-          
+
           setFormData({
             nombre: viaje.nombre,
             apellido: viaje.apellido,
@@ -85,14 +87,14 @@ function ClienteUI() {
             tipo: viaje.tipo,
             comentarios: viaje.comentarios || ""
           })
-          
+
           setOrigenCoord([viaje.origenLat, viaje.origenLng])
           setDestinoCoord([viaje.destinoLat, viaje.destinoLng])
           setDistancia(viaje.distanciaKm)
           setPrecio(viaje.precio)
           setPosition([viaje.origenLat, viaje.origenLng])
           setBounds([[viaje.origenLat, viaje.origenLng], [viaje.destinoLat, viaje.destinoLng]])
-          
+
           setViajeSolicitado(true)
           setViajeData({
             id: viaje.id,
@@ -108,7 +110,7 @@ function ClienteUI() {
             estado: viaje.estado,
             pagoExitoso: true
           })
-          
+
           iniciarPollingEstado(viaje.id)
         } else {
           console.log("No hay viaje activo")
@@ -137,10 +139,10 @@ function ClienteUI() {
     pollingViajeInterval.current = setInterval(async () => {
       try {
         const response = await apiRequest(`/viajes/${viajeId}`, "GET", null, false)
-        
+
         if (response.data?.success && response.data?.viaje) {
           const viajeActualizado = response.data.viaje
-          
+
           setViajeData(prev => ({
             ...prev,
             estado: viajeActualizado.estado
@@ -176,12 +178,12 @@ function ClienteUI() {
   useEffect(() => {
     if (window.Culqi) {
       window.Culqi.publicKey = CULQI_PUBLIC_KEY
-      
-      window.culqi = async function() {
+
+      window.culqi = async function () {
         if (window.Culqi.token) {
           const token = window.Culqi.token.id
           const email = window.Culqi.token.email
-          
+
           try {
             const paymentData = {
               token: token,
@@ -202,12 +204,12 @@ function ClienteUI() {
             }
 
             const response = await apiRequest("/pagos/procesar", "POST", paymentData, false)
-            
+
             window.Culqi.close()
-            
+
             if (response.data?.success) {
               localStorage.setItem("clienteEmail", formData.email || email)
-              
+
               const viajeParaGuardar = {
                 id: response.data.data.viajeId,
                 origen: formData.origen,
@@ -218,16 +220,16 @@ function ClienteUI() {
                 chargeId: response.data.data.id,
                 estado: response.data.data.estado
               };
-              
+
               guardarViajeCliente(viajeParaGuardar);
               setEstadisticas(obtenerEstadisticasCliente());
-              
+
               setPagoExitoso(true)
-              
+
               setTimeout(() => {
                 setPagoExitoso(false)
                 setBuscando(true)
-                
+
                 setTimeout(() => {
                   setBuscando(false)
                   setViajeSolicitado(true)
@@ -245,13 +247,13 @@ function ClienteUI() {
                     estado: response.data.data.estado,
                     pagoExitoso: true
                   })
-                  
+
                   iniciarPollingEstado(response.data.data.viajeId)
                 }, 5000)
               }, 2000)
             } else {
               let friendlyError = "Error al procesar el pago"
-              
+
               if (response.data?.message) {
                 try {
                   const parsed = JSON.parse(response.data.message.replace("Error de Culqi: ", ""))
@@ -261,10 +263,10 @@ function ClienteUI() {
                   friendlyError = response.data.message
                 }
               }
-              
+
               setErrorMessage(friendlyError)
               setPagoFallido(true)
-              
+
               setTimeout(() => {
                 setPagoFallido(false)
                 setErrorMessage("")
@@ -272,9 +274,9 @@ function ClienteUI() {
             }
           } catch (error) {
             window.Culqi.close()
-            
+
             let friendlyError = "Error al procesar el pago"
-            
+
             if (error.message) {
               try {
                 const parsed = JSON.parse(error.message)
@@ -284,10 +286,10 @@ function ClienteUI() {
                 friendlyError = error.message
               }
             }
-            
+
             setErrorMessage(friendlyError)
             setPagoFallido(true)
-            
+
             setTimeout(() => {
               setPagoFallido(false)
               setErrorMessage("")
@@ -301,10 +303,10 @@ function ClienteUI() {
           const culqiError = window.Culqi.error
           const errorCode = culqiError?.decline_code || culqiError?.merchant_message
           const friendlyError = errorMessages[errorCode] || culqiError?.user_message || "Error al procesar el pago"
-          
+
           setErrorMessage(friendlyError)
           setPagoFallido(true)
-          
+
           setTimeout(() => {
             setPagoFallido(false)
             setErrorMessage("")
@@ -321,7 +323,7 @@ function ClienteUI() {
           const coords = [pos.coords.latitude, pos.coords.longitude]
           setPosition(coords)
           setOrigenCoord(coords)
-          
+
           const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords[0]}&lon=${coords[1]}`
           const res = await fetch(url)
           const data = await res.json()
@@ -329,7 +331,7 @@ function ClienteUI() {
             setFormData((prev) => ({ ...prev, origen: data.display_name }))
           }
         },
-        () => {}
+        () => { }
       )
     }
   }, [])
@@ -444,42 +446,42 @@ function ClienteUI() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
+
     const newErrors = {}
     const nombreError = validateName(formData.nombre, "nombre")
     const apellidoError = validateName(formData.apellido, "apellido")
     const emailError = validateEmail(formData.email)
-    
+
     if (nombreError) newErrors.nombre = nombreError
     if (apellidoError) newErrors.apellido = apellidoError
     if (emailError) newErrors.email = emailError
-    
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
       setToastMessage("Por favor, corrige los errores en el formulario")
       setShowToast(true)
       return
     }
-    
+
     if (!origenCoord || !destinoCoord) {
       setToastMessage("Selecciona ubicaciones válidas")
       setShowToast(true)
       return
     }
-    
+
     if (!precio) {
       setToastMessage("Espera a que se calcule el precio")
       setShowToast(true)
       return
     }
-    
+
     window.Culqi.settings({
       title: 'Servicio de Transporte',
       description: `Viaje de ${distancia} km - ${formData.tipo}`,
       currency: 'PEN',
       amount: Math.round(precio * 100)
     })
-    
+
     window.Culqi.options({
       style: {
         logo: 'https://culqi.com/LogoCulqi.png',
@@ -497,13 +499,13 @@ function ClienteUI() {
         yape: false
       }
     })
-    
+
     window.Culqi.open()
   }
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    
+
     if (name === "nombre" || name === "apellido") {
       const regex = /^[a-záéíóúñA-ZÁÉÍÓÚÑ\s]*$/
       if (!regex.test(value)) {
@@ -515,13 +517,13 @@ function ClienteUI() {
         setErrors(newErrors)
       }
     }
-    
+
     if (name === "email") {
       const newErrors = { ...errors }
       delete newErrors.email
       setErrors(newErrors)
     }
-    
+
     setFormData({ ...formData, [name]: value })
     if (name === "origen") searchAddress(value, setSugOrigen)
     if (name === "destino") searchAddress(value, setSugDestino)
@@ -669,7 +671,7 @@ function ClienteUI() {
             {viajeData.chargeId && (
               <div className="info-row">
                 <span className="info-label">ID de Pago:</span>
-                <span className="info-value" style={{fontSize: '11px'}}>{viajeData.chargeId}</span>
+                <span className="info-value" style={{ fontSize: '11px' }}>{viajeData.chargeId}</span>
               </div>
             )}
           </div>
@@ -685,162 +687,180 @@ function ClienteUI() {
       )}
 
       {!viajeSolicitado && (
-        <Card className="floating-card p-4 text-light">
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <h4 className="fw-bold">Solicitar un servicio</h4>
-            <Button className="invert-btn" onClick={invertir}>⇅</Button>
+        <Card className="floating-card p-4 text-light " style={{zoom: "0.75"}}>
+          <div className="text-end">
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => setMostrarForm(!mostrarForm)}
+              className="mb-2"
+              style={{backgroundColor:"#16a094ff"}}
+            >
+              {mostrarForm ? "Ocultar formulario 🔼" : "Mostrar formulario 🔽"}
+            </Button>
           </div>
 
-          {precio && distancia && (
-            <div className="price-box mb-3">
-              <div>
-                <span className="price-title">Distancia:</span>
-                <span className="price-subtitle"> {distancia} km</span>
+          <Collapse in={mostrarForm}>
+            <div>
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h4 className="fw-bold">Solicitar un servicio</h4>
+                <Button className="invert-btn" onClick={invertir}>⇅</Button>
               </div>
-              <div>
-                <span className="price-title">Costo estimado:</span>
-                <span className="price-value"> S/ {precio}</span>
-              </div>
+
+              {precio && distancia && (
+                <div className="price-box mb-3">
+                  <div>
+                    <span className="price-title">Distancia:</span>
+                    <span className="price-subtitle"> {distancia} km</span>
+                  </div>
+                  <div>
+                    <span className="price-title">Costo estimado:</span>
+                    <span className="price-value"> S/ {precio}</span>
+                  </div>
+                </div>
+              )}
+
+              <Form onSubmit={handleSubmit}>
+                <Row className="g-4">
+
+                  <Col xs={12} md={6}>
+                    <Form.Group>
+                      <Form.Label className="fw-semibold">Nombre</Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="nombre"
+                        value={formData.nombre}
+                        onChange={handleChange}
+                        placeholder="Tu nombre"
+                        isInvalid={!!errors.nombre}
+                        required
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.nombre}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+
+                  <Col xs={12} md={6}>
+                    <Form.Group>
+                      <Form.Label className="fw-semibold">Apellido</Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="apellido"
+                        value={formData.apellido}
+                        onChange={handleChange}
+                        placeholder="Tu apellido"
+                        isInvalid={!!errors.apellido}
+                        required
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.apellido}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+
+                  <Col xs={12}>
+                    <Form.Group>
+                      <Form.Label className="fw-semibold">Email</Form.Label>
+                      <Form.Control
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="tu@email.com"
+                        isInvalid={!!errors.email}
+                        required
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.email}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+
+                  <Col xs={12} md={6} className="position-relative">
+                    <Form.Group>
+                      <Form.Label className="fw-semibold">Punto de inicio</Form.Label>
+                      <Form.Control
+                        ref={origenRef}
+                        type="text"
+                        name="origen"
+                        value={formData.origen}
+                        onChange={handleChange}
+                        required
+                      />
+                      {sugOrigen.length > 0 && (
+                        <ListGroup className="suggest-box" style={{ width: anchoOrigen }}>
+                          {sugOrigen.map((s, i) => (
+                            <ListGroup.Item key={i} action onClick={() => handleSelectSuggestion(s, "origen")}>
+                              {s.display_name}
+                            </ListGroup.Item>
+                          ))}
+                        </ListGroup>
+                      )}
+                    </Form.Group>
+                  </Col>
+
+                  <Col xs={12} md={6} className="position-relative">
+                    <Form.Group>
+                      <Form.Label className="fw-semibold">Destino</Form.Label>
+                      <Form.Control
+                        ref={destinoRef}
+                        type="text"
+                        name="destino"
+                        value={formData.destino}
+                        onChange={handleChange}
+                        required
+                      />
+                      {sugDestino.length > 0 && (
+                        <ListGroup className="suggest-box" style={{ width: anchoDestino }}>
+                          {sugDestino.map((s, i) => (
+                            <ListGroup.Item key={i} action onClick={() => handleSelectSuggestion(s, "destino")}>
+                              {s.display_name}
+                            </ListGroup.Item>
+                          ))}
+                        </ListGroup>
+                      )}
+                    </Form.Group>
+                  </Col>
+
+                  <Col xs={12} md={4}>
+                    <Form.Group>
+                      <Form.Label className="fw-semibold">Tipo de carga</Form.Label>
+                      <Form.Select name="tipo" value={formData.tipo} onChange={handleChange} required>
+                        <option value="">Seleccionar...</option>
+                        <option>Mudanza</option>
+                        <option>Productos grandes</option>
+                        <option>Industrial</option>
+                        <option>Comercial</option>
+                      </Form.Select>
+                    </Form.Group>
+                  </Col>
+
+                  <Col xs={12} md={8}>
+                    <Form.Group>
+                      <Form.Label className="fw-semibold">Comentarios adicionales</Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        rows={1}
+                        name="comentarios"
+                        value={formData.comentarios}
+                        onChange={handleChange}
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+
+                <div className="text-end mt-3">
+                  <Button type="submit" className="fw-bold px-4 py-2" variant="info" disabled={buscando}>
+                    Continuar al pago
+                  </Button>
+                </div>
+              </Form>
             </div>
-          )}
-
-          <Form onSubmit={handleSubmit}>
-            <Row className="g-4">
-              <Col xs={12} md={6}>
-                <Form.Group>
-                  <Form.Label className="fw-semibold">Nombre</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="nombre"
-                    value={formData.nombre}
-                    onChange={handleChange}
-                    placeholder="Tu nombre"
-                    isInvalid={!!errors.nombre}
-                    required
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.nombre}
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Col>
-
-              <Col xs={12} md={6}>
-                <Form.Group>
-                  <Form.Label className="fw-semibold">Apellido</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="apellido"
-                    value={formData.apellido}
-                    onChange={handleChange}
-                    placeholder="Tu apellido"
-                    isInvalid={!!errors.apellido}
-                    required
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.apellido}
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Col>
-
-              <Col xs={12}>
-                <Form.Group>
-                  <Form.Label className="fw-semibold">Email</Form.Label>
-                  <Form.Control
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="tu@email.com"
-                    isInvalid={!!errors.email}
-                    required
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.email}
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Col>
-
-              <Col xs={12} md={6} className="position-relative">
-                <Form.Group>
-                  <Form.Label className="fw-semibold">Punto de inicio</Form.Label>
-                  <Form.Control
-                    ref={origenRef}
-                    type="text"
-                    name="origen"
-                    value={formData.origen}
-                    onChange={handleChange}
-                    required
-                  />
-                  {sugOrigen.length > 0 && (
-                    <ListGroup className="suggest-box" style={{ width: anchoOrigen }}>
-                      {sugOrigen.map((s, i) => (
-                        <ListGroup.Item key={i} action onClick={() => handleSelectSuggestion(s, "origen")}>
-                          {s.display_name}
-                        </ListGroup.Item>
-                      ))}
-                    </ListGroup>
-                  )}
-                </Form.Group>
-              </Col>
-
-              <Col xs={12} md={6} className="position-relative">
-                <Form.Group>
-                  <Form.Label className="fw-semibold">Destino</Form.Label>
-                  <Form.Control
-                    ref={destinoRef}
-                    type="text"
-                    name="destino"
-                    value={formData.destino}
-                    onChange={handleChange}
-                    required
-                  />
-                  {sugDestino.length > 0 && (
-                    <ListGroup className="suggest-box" style={{ width: anchoDestino }}>
-                      {sugDestino.map((s, i) => (
-                        <ListGroup.Item key={i} action onClick={() => handleSelectSuggestion(s, "destino")}>
-                          {s.display_name}
-                        </ListGroup.Item>
-                      ))}
-                    </ListGroup>
-                  )}
-                </Form.Group>
-              </Col>
-
-              <Col xs={12} md={4}>
-                <Form.Group>
-                  <Form.Label className="fw-semibold">Tipo de carga</Form.Label>
-                  <Form.Select name="tipo" value={formData.tipo} onChange={handleChange} required>
-                    <option value="">Seleccionar...</option>
-                    <option>Mudanza</option>
-                    <option>Productos grandes</option>
-                    <option>Industrial</option>
-                    <option>Comercial</option>
-                  </Form.Select>
-                </Form.Group>
-              </Col>
-
-              <Col xs={12} md={8}>
-                <Form.Group>
-                  <Form.Label className="fw-semibold">Comentarios adicionales</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={1}
-                    name="comentarios"
-                    value={formData.comentarios}
-                    onChange={handleChange}
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-
-            <div className="text-end mt-3">
-              <Button type="submit" className="fw-bold px-4 py-2" variant="info" disabled={buscando}>
-                Continuar al pago
-              </Button>
-            </div>
-          </Form>
+          </Collapse>
         </Card>
       )}
+
 
       <style>{`
         .map-container { position: relative; width: 100%; height: 100vh; }
