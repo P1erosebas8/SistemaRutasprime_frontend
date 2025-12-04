@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Spinner, Button } from "react-bootstrap"
 
+
 export const FormularioConductor = ({ 
   viajeActivo, 
   estadoViaje, 
@@ -11,6 +12,8 @@ export const FormularioConductor = ({
   onFinalizarViaje
 }) => {
   const [activeSection, setActiveSection] = useState("buscar")
+  const [finalizando, setFinalizando] = useState(false)
+
 
   const getEstadoTexto = (estado) => {
     const estados = {
@@ -21,6 +24,7 @@ export const FormularioConductor = ({
     return estados[estado] || estado
   }
 
+
   const getEstadoColor = (estado) => {
     const colores = {
       'encontrado': '#2196f3',
@@ -29,6 +33,19 @@ export const FormularioConductor = ({
     }
     return colores[estado] || '#666'
   }
+
+
+  const handleFinalizarViaje = async () => {
+    setFinalizando(true)
+    try {
+      await onFinalizarViaje()
+    } catch (error) {
+      console.error("Error al finalizar viaje:", error)
+    } finally {
+      setFinalizando(false)
+    }
+  }
+
 
   const getBotonAccion = () => {
     switch(estadoViaje) {
@@ -54,15 +71,31 @@ export const FormularioConductor = ({
         return (
           <Button 
             className="action-btn success-btn" 
-            onClick={onFinalizarViaje}
+            onClick={handleFinalizarViaje}
+            disabled={finalizando}
           >
-            Finalizar viaje
+            {finalizando ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                  style={{ marginRight: '8px' }}
+                />
+                Procesando...
+              </>
+            ) : (
+              'Finalizar viaje'
+            )}
           </Button>
         )
       default:
         return null
     }
   }
+
 
   return (
     <div className="sidebar-wrapper">
@@ -83,6 +116,7 @@ export const FormularioConductor = ({
         </div>
       </div>
 
+
       <div className="sidebar-content-scroll">
         {activeSection === "buscar" ? (
           <div className="content-inner">
@@ -98,18 +132,22 @@ export const FormularioConductor = ({
                   </div>
                 </div>
 
+
                 <div className="viaje-details-card">
                   <div className="detail-row">
                     <span className="detail-label">Cliente</span>
                     <span className="detail-value">{viajeActivo.cliente}</span>
                   </div>
 
+
                   <div className="detail-row">
                     <span className="detail-label">Tipo de servicio</span>
                     <span className="detail-value">{viajeActivo.tipo}</span>
                   </div>
 
+
                   <div className="detail-separator"></div>
+
 
                   <div className="detail-row">
                     <span className="detail-label">Origen</span>
@@ -120,6 +158,7 @@ export const FormularioConductor = ({
                     </span>
                   </div>
 
+
                   <div className="detail-row">
                     <span className="detail-label">Destino</span>
                     <span className="detail-value-address">
@@ -129,6 +168,7 @@ export const FormularioConductor = ({
                     </span>
                   </div>
 
+
                   {viajeActivo.comentarios && (
                     <div className="detail-row">
                       <span className="detail-label">Comentarios</span>
@@ -136,12 +176,15 @@ export const FormularioConductor = ({
                     </div>
                   )}
 
+
                   <div className="detail-separator"></div>
+
 
                   <div className="detail-row highlight">
                     <span className="detail-label">Distancia</span>
                     <span className="detail-value-highlight">{viajeActivo.distancia} km</span>
                   </div>
+
 
                   <div className="detail-row highlight">
                     <span className="detail-label">Tu ganancia</span>
@@ -150,6 +193,7 @@ export const FormularioConductor = ({
                     </span>
                   </div>
                 </div>
+
 
                 <div className="action-container">
                   {getBotonAccion()}
@@ -180,6 +224,7 @@ export const FormularioConductor = ({
           <div className="content-inner">
             <h2 className="main-title">Tus Ganancias</h2>
 
+
             {estadisticas && estadisticas.totalViajes > 0 ? (
               <div className="stats-wrapper">
                 <div className="stat-box box-blue">
@@ -187,10 +232,12 @@ export const FormularioConductor = ({
                   <div className="stat-desc">Viajes completados</div>
                 </div>
 
+
                 <div className="stat-box box-green">
                   <div className="stat-num">S/ {estadisticas.gananciaTotal.toFixed(2)}</div>
                   <div className="stat-desc">Total ganado</div>
                 </div>
+
 
                 <div className="stat-box box-purple">
                   <div className="stat-num">{estadisticas.distanciaTotal.toFixed(2)} km</div>
@@ -207,6 +254,7 @@ export const FormularioConductor = ({
         )}
       </div>
 
+
       <style>{`
         .sidebar-wrapper {
           width: 100%;
@@ -216,6 +264,7 @@ export const FormularioConductor = ({
           flex-direction: column;
           overflow: hidden;
         }
+
 
         .sidebar-header-fixed {
           position: sticky;
@@ -227,10 +276,12 @@ export const FormularioConductor = ({
           flex-shrink: 0;
         }
 
+
         .tabs-container {
           display: flex;
           padding: 0;
         }
+
 
         .tab-btn {
           flex: 1;
@@ -245,16 +296,19 @@ export const FormularioConductor = ({
           border-bottom: 3px solid transparent;
         }
 
+
         .tab-btn.active {
           color: #000;
           border-bottom-color: #000;
           background: #fafafa;
         }
 
+
         .tab-btn:hover:not(.active) {
           background: #f5f5f5;
           color: #333;
         }
+
 
         .sidebar-content-scroll {
           flex: 1;
@@ -263,40 +317,49 @@ export const FormularioConductor = ({
           -webkit-overflow-scrolling: touch;
         }
 
+
         .sidebar-content-scroll::-webkit-scrollbar {
           width: 6px;
         }
 
+
         .sidebar-content-scroll::-webkit-scrollbar-track {
           background: #f5f5f5;
         }
+
 
         .sidebar-content-scroll::-webkit-scrollbar-thumb {
           background: #ccc;
           border-radius: 10px;
         }
 
+
         .sidebar-content-scroll::-webkit-scrollbar-thumb:hover {
           background: #999;
         }
+
 
         .content-inner {
           padding: 24px;
           max-width: 100%;
         }
 
+
         .viaje-activo-container {
           animation: fadeIn 0.3s ease;
         }
+
 
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(10px); }
           to { opacity: 1; transform: translateY(0); }
         }
 
+
         .viaje-header-active {
           margin-bottom: 24px;
         }
+
 
         .main-title {
           font-size: 26px;
@@ -304,6 +367,7 @@ export const FormularioConductor = ({
           color: #000;
           margin: 0 0 12px 0;
         }
+
 
         .estado-badge-active {
           display: inline-flex;
@@ -316,12 +380,14 @@ export const FormularioConductor = ({
           font-weight: 600;
         }
 
+
         .viaje-details-card {
           background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
           border-radius: 12px;
           padding: 24px;
           margin-bottom: 20px;
         }
+
 
         .detail-row {
           display: flex;
@@ -331,12 +397,14 @@ export const FormularioConductor = ({
           gap: 16px;
         }
 
+
         .detail-row.highlight {
           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
           margin: 0 -24px;
           padding: 16px 24px;
           color: white;
         }
+
 
         .detail-label {
           font-size: 13px;
@@ -346,9 +414,11 @@ export const FormularioConductor = ({
           flex-shrink: 0;
         }
 
+
         .detail-row.highlight .detail-label {
           color: rgba(255, 255, 255, 0.9);
         }
+
 
         .detail-value {
           font-size: 14px;
@@ -356,6 +426,7 @@ export const FormularioConductor = ({
           color: #000;
           text-align: right;
         }
+
 
         .detail-value-address {
           font-size: 13px;
@@ -365,15 +436,18 @@ export const FormularioConductor = ({
           line-height: 1.5;
         }
 
+
         .detail-value-highlight {
           font-size: 18px;
           font-weight: 800;
           color: white;
         }
 
+
         .detail-value-highlight.price {
           font-size: 24px;
         }
+
 
         .detail-separator {
           height: 1px;
@@ -381,9 +455,11 @@ export const FormularioConductor = ({
           margin: 8px 0;
         }
 
+
         .action-container {
           margin-top: 20px;
         }
+
 
         .action-btn {
           width: 100%;
@@ -397,25 +473,36 @@ export const FormularioConductor = ({
           box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
         }
 
-        .action-btn:hover {
+
+        .action-btn:hover:not(:disabled) {
           transform: translateY(-2px);
           box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
         }
+
+
+        .action-btn:disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
+        }
+
 
         .primary-btn {
           background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
           color: white;
         }
 
+
         .warning-btn {
           background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
           color: white;
         }
 
+
         .success-btn {
           background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
           color: white;
         }
+
 
         .buscando-container,
         .empty-container {
@@ -423,17 +510,20 @@ export const FormularioConductor = ({
           padding: 60px 20px;
         }
 
+
         .buscando-icon,
         .empty-icon {
           margin: 0 auto 24px;
           font-size: 60px;
         }
 
+
         .spinner-buscar {
           width: 60px;
           height: 60px;
           color: #667eea;
         }
+
 
         .buscando-text,
         .empty-text {
@@ -443,12 +533,14 @@ export const FormularioConductor = ({
           margin-top: 12px;
         }
 
+
         .searching-dots {
           display: flex;
           justify-content: center;
           gap: 8px;
           margin-top: 20px;
         }
+
 
         .searching-dots span {
           width: 12px;
@@ -458,18 +550,22 @@ export const FormularioConductor = ({
           animation: bounce 1.4s infinite ease-in-out both;
         }
 
+
         .searching-dots span:nth-child(1) {
           animation-delay: -0.32s;
         }
+
 
         .searching-dots span:nth-child(2) {
           animation-delay: -0.16s;
         }
 
+
         @keyframes bounce {
           0%, 80%, 100% { transform: scale(0); }
           40% { transform: scale(1); }
         }
+
 
         .stats-wrapper {
           display: flex;
@@ -477,6 +573,7 @@ export const FormularioConductor = ({
           gap: 16px;
           margin-top: 24px;
         }
+
 
         .stat-box {
           padding: 24px;
@@ -486,25 +583,30 @@ export const FormularioConductor = ({
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
+
         .stat-box:hover {
           transform: translateX(6px);
           box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
         }
+
 
         .stat-box.box-blue {
           background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
           border-left-color: #2196f3;
         }
 
+
         .stat-box.box-green {
           background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
           border-left-color: #4caf50;
         }
 
+
         .stat-box.box-purple {
           background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
           border-left-color: #9c27b0;
         }
+
 
         .stat-num {
           font-size: 32px;
@@ -514,16 +616,19 @@ export const FormularioConductor = ({
           line-height: 1;
         }
 
+
         .stat-desc {
           font-size: 14px;
           font-weight: 600;
           color: #555;
         }
 
+
         .empty-box {
           text-align: center;
           padding: 80px 20px;
         }
+
 
         .empty-title {
           font-size: 20px;
@@ -532,32 +637,39 @@ export const FormularioConductor = ({
           margin-bottom: 12px;
         }
 
+
         @media (max-width: 768px) {
           .content-inner {
             padding: 20px 16px;
           }
 
+
           .main-title {
             font-size: 22px;
           }
 
+
           .stat-num {
             font-size: 28px;
           }
+
 
           .tab-btn {
             padding: 16px 20px;
             font-size: 14px;
           }
 
+
           .detail-row {
             flex-direction: column;
             gap: 4px;
           }
 
+
           .detail-label {
             min-width: auto;
           }
+
 
           .detail-value,
           .detail-value-address {
