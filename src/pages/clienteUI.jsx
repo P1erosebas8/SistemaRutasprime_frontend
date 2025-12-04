@@ -6,15 +6,16 @@ import { guardarViajeCliente, obtenerEstadisticasCliente } from "../services/sto
 import Collapse from 'react-bootstrap/Collapse';
 
 function ClienteUI() {
+  const [openSection, setOpenSection] = useState([]);
   const [mostrarForm, setMostrarForm] = useState(true);
-  const [formData, setFormData] = useState({ 
+  const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
     email: "",
-    origen: "", 
-    destino: "", 
-    tipo: "", 
-    comentarios: "" 
+    origen: "",
+    destino: "",
+    tipo: "",
+    comentarios: ""
   })
   const [origenCoord, setOrigenCoord] = useState(null)
   const [destinoCoord, setDestinoCoord] = useState(null)
@@ -64,7 +65,7 @@ function ClienteUI() {
   useEffect(() => {
     const verificarViajeActivo = async () => {
       const emailGuardado = localStorage.getItem("clienteEmail")
-      
+
       if (!emailGuardado) {
         setCargandoViajeActivo(false)
         return
@@ -73,11 +74,11 @@ function ClienteUI() {
       try {
         console.log("Verificando viaje activo para:", emailGuardado)
         const response = await apiRequest(`/viajes/activo?email=${emailGuardado}`, "GET", null, false)
-        
+
         if (response.data?.tieneViajeActivo && response.data?.viaje) {
           const viaje = response.data.viaje
           console.log("Viaje activo encontrado:", viaje)
-          
+
           setFormData({
             nombre: viaje.nombre,
             apellido: viaje.apellido,
@@ -87,14 +88,14 @@ function ClienteUI() {
             tipo: viaje.tipo,
             comentarios: viaje.comentarios || ""
           })
-          
+
           setOrigenCoord([viaje.origenLat, viaje.origenLng])
           setDestinoCoord([viaje.destinoLat, viaje.destinoLng])
           setDistancia(viaje.distanciaKm)
           setPrecio(viaje.precio)
           setPosition([viaje.origenLat, viaje.origenLng])
           setBounds([[viaje.origenLat, viaje.origenLng], [viaje.destinoLat, viaje.destinoLng]])
-          
+
           setViajeSolicitado(true)
           setViajeData({
             id: viaje.id,
@@ -110,7 +111,7 @@ function ClienteUI() {
             estado: viaje.estado,
             pagoExitoso: true
           })
-          
+
           iniciarPollingEstado(viaje.id)
         } else {
           console.log("No hay viaje activo")
@@ -139,10 +140,10 @@ function ClienteUI() {
     pollingViajeInterval.current = setInterval(async () => {
       try {
         const response = await apiRequest(`/viajes/${viajeId}`, "GET", null, false)
-        
+
         if (response.data?.success && response.data?.viaje) {
           const viajeActualizado = response.data.viaje
-          
+
           setViajeData(prev => ({
             ...prev,
             estado: viajeActualizado.estado
@@ -178,12 +179,12 @@ function ClienteUI() {
   useEffect(() => {
     if (window.Culqi) {
       window.Culqi.publicKey = CULQI_PUBLIC_KEY
-      
-      window.culqi = async function() {
+
+      window.culqi = async function () {
         if (window.Culqi.token) {
           const token = window.Culqi.token.id
           const email = window.Culqi.token.email
-          
+
           try {
             const paymentData = {
               token: token,
@@ -204,12 +205,12 @@ function ClienteUI() {
             }
 
             const response = await apiRequest("/pagos/procesar", "POST", paymentData, false)
-            
+
             window.Culqi.close()
-            
+
             if (response.data?.success) {
               localStorage.setItem("clienteEmail", formData.email || email)
-              
+
               const viajeParaGuardar = {
                 id: response.data.data.viajeId,
                 origen: formData.origen,
@@ -220,16 +221,16 @@ function ClienteUI() {
                 chargeId: response.data.data.id,
                 estado: response.data.data.estado
               };
-              
+
               guardarViajeCliente(viajeParaGuardar);
               setEstadisticas(obtenerEstadisticasCliente());
-              
+
               setPagoExitoso(true)
-              
+
               setTimeout(() => {
                 setPagoExitoso(false)
                 setBuscando(true)
-                
+
                 setTimeout(() => {
                   setBuscando(false)
                   setViajeSolicitado(true)
@@ -247,13 +248,13 @@ function ClienteUI() {
                     estado: response.data.data.estado,
                     pagoExitoso: true
                   })
-                  
+
                   iniciarPollingEstado(response.data.data.viajeId)
                 }, 5000)
               }, 2000)
             } else {
               let friendlyError = "Error al procesar el pago"
-              
+
               if (response.data?.message) {
                 try {
                   const parsed = JSON.parse(response.data.message.replace("Error de Culqi: ", ""))
@@ -263,10 +264,10 @@ function ClienteUI() {
                   friendlyError = response.data.message
                 }
               }
-              
+
               setErrorMessage(friendlyError)
               setPagoFallido(true)
-              
+
               setTimeout(() => {
                 setPagoFallido(false)
                 setErrorMessage("")
@@ -274,9 +275,9 @@ function ClienteUI() {
             }
           } catch (error) {
             window.Culqi.close()
-            
+
             let friendlyError = "Error al procesar el pago"
-            
+
             if (error.message) {
               try {
                 const parsed = JSON.parse(error.message)
@@ -286,10 +287,10 @@ function ClienteUI() {
                 friendlyError = error.message
               }
             }
-            
+
             setErrorMessage(friendlyError)
             setPagoFallido(true)
-            
+
             setTimeout(() => {
               setPagoFallido(false)
               setErrorMessage("")
@@ -303,10 +304,10 @@ function ClienteUI() {
           const culqiError = window.Culqi.error
           const errorCode = culqiError?.decline_code || culqiError?.merchant_message
           const friendlyError = errorMessages[errorCode] || culqiError?.user_message || "Error al procesar el pago"
-          
+
           setErrorMessage(friendlyError)
           setPagoFallido(true)
-          
+
           setTimeout(() => {
             setPagoFallido(false)
             setErrorMessage("")
@@ -323,7 +324,7 @@ function ClienteUI() {
           const coords = [pos.coords.latitude, pos.coords.longitude]
           setPosition(coords)
           setOrigenCoord(coords)
-          
+
           const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords[0]}&lon=${coords[1]}`
           const res = await fetch(url)
           const data = await res.json()
@@ -331,7 +332,7 @@ function ClienteUI() {
             setFormData((prev) => ({ ...prev, origen: data.display_name }))
           }
         },
-        () => {}
+        () => { }
       )
     }
   }, [])
@@ -446,42 +447,42 @@ function ClienteUI() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
+
     const newErrors = {}
     const nombreError = validateName(formData.nombre, "nombre")
     const apellidoError = validateName(formData.apellido, "apellido")
     const emailError = validateEmail(formData.email)
-    
+
     if (nombreError) newErrors.nombre = nombreError
     if (apellidoError) newErrors.apellido = apellidoError
     if (emailError) newErrors.email = emailError
-    
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
       setToastMessage("Por favor, corrige los errores en el formulario")
       setShowToast(true)
       return
     }
-    
+
     if (!origenCoord || !destinoCoord) {
       setToastMessage("Selecciona ubicaciones válidas")
       setShowToast(true)
       return
     }
-    
+
     if (!precio) {
       setToastMessage("Espera a que se calcule el precio")
       setShowToast(true)
       return
     }
-    
+
     window.Culqi.settings({
       title: 'Servicio de Transporte',
       description: `Viaje de ${distancia} km - ${formData.tipo}`,
       currency: 'PEN',
       amount: Math.round(precio * 100)
     })
-    
+
     window.Culqi.options({
       style: {
         logo: 'https://culqi.com/LogoCulqi.png',
@@ -499,13 +500,13 @@ function ClienteUI() {
         yape: false
       }
     })
-    
+
     window.Culqi.open()
   }
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    
+
     if (name === "nombre" || name === "apellido") {
       const regex = /^[a-záéíóúñA-ZÁÉÍÓÚÑ\s]*$/
       if (!regex.test(value)) {
@@ -517,13 +518,13 @@ function ClienteUI() {
         setErrors(newErrors)
       }
     }
-    
+
     if (name === "email") {
       const newErrors = { ...errors }
       delete newErrors.email
       setErrors(newErrors)
     }
-    
+
     setFormData({ ...formData, [name]: value })
     if (name === "origen") searchAddress(value, setSugOrigen)
     if (name === "destino") searchAddress(value, setSugDestino)
@@ -671,7 +672,7 @@ function ClienteUI() {
             {viajeData.chargeId && (
               <div className="info-row">
                 <span className="info-label">ID de Pago:</span>
-                <span className="info-value" style={{fontSize: '11px'}}>{viajeData.chargeId}</span>
+                <span className="info-value" style={{ fontSize: '11px' }}>{viajeData.chargeId}</span>
               </div>
             )}
           </div>
@@ -687,181 +688,361 @@ function ClienteUI() {
       )}
 
       {!viajeSolicitado && (
-        <Card className="floating-card p-4 text-light " style={{zoom: "0.80"}}>
-          <div className="text-end">
-            <Button
-              size="sm"
-              variant="secondary"
-              onClick={() => setMostrarForm(!mostrarForm)}
-              className="mb-2"
-              style={{backgroundColor:"#16a094ff"}}
-            >
-              {mostrarForm ? "Ocultar formulario 🔼" : "Mostrar formulario 🔽"}
-            </Button>
-          </div>
+        <div className="floating-left-container">
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => setMostrarForm(!mostrarForm)}
+            className="mb-2"
+            style={{ backgroundColor: "#16a094ff" }}
+          >
+            {mostrarForm ? "Ocultar 🔼" : "Mostrar 🔽"}
+          </Button>
 
-          <Collapse in={mostrarForm}>
-            <div>
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <h4 className="fw-bold">Solicitar un servicio</h4>
-                <Button className="invert-btn" onClick={invertir}>⇅</Button>
+          {mostrarForm && (
+            <Card className=" bg-dark text-white formulario-container" >
+              <div className="header-card">
+                <h3>Solicitar un servicio</h3>
+                <button className="invert-btn" onClick={invertir}>⇅</button>
               </div>
 
               {precio && distancia && (
-                <div className="price-box mb-3">
-                  <div>
-                    <span className="price-title">Distancia:</span>
-                    <span className="price-subtitle"> {distancia} km</span>
-                  </div>
-                  <div>
-                    <span className="price-title">Costo estimado:</span>
-                    <span className="price-value"> S/ {precio}</span>
-                  </div>
+                <div className="summary">
+                  <div><span className="label">Distancia:</span> {distancia} km</div>
+                  <div><span className="label">Costo:</span> S/ {precio}</div>
                 </div>
               )}
 
               <Form onSubmit={handleSubmit}>
-                <Row className="g-4">
+                <div className="r-accordion-item">
+                  <div
+                    className="accordion-label"
+                    onClick={() => {
+                      setOpenSection(prev =>
+                        prev.includes("nombre")
+                          ? prev.filter(x => x !== "nombre")
+                          : [...prev, "nombre"]
+                      );
+                    }}                  >
+                    Nombre
+                  </div>
 
-                  <Col xs={12} md={6}>
-                    <Form.Group>
-                      <Form.Label className="fw-semibold">Nombre</Form.Label>
+                  {openSection.includes("nombre") && (
+                    <>
                       <Form.Control
                         type="text"
                         name="nombre"
                         value={formData.nombre}
                         onChange={handleChange}
-                        placeholder="Tu nombre"
                         isInvalid={!!errors.nombre}
                         required
+                        className="accordion-input"
                       />
                       <Form.Control.Feedback type="invalid">
                         {errors.nombre}
                       </Form.Control.Feedback>
-                    </Form.Group>
-                  </Col>
+                    </>
+                  )}
+                </div>
 
-                  <Col xs={12} md={6}>
-                    <Form.Group>
-                      <Form.Label className="fw-semibold">Apellido</Form.Label>
+                <div className="r-accordion-item">
+                  <div
+                    className="accordion-label"
+                    onClick={() => {
+                      setOpenSection(prev =>
+                        prev.includes("apellido")
+                          ? prev.filter(x => x !== "apellido")
+                          : [...prev, "apellido"]
+                      );
+                    }}                  >
+                    Apellido
+                  </div>
+
+                  {openSection.includes("apellido") && (
+                    <>
+
                       <Form.Control
                         type="text"
                         name="apellido"
                         value={formData.apellido}
                         onChange={handleChange}
-                        placeholder="Tu apellido"
                         isInvalid={!!errors.apellido}
                         required
+                        className="accordion-input"
                       />
                       <Form.Control.Feedback type="invalid">
                         {errors.apellido}
                       </Form.Control.Feedback>
-                    </Form.Group>
-                  </Col>
+                    </>
+                  )}
+                </div>
 
-                  <Col xs={12}>
-                    <Form.Group>
-                      <Form.Label className="fw-semibold">Email</Form.Label>
+                <div className="r-accordion-item">
+                  <div
+                    className="accordion-label"
+                    onClick={() => {
+                      setOpenSection(prev =>
+                        prev.includes("email")
+                          ? prev.filter(x => x !== "email")
+                          : [...prev, "email"]
+                      );
+                    }}                  >
+                    Email
+                  </div>
+
+                  {openSection.includes("email") && (
+                    <>
                       <Form.Control
                         type="email"
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
-                        placeholder="tu@email.com"
                         isInvalid={!!errors.email}
                         required
+                        className="accordion-input"
                       />
                       <Form.Control.Feedback type="invalid">
                         {errors.email}
                       </Form.Control.Feedback>
-                    </Form.Group>
-                  </Col>
+                    </>
+                  )}
+                </div>
 
-                  <Col xs={12} md={6} className="position-relative">
-                    <Form.Group>
-                      <Form.Label className="fw-semibold">Punto de inicio</Form.Label>
+                <div className="r-accordion-item position-relative">
+                  <div
+                    className="accordion-label"
+                    onClick={() => {
+                      setOpenSection(prev =>
+                        prev.includes("origen")
+                          ? prev.filter(x => x !== "origen")
+                          : [...prev, "origen"]
+                      );
+                    }}                  >
+                    Punto de inicio
+                  </div>
+
+                  {openSection.includes("origen") && (
+                    <div>
                       <Form.Control
                         ref={origenRef}
                         type="text"
                         name="origen"
                         value={formData.origen}
                         onChange={handleChange}
-                        required
+                        className="accordion-input"
                       />
+
                       {sugOrigen.length > 0 && (
                         <ListGroup className="suggest-box" style={{ width: anchoOrigen }}>
                           {sugOrigen.map((s, i) => (
-                            <ListGroup.Item key={i} action onClick={() => handleSelectSuggestion(s, "origen")}>
+                            <ListGroup.Item
+                              key={i}
+                              action
+                              onClick={() => handleSelectSuggestion(s, "origen")}
+                            >
                               {s.display_name}
                             </ListGroup.Item>
                           ))}
                         </ListGroup>
                       )}
-                    </Form.Group>
-                  </Col>
+                    </div>
+                  )}
+                </div>
 
-                  <Col xs={12} md={6} className="position-relative">
-                    <Form.Group>
-                      <Form.Label className="fw-semibold">Destino</Form.Label>
+                <div className="r-accordion-item position-relative">
+                  <div
+                    className="accordion-label"
+                    onClick={() => {
+                      setOpenSection(prev =>
+                        prev.includes("destino")
+                          ? prev.filter(x => x !== "destino")
+                          : [...prev, "destino"]
+                      );
+                    }}                  >
+                    Destino
+                  </div>
+
+                  {openSection.includes("destino") && (
+                    <div>
                       <Form.Control
                         ref={destinoRef}
                         type="text"
                         name="destino"
                         value={formData.destino}
                         onChange={handleChange}
-                        required
+                        className="accordion-input"
                       />
+
                       {sugDestino.length > 0 && (
                         <ListGroup className="suggest-box" style={{ width: anchoDestino }}>
                           {sugDestino.map((s, i) => (
-                            <ListGroup.Item key={i} action onClick={() => handleSelectSuggestion(s, "destino")}>
+                            <ListGroup.Item
+                              key={i}
+                              action
+                              onClick={() => handleSelectSuggestion(s, "destino")}
+                            >
                               {s.display_name}
                             </ListGroup.Item>
                           ))}
                         </ListGroup>
                       )}
-                    </Form.Group>
-                  </Col>
+                    </div>
+                  )}
+                </div>
 
-                  <Col xs={12} md={4}>
-                    <Form.Group>
-                      <Form.Label className="fw-semibold">Tipo de carga</Form.Label>
-                      <Form.Select name="tipo" value={formData.tipo} onChange={handleChange} required>
-                        <option value="">Seleccionar...</option>
-                        <option>Mudanza</option>
-                        <option>Productos grandes</option>
-                        <option>Industrial</option>
-                        <option>Comercial</option>
-                      </Form.Select>
-                    </Form.Group>
-                  </Col>
+                <div className="r-accordion-item">
+                  <div
+                    className="accordion-label"
+                    onClick={() => {
+                      setOpenSection(prev =>
+                        prev.includes("tipo")
+                          ? prev.filter(x => x !== "tipo")
+                          : [...prev, "tipo"]
+                      );
+                    }}                  >
+                    Tipo de carga
+                  </div>
 
-                  <Col xs={12} md={8}>
-                    <Form.Group>
-                      <Form.Label className="fw-semibold">Comentarios adicionales</Form.Label>
-                      <Form.Control
-                        as="textarea"
-                        rows={1}
-                        name="comentarios"
-                        value={formData.comentarios}
-                        onChange={handleChange}
-                      />
-                    </Form.Group>
-                  </Col>
-                </Row>
+                  {openSection.includes("tipo") && (
+                    <Form.Select
+                      name="tipo"
+                      value={formData.tipo}
+                      onChange={handleChange}
+                      className="accordion-input"
+                    >
+                      <option value="">Seleccionar…</option>
+                      <option>Mudanza</option>
+                      <option>Productos grandes</option>
+                      <option>Industrial</option>
+                      <option>Comercial</option>
+                    </Form.Select>
+                  )}
+                </div>
+
+                <div className="r-accordion-item">
+                  <div
+                    className="accordion-label"
+                    onClick={() => {
+                      setOpenSection(prev =>
+                        prev.includes("comentarios")
+                          ? prev.filter(x => x !== "comentarios")
+                          : [...prev, "comentarios"]
+                      );
+                    }}                  >
+                    Comentarios adicionales
+                  </div>
+
+                  {openSection.includes("comentarios") && (
+                    <Form.Control
+                      as="textarea"
+                      rows={2}
+                      name="comentarios"
+                      value={formData.comentarios}
+                      onChange={handleChange}
+                      className="accordion-input"
+                    />
+                  )}
+                </div>
 
                 <div className="text-end mt-3">
-                  <Button type="submit" className="fw-bold px-4 py-2" variant="info" disabled={buscando}>
+                  <button type="submit" className="uber-pay-btn" disabled={buscando}>
                     Continuar al pago
-                  </Button>
+                  </button>
                 </div>
+
               </Form>
-            </div>
-          </Collapse>
-        </Card>
+            </Card>
+          )}
+        </div>
       )}
 
       <style>{`
+      
+      .formulario-container {
+        max-height: 80vh;
+        overflow-y: auto;
+        scrollbar-width: none;
+      }
+      .formulario-container::-webkit-scrollbar {
+        display: none;
+      }
+        .header-card {
+          display: flex;
+          align-items: center; 
+          justify-content: space-between; 
+          gap: 12px;
+          margin-bottom: 5px;
+          }
+
+        .r-accordion-item {
+            margin-bottom: 12px;
+            background: rgba(206, 194, 194, 0.1)
+          }
+        .accordion-label {
+          background: rgba(133, 125, 125, 0.1);
+          padding: 12px;
+          border-radius: 6px;
+          color: #e9e7e7ff;
+          font-weight: bold;
+          cursor: pointer;
+          transition: .2s;
+          }
+
+        .accordion-label:hover {
+            background: rgba(76, 75, 75, 0.18);
+          }
+
+        .accordion-input {
+            margin-top: 8px;
+            border-radius: 6px;
+            border: none;
+            padding: 10px;
+            color:white;
+            background: rgba(238, 231, 231, 0.18)
+          }
+
+      
+        .floating-left-container {
+          position: absolute;
+          top: 120px; /* separa del borde superior */
+          left: 30px; /* separa del borde izquierdo */
+          z-index: 2000;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .floating-left-card {
+          background: rgba(20,27,54,0.9);
+          border-radius: 25px;
+          backdrop-filter: blur(15px);
+          box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+          width: 500px;
+          max-width: 90vw;
+          margin-top: 10px;
+        }
+        .accordion-input.form-select,
+        .accordion-input select {
+          background: rgba(238, 231, 231, 0.18) !important;
+          color: white !important;
+          border: none !important;
+        }
+
+        .accordion-input.form-select option {
+          background: #1f1f1f !important;
+          color: white !important;
+        }
+        @media (max-width: 768px) {
+          .floating-left-card {
+            width: 90vw;
+          }
+        }
+        .accordion-input:focus {
+          background: rgba(238, 231, 231, 0.18) !important;
+          color: white !important;
+          outline: none !important;
+          box-shadow: 0 0 0 2px #16a09488 !important; /* borde suave */
+        }
         .map-container { position: relative; width: 100%; height: 100vh; }
         .map-element { width: 100%; height: 100%; }
         .stats-panel-bottom-left {
