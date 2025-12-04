@@ -1,16 +1,33 @@
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import GoogleMapView from "../components/GoogleMapView"
 import { geocodeAddress } from "../services/maps"
 import { useConductorViajes } from "../hooks/useConductorViajes"
+import { useAuth } from "../hooks/useAuth"
 import { FormularioConductor } from "../components/FormularioConductor"
 import { ModalViajeTerminado } from "../components/ModalViajeTerminado"
+
 
 function ConductorUI() {
   const [position, setPosition] = useState([-12.0464, -77.0428])
   const [directionsRequest, setDirectionsRequest] = useState(null)
   const [viajeConcluido, setViajeConcluido] = useState(false)
   
-  const DRIVER_ID = 1
+  // Variable que almacenará el ID del conductor
+  const [DRIVER_ID, setDRIVER_ID] = useState(null)
+  const { getProfile } = useAuth()
+
+  useEffect(() => {
+    const fetchDriverId = async () => {
+      try {
+        const profile = await getProfile()
+        setDRIVER_ID(profile.id)
+        console.log("Driver ID obtenido:", profile.id)
+      } catch (error) {
+        console.error("Error al obtener el ID del conductor:", error)
+      }
+    }
+    fetchDriverId()
+  }, [])
 
   const {
     viajeAsignado,
@@ -23,6 +40,7 @@ function ConductorUI() {
     resetearViaje
   } = useConductorViajes(DRIVER_ID)
 
+
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -31,6 +49,7 @@ function ConductorUI() {
       )
     }
   }, [])
+
 
   useEffect(() => {
     if (viajeAsignado && estadoViaje) {
@@ -42,6 +61,7 @@ function ConductorUI() {
     }
   }, [estadoViaje, viajeAsignado])
 
+
   const getCoordinates = async (direccion) => {
     try {
       const res = await geocodeAddress(direccion)
@@ -52,6 +72,7 @@ function ConductorUI() {
       return null
     }
   }
+
 
   const mostrarRutaAlOrigen = async () => {
     if (navigator.geolocation && viajeAsignado) {
@@ -75,8 +96,10 @@ function ConductorUI() {
     }
   }
 
+
   const mostrarRutaAlDestino = async () => {
     if (!viajeAsignado) return
+
 
     const coordOrigen = viajeAsignado.origenLat && viajeAsignado.origenLng
       ? [viajeAsignado.origenLat, viajeAsignado.origenLng]
@@ -94,6 +117,7 @@ function ConductorUI() {
     }
   }
 
+
   const handleDirigirme = async () => {
     const success = await dirigirme()
     if (success) {
@@ -101,12 +125,14 @@ function ConductorUI() {
     }
   }
 
+
   const handleIniciarViaje = async () => {
     const success = await iniciarViaje()
     if (success) {
       await mostrarRutaAlDestino()
     }
   }
+
 
   const handleFinalizarViaje = async () => {
     const success = await finalizarViaje()
@@ -121,9 +147,11 @@ function ConductorUI() {
     }
   }
 
+
   return (
     <div className="app-layout">
       <ModalViajeTerminado mostrar={viajeConcluido} />
+
 
       <div className="left-sidebar">
         <FormularioConductor
@@ -137,6 +165,7 @@ function ConductorUI() {
         />
       </div>
 
+
       <div className="map-container">
         <GoogleMapView
           center={{ lat: position[0], lng: position[1] }}
@@ -146,6 +175,7 @@ function ConductorUI() {
         />
       </div>
 
+
       <style>{`
         * {
           box-sizing: border-box;
@@ -153,11 +183,13 @@ function ConductorUI() {
           padding: 0;
         }
 
+
         html, body {
           overflow: hidden;
           height: 100%;
           width: 100%;
         }
+
 
         .app-layout {
           display: flex;
@@ -171,6 +203,7 @@ function ConductorUI() {
           overflow: hidden;
         }
 
+
         .left-sidebar {
           width: 420px;
           min-width: 420px;
@@ -181,6 +214,7 @@ function ConductorUI() {
           overflow: hidden;
         }
 
+
         .map-container {
           flex: 1;
           height: 100%;
@@ -189,12 +223,14 @@ function ConductorUI() {
           overflow: hidden;
         }
 
+
         @media (max-width: 768px) {
           .app-layout {
             flex-direction: column;
             top: 80px;
             height: calc(100vh - 80px);
           }
+
 
           .left-sidebar {
             width: 100%;
@@ -211,6 +247,7 @@ function ConductorUI() {
             overflow: hidden;
           }
 
+
           .map-container {
             width: 100%;
             height: 100%;
@@ -226,5 +263,6 @@ function ConductorUI() {
     </div>
   )
 }
+
 
 export default ConductorUI

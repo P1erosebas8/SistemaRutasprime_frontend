@@ -50,7 +50,16 @@ export const useClienteViajes = () => {
           estado: viaje.estado,
           pagoExitoso: true,
           origenCoord: [viaje.origenLat, viaje.origenLng],
-          destinoCoord: [viaje.destinoLat, viaje.destinoLng]
+          destinoCoord: [viaje.destinoLat, viaje.destinoLng],
+          conductorId: viaje.conductorId,
+          conductorNombres: viaje.conductorNombres,
+          conductorApellidos: viaje.conductorApellidos,
+          conductorCelular: viaje.conductorCelular,
+          conductorEmail: viaje.conductorEmail,
+          vehiculoPlaca: viaje.vehiculoPlaca,
+          vehiculoMarca: viaje.vehiculoMarca,
+          vehiculoColor: viaje.vehiculoColor,
+          vehiculoAnio: viaje.vehiculoAnio
         })
         iniciarPollingEstado(viaje.id)
       }
@@ -77,7 +86,16 @@ export const useClienteViajes = () => {
           
           setViajeData(prev => ({
             ...prev,
-            estado: viajeActualizado.estado
+            estado: viajeActualizado.estado,
+            conductorId: viajeActualizado.conductorId,
+            conductorNombres: viajeActualizado.conductorNombres,
+            conductorApellidos: viajeActualizado.conductorApellidos,
+            conductorCelular: viajeActualizado.conductorCelular,
+            conductorEmail: viajeActualizado.conductorEmail,
+            vehiculoPlaca: viajeActualizado.vehiculoPlaca,
+            vehiculoMarca: viajeActualizado.vehiculoMarca,
+            vehiculoColor: viajeActualizado.vehiculoColor,
+            vehiculoAnio: viajeActualizado.vehiculoAnio
           }))
 
           if (viajeActualizado.estado === 'COMPLETADO') {

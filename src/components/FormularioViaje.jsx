@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react"
 import { Form, ListGroup, Spinner } from "react-bootstrap"
+import { useAuth } from "../hooks/useAuth"
+
 
 export const FormularioViaje = ({ 
   onSubmit, 
@@ -30,6 +32,29 @@ export const FormularioViaje = ({
   const searchTimer = useRef(null)
   const abortRef = useRef(null)
   const cacheRef = useRef(new Map())
+  
+  const { getProfile } = useAuth()
+
+  useEffect(() => {
+    const cargarDatosUsuario = async () => {
+      try {
+        const profile = await getProfile()
+        setFormData(prev => ({
+          ...prev,
+          nombre: profile.nombres || "",
+          apellido: profile.apellidos || "",
+          email: profile.email || ""
+        }))
+      } catch (error) {
+        console.error("Error al cargar datos del usuario:", error)
+      }
+    }
+    
+    if (!viajeActivo) {
+      cargarDatosUsuario()
+    }
+  }, [])
+
 
   useEffect(() => {
     if (!viajeActivo) {
@@ -50,12 +75,13 @@ export const FormularioViaje = ({
     }
   }, [viajeActivo])
 
+
   useEffect(() => {
     if (onCoordinatesChange && origenCoord && destinoCoord) {
-      console.log("Notificando coordenadas al padre:", { origenCoord, destinoCoord })
       onCoordinatesChange({ origenCoord, destinoCoord })
     }
   }, [origenCoord, destinoCoord, onCoordinatesChange])
+
 
   const searchAddress = (query, setter) => {
     if (!query || query.trim().length < 3) {
@@ -93,9 +119,9 @@ export const FormularioViaje = ({
     }, 300)
   }
 
+
   const handleSelectSuggestion = (item, tipo) => {
     const coords = [parseFloat(item.lat), parseFloat(item.lon)]
-    console.log(`Seleccionado ${tipo}:`, coords, item.display_name)
     
     if (tipo === "origen") {
       setFormData((p) => ({ ...p, origen: item.display_name }))
@@ -109,12 +135,14 @@ export const FormularioViaje = ({
     }
   }
 
+
   const validateName = (name, field) => {
     const regex = /^[a-záéíóúñA-ZÁÉÍÓÚÑ\s]+$/
     if (!name.trim()) return `El ${field} es requerido`
     if (!regex.test(name)) return `El ${field} solo debe contener letras`
     return null
   }
+
 
   const validateEmail = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -123,10 +151,9 @@ export const FormularioViaje = ({
     return null
   }
 
+
   const handleSubmit = (e) => {
     e.preventDefault()
-
-    console.log("Envío del formulario:", { origenCoord, destinoCoord, precio })
 
     const newErrors = {}
     const nombreError = validateName(formData.nombre, "nombre")
@@ -155,6 +182,7 @@ export const FormularioViaje = ({
     onSubmit({ formData, origenCoord, destinoCoord })
   }
 
+
   const handleChange = (e) => {
     const { name, value } = e.target
 
@@ -181,6 +209,7 @@ export const FormularioViaje = ({
     if (name === "destino") searchAddress(value, setSugDestino)
   }
 
+
   const invertir = () => {
     const textoTemp = formData.origen
     const coordTemp = origenCoord
@@ -188,6 +217,7 @@ export const FormularioViaje = ({
     setOrigenCoord(destinoCoord)
     setDestinoCoord(coordTemp)
   }
+
 
   const getEstadoTexto = (estado) => {
     const estados = {
@@ -200,6 +230,7 @@ export const FormularioViaje = ({
     return estados[estado] || estado
   }
 
+
   const getEstadoColor = (estado) => {
     const colores = {
       'BUSCANDO_CONDUCTOR': '#ff9800',
@@ -210,6 +241,10 @@ export const FormularioViaje = ({
     }
     return colores[estado] || '#666'
   }
+
+
+  const tieneConductorAsignado = viajeActivo && viajeActivo.conductorId && viajeActivo.estado !== 'BUSCANDO_CONDUCTOR' && viajeActivo.estado !== 'CANCELADO'
+
 
   return (
     <div className="sidebar-wrapper">
@@ -247,17 +282,67 @@ export const FormularioViaje = ({
                 </div>
 
                 <div className="viaje-details-card">
-                  <div className="detail-row">
-                    <span className="detail-label">Cliente</span>
-                    <span className="detail-value">
-                      {viajeActivo.nombre} {viajeActivo.apellido}
-                    </span>
-                  </div>
+                  {tieneConductorAsignado ? (
+                    <>
+                      <div className="section-title">Información del Conductor</div>
 
-                  <div className="detail-row">
-                    <span className="detail-label">Email</span>
-                    <span className="detail-value">{formData.email || viajeActivo.email || "N/A"}</span>
-                  </div>
+                      <div className="detail-row">
+                        <span className="detail-label">Conductor</span>
+                        <span className="detail-value">
+                          {viajeActivo.conductorNombres} {viajeActivo.conductorApellidos}
+                        </span>
+                      </div>
+
+                      <div className="detail-row">
+                        <span className="detail-label">Celular</span>
+                        <span className="detail-value">{viajeActivo.conductorCelular}</span>
+                      </div>
+
+                      <div className="detail-row">
+                        <span className="detail-label">Email</span>
+                        <span className="detail-value-small">{viajeActivo.conductorEmail}</span>
+                      </div>
+
+                      <div className="detail-separator"></div>
+
+                      <div className="section-title">Información del Vehículo</div>
+
+                      <div className="detail-row">
+                        <span className="detail-label">Vehículo</span>
+                        <span className="detail-value">
+                          {viajeActivo.vehiculoMarca} {viajeActivo.vehiculoColor}
+                        </span>
+                      </div>
+
+                      <div className="detail-row">
+                        <span className="detail-label">Placa</span>
+                        <span className="detail-value">{viajeActivo.vehiculoPlaca}</span>
+                      </div>
+
+                      <div className="detail-row">
+                        <span className="detail-label">Año</span>
+                        <span className="detail-value">{viajeActivo.vehiculoAnio}</span>
+                      </div>
+
+                      <div className="detail-separator"></div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="detail-row">
+                        <span className="detail-label">Cliente</span>
+                        <span className="detail-value">
+                          {viajeActivo.nombre} {viajeActivo.apellido}
+                        </span>
+                      </div>
+
+                      <div className="detail-row">
+                        <span className="detail-label">Email</span>
+                        <span className="detail-value">{formData.email || viajeActivo.email || "N/A"}</span>
+                      </div>
+
+                      <div className="detail-separator"></div>
+                    </>
+                  )}
 
                   <div className="detail-row">
                     <span className="detail-label">Tipo de servicio</span>
@@ -370,6 +455,8 @@ export const FormularioViaje = ({
                       isInvalid={!!errors.nombre}
                       placeholder="Tu nombre"
                       required
+                      disabled
+                      readOnly
                     />
                     <Form.Control.Feedback type="invalid">
                       {errors.nombre}
@@ -386,6 +473,8 @@ export const FormularioViaje = ({
                       isInvalid={!!errors.apellido}
                       placeholder="Tu apellido"
                       required
+                      disabled
+                      readOnly
                     />
                     <Form.Control.Feedback type="invalid">
                       {errors.apellido}
@@ -402,6 +491,8 @@ export const FormularioViaje = ({
                       isInvalid={!!errors.email}
                       placeholder="correo@ejemplo.com"
                       required
+                      disabled
+                      readOnly
                     />
                     <Form.Control.Feedback type="invalid">
                       {errors.email}
@@ -641,6 +732,19 @@ export const FormularioViaje = ({
           margin-bottom: 20px;
         }
 
+        .section-title {
+          font-size: 15px;
+          font-weight: 700;
+          color: #667eea;
+          margin: 16px 0 8px 0;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .section-title:first-child {
+          margin-top: 0;
+        }
+
         .detail-row {
           display: flex;
           justify-content: space-between;
@@ -823,6 +927,13 @@ export const FormularioViaje = ({
           font-size: 15px;
           transition: all 0.3s;
           width: 100%;
+        }
+
+        .field-group input:disabled,
+        .field-group input[readonly] {
+          background-color: #f5f5f5;
+          cursor: not-allowed;
+          color: #666;
         }
 
         .field-group input:focus,
