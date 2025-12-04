@@ -58,15 +58,15 @@ export const FormularioViaje = ({
 
   useEffect(() => {
     if (!viajeActivo) {
-      setFormData({
-        nombre: "",
-        apellido: "",
-        email: "",
+      setFormData(prev => ({
+        nombre: prev.nombre,
+        apellido: prev.apellido,
+        email: prev.email,
         origen: "",
         destino: "",
         tipo: "",
         comentarios: ""
-      })
+      }))
       setOrigenCoord(null)
       setDestinoCoord(null)
       setSugOrigen([])
@@ -244,7 +244,6 @@ export const FormularioViaje = ({
 
 
   const tieneConductorAsignado = viajeActivo && viajeActivo.conductorId && viajeActivo.estado !== 'BUSCANDO_CONDUCTOR' && viajeActivo.estado !== 'CANCELADO'
-
 
   return (
     <div className="sidebar-wrapper">
