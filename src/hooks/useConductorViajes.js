@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react"
 import { apiRequest } from "../services/api"
 import { guardarViajeConductor, obtenerEstadisticasConductor } from "../services/storageService"
 
+
 export const useConductorViajes = (driverId) => {
   const [viajeAsignado, setViajeAsignado] = useState(null)
   const [estadoViaje, setEstadoViaje] = useState(null)
@@ -9,19 +10,29 @@ export const useConductorViajes = (driverId) => {
   const [estadisticas, setEstadisticas] = useState(null)
   const pollingInterval = useRef(null)
 
+
   // Cargar estadísticas
   useEffect(() => {
     const stats = obtenerEstadisticasConductor()
     setEstadisticas(stats)
   }, [])
 
-  // Verificar viaje activo al cargar
-  useEffect(() => {
-    verificarViajeActivo()
-  }, [])
 
-  // Buscar viajes disponibles
+  // Verificar viaje activo al cargar (solo si driverId está disponible)
   useEffect(() => {
+    if (driverId) {
+      verificarViajeActivo()
+    }
+  }, [driverId])
+
+
+  // Buscar viajes disponibles (solo si driverId está disponible)
+  useEffect(() => {
+    if (!driverId) {
+      console.log("Esperando Driver ID...")
+      return
+    }
+
     if (!viajeAsignado && buscandoViaje) {
       buscarViajesDisponibles()
       
@@ -30,16 +41,20 @@ export const useConductorViajes = (driverId) => {
       }, 3000)
     }
 
+
     return () => {
       if (pollingInterval.current) {
         clearInterval(pollingInterval.current)
       }
     }
-  }, [viajeAsignado, buscandoViaje])
+  }, [viajeAsignado, buscandoViaje, driverId])
+
 
   const verificarViajeActivo = async () => {
+    if (!driverId) return
+    
     try {
-      console.log("Verificando viaje activo del conductor...")
+      console.log("Verificando viaje activo del conductor:", driverId)
       const response = await apiRequest(
         `/driver/active-trip?driverId=${driverId}`, 
         "GET", 
@@ -94,7 +109,10 @@ export const useConductorViajes = (driverId) => {
     }
   }
 
+
   const buscarViajesDisponibles = async () => {
+    if (!driverId) return
+    
     try {
       console.log("Buscando viajes disponibles...")
       const response = await apiRequest("/driver/available-trips", "GET", null, false)
@@ -111,9 +129,15 @@ export const useConductorViajes = (driverId) => {
     }
   }
 
+
   const aceptarViaje = async (viaje) => {
+    if (!driverId) {
+      console.error("No se puede aceptar viaje sin driverId")
+      return
+    }
+    
     try {
-      console.log("Aceptando viaje ID:", viaje.id)
+      console.log("Aceptando viaje ID:", viaje.id, "con driverId:", driverId)
       
       const response = await apiRequest("/driver/accept-trip", "POST", {
         viajeId: viaje.id,
@@ -149,13 +173,16 @@ export const useConductorViajes = (driverId) => {
       }
     } catch (error) {
       console.error("Error al aceptar viaje:", error)
-      if (error.message.includes("ya no está disponible")) {
+      if (error.message && error.message.includes("ya no está disponible")) {
         console.log("Viaje ya tomado, buscando otro...")
       }
     }
   }
 
+
   const actualizarEstadoViaje = async (nuevoEstado) => {
+    if (!driverId) return false
+    
     try {
       await apiRequest("/driver/update-status", "PUT", {
         viajeId: viajeAsignado.id,
@@ -169,6 +196,7 @@ export const useConductorViajes = (driverId) => {
     }
   }
 
+
   const dirigirme = async () => {
     const success = await actualizarEstadoViaje("EN_CAMINO")
     if (success) {
@@ -177,6 +205,7 @@ export const useConductorViajes = (driverId) => {
     return success
   }
 
+
   const iniciarViaje = async () => {
     const success = await actualizarEstadoViaje("EN_PROGRESO")
     if (success) {
@@ -184,6 +213,7 @@ export const useConductorViajes = (driverId) => {
     }
     return success
   }
+
 
   const finalizarViaje = async () => {
     const success = await actualizarEstadoViaje("COMPLETADO")
@@ -195,11 +225,13 @@ export const useConductorViajes = (driverId) => {
     return false
   }
 
+
   const resetearViaje = () => {
     setViajeAsignado(null)
     setEstadoViaje(null)
     setBuscandoViaje(true)
   }
+
 
   return {
     viajeAsignado,
