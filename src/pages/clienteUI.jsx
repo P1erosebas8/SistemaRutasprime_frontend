@@ -833,7 +833,7 @@ function ClienteUI() {
                       />
 
                       {sugOrigen.length > 0 && (
-                        <ListGroup className="suggest-box">
+                        <ListGroup className="suggest-box" style={{ width: anchoOrigen }}>
                           {sugOrigen.map((s, i) => (
                             <ListGroup.Item
                               key={i}
@@ -874,7 +874,7 @@ function ClienteUI() {
                       />
 
                       {sugDestino.length > 0 && (
-                        <ListGroup className="suggest-box">
+                        <ListGroup className="suggest-box" style={{ width: anchoDestino }}>
                           {sugDestino.map((s, i) => (
                             <ListGroup.Item
                               key={i}
