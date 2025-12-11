@@ -1,38 +1,39 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { useAuthAdmin } from "../hooks/useAuthAdmin";
+import React, { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import "bootstrap/dist/css/bootstrap.min.css"
+import { useAuthAdmin } from "../hooks/useAuthAdmin"
+import BgLoginAdmin from "../assets/bg-loginadmin.png"
+import Logo from "../assets/Logo.png"
 
 function LogInAdmin() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const { loginAdmin, loading } = useAuthAdmin();
-  const navigate = useNavigate();
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const { loginAdmin, loading } = useAuthAdmin()
+  const navigate = useNavigate()
 
   useEffect(() => {
-    const token = localStorage.getItem("adminToken");
-    const roles = localStorage.getItem("adminRoles");
-
+    const token = localStorage.getItem("adminToken")
+    const roles = localStorage.getItem("adminRoles")
     if (token && roles) {
-      navigate("/DashBoardPrincipal");
+      navigate("/DashBoardPrincipal")
     }
-  }, [navigate]);
+  }, [navigate])
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      await loginAdmin(email, password);
-      navigate("/DashBoardPrincipal");
+      await loginAdmin(email, password)
+      navigate("/DashBoardPrincipal")
     } catch (error) {
-      console.error("Error al iniciar sesión:", error);
+      console.error("Error al iniciar sesión:", error)
     }
-  };
+  }
 
   return (
     <div
       className="vh-100 d-flex align-items-center justify-content-center"
       style={{
-        backgroundImage: "url('src/assets/bg-loginadmin.png')",
+        backgroundImage: `url(${BgLoginAdmin})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
@@ -51,7 +52,7 @@ function LogInAdmin() {
             style={{ background: "#1e2a52" }}
           >
             <img
-              src="src/assets/Logo.png"
+              src={Logo}
               alt="Logo"
               style={{ width: "140px", marginBottom: "15px" }}
             />
@@ -92,6 +93,7 @@ function LogInAdmin() {
                 <button type="submit" className="btn btn-dark w-100 mb-3" disabled={loading}>
                   {loading ? "Ingresando..." : "Ingresar"}
                 </button>
+
                 <p className="text-center text-muted" style={{ fontSize: "0.9rem" }}>
                   Acceso exclusivo para administradores
                 </p>
@@ -101,7 +103,7 @@ function LogInAdmin() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default LogInAdmin;
+export default LogInAdmin

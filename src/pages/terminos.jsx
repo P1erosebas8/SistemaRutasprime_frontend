@@ -1,5 +1,6 @@
 import HeroSection from "../components/HeroSection";
 import { Container } from "react-bootstrap";
+import FondoOscuro from "../assets/FonfoOscuro.jpg";
 
 function Terminos() {
   return (
@@ -7,7 +8,7 @@ function Terminos() {
       <HeroSection
         title="TERMINOS Y CONDICIONES"
         subtitle=""
-        background="src/assets/FonfoOscuro.jpg"
+        background={FondoOscuro}
         height="60vh"
         align="center"
         backgroundPosition="center top"

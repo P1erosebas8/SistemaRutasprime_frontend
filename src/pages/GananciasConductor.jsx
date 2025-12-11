@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, Table, Badge, Button, ProgressBar } from "react-bootstrap";
 import HeroSection from "../components/HeroSection";
 import { obtenerViajesConductor, obtenerEstadisticasConductor } from "../services/storageService";
+import FondoAuth from "../assets/FondosAuth.jpg";
 
 function Ganancias() {
   const [viajes, setViajes] = useState([]);
@@ -37,7 +38,7 @@ function Ganancias() {
         title="Mis Ganancias"
         subtitle="Panel de control de ingresos"
         description="Revisa tus ganancias, viajes completados y estadísticas de rendimiento"
-        background="src/assets/FondosAuth.jpg"
+        background={FondoAuth}
         height="60vh"
         align="center"
         backgroundPosition="center top"

@@ -1,5 +1,6 @@
 import { Container, Row, Col, Card } from "react-bootstrap";
 import HeroSection from "../components/HeroSection";
+import ContactanosImg from "../assets/contactanos.jpeg";
 
 function Rutas() {
   const rutas = [
@@ -19,7 +20,7 @@ function Rutas() {
       <HeroSection
         title="Rutas"
         subtitle="Nuestras rutas habituales"
-        background="src/assets/contactanos.jpeg"
+        background={ContactanosImg}
         height="50vh"
         align="center"
         backgroundPosition="center top"
@@ -35,15 +36,13 @@ function Rutas() {
                     <Card.Title>
                       {ruta.origen} → {ruta.destino}
                     </Card.Title>
-                    <Card.Text>
-                      ⏱ {ruta.duracion} <br />
-                    </Card.Text>
+                    <Card.Text>⏱ {ruta.duracion}</Card.Text>
                   </Card.Body>
                 </Card>
               </Col>
             ))}
           </Row>
-          <h2 className="text-center mb-4">Viaja por todo el Pais con RutasPrime!</h2>
+          <h2 className="text-center mb-4">Viaja por todo el País con RutasPrime!</h2>
         </Container>
       </section>
     </>

@@ -5,6 +5,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import PasswordInput from "../components/Auth/PasswordInput";
 import HeroSection from "../components/HeroSection";
 import { validateProfileUpdate } from "../utils/validators";
+import FondosAuth from "../assets/FondosAuth.jpg";
 
 function Profile() {
   const { getProfile, logout, updateProfile, changePassword } = useAuth();
@@ -73,12 +74,8 @@ function Profile() {
   };
 
   const handleChangePassword = async () => {
-    if (!oldPassword || !newPassword || !confirmPassword) {
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      return;
-    }
+    if (!oldPassword || !newPassword || !confirmPassword) return;
+    if (newPassword !== confirmPassword) return;
 
     setLoadingPassword(true);
     try {
@@ -106,7 +103,7 @@ function Profile() {
         title="Mi Perfil"
         subtitle="Gestiona tu información personal y seguridad"
         description="Administra tus datos de manera sencilla, mantén tu información siempre actualizada y controla la seguridad de tu cuenta en un solo lugar."
-        background="src/assets/FondosAuth.jpg"
+        background={FondosAuth}
         height="80vh"
         align="center"
         backgroundPosition="center top"
@@ -115,6 +112,7 @@ function Profile() {
       <section className="py-5 text-white" style={{ backgroundColor: "#141414" }}>
         <div className="container">
           <h2 className="text-center mb-4">Perfil de Usuario</h2>
+
           <div className="card shadow p-4 text-dark mx-auto" style={{ maxWidth: "700px" }}>
             <p><strong>Nombre:</strong> {user.nombres}</p>
             <p><strong>Apellidos:</strong> {user.apellidos}</p>
@@ -124,8 +122,8 @@ function Profile() {
             <p><strong>Celular:</strong> {user.celular}</p>
 
             <div className="mt-4">
-
               <h5 className="text-center fw-bold mb-3">Configuración de Cuenta</h5>
+
               <div className="row row-cols-1 row-cols-md-2 g-3 mb-4">
                 <div className="col">
                   <button className="btn btn-warning w-100" onClick={() => setShowUpdate(true)}>
@@ -145,19 +143,13 @@ function Profile() {
                   <h5 className="text-center fw-bold mb-3">Panel Financiero</h5>
                   <div className="row row-cols-1 row-cols-md-2 g-3 mb-4">
                     <div className="col">
-                      <button
-                        className="btn btn-dark w-100"
-                        onClick={() => navigate("/ganancias")}
-                      >
+                      <button className="btn btn-dark w-100" onClick={() => navigate("/ganancias")}>
                         Panel de Ganancias
                       </button>
                     </div>
 
                     <div className="col">
-                      <button
-                        className="btn btn-secondary w-100"
-                        onClick={() => navigate("/mis-gastos")}
-                      >
+                      <button className="btn btn-secondary w-100" onClick={() => navigate("/mis-gastos")}>
                         Mis Gastos
                       </button>
                     </div>
@@ -170,10 +162,7 @@ function Profile() {
                   <h5 className="text-center fw-bold mb-3">Panel de Gastos</h5>
                   <div className="row g-3 mb-4">
                     <div className="col">
-                      <button
-                        className="btn btn-secondary w-100"
-                        onClick={() => navigate("/mis-gastos")}
-                      >
+                      <button className="btn btn-secondary w-100" onClick={() => navigate("/mis-gastos")}>
                         Mis Gastos
                       </button>
                     </div>
@@ -185,17 +174,11 @@ function Profile() {
               <div className="row row-cols-1 row-cols-md-2 g-3 mb-4">
                 <div className="col">
                   {user.roles.length > 1 ? (
-                    <button
-                      className="btn btn-primary w-100"
-                      onClick={() => navigate("/ElegCliConduc")}
-                    >
+                    <button className="btn btn-primary w-100" onClick={() => navigate("/ElegCliConduc")}>
                       Elegir Cliente | Conductor
                     </button>
                   ) : (
-                    <button
-                      className="btn btn-primary w-100"
-                      onClick={() => navigate("/clienteUI")}
-                    >
+                    <button className="btn btn-primary w-100" onClick={() => navigate("/clienteUI")}>
                       Ir al Panel Cliente
                     </button>
                   )}
@@ -203,15 +186,13 @@ function Profile() {
 
                 {user.roles.length === 1 && user.roles[0] === "ROLE_CLIENTE" && (
                   <div className="col">
-                    <button
-                      className="btn btn-success w-100"
-                      onClick={() => navigate("/postular-conductor")}
-                    >
+                    <button className="btn btn-success w-100" onClick={() => navigate("/postular-conductor")}>
                       Postular a Conductor
                     </button>
                   </div>
                 )}
               </div>
+
               <div className="text-center mt-4">
                 <button className="btn btn-danger w-50" onClick={handleLogout}>
                   Cerrar sesión

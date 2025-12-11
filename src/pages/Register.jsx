@@ -7,6 +7,8 @@ import { toast } from "react-toastify";
 import PasswordInput from "../components/Auth/PasswordInput";
 import { validators } from "../utils/validators";
 import { Link, useNavigate } from "react-router-dom";
+import FondosAuth2 from "../assets/FondosAuth2.jpg";
+import DniEjemplo from "../assets/dniejemplo.jpg";
 
 function Register() {
   const { register, loading } = useAuth();
@@ -27,14 +29,12 @@ function Register() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
-
     const error = validators[name] ? validators[name](value) : null;
     setErrors({ ...errors, [name]: error });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     let hasError = false;
     const newErrors = {};
     for (const field in form) {
@@ -46,13 +46,11 @@ function Register() {
         }
       }
     }
-
     if (hasError) {
       setErrors(newErrors);
       Object.values(newErrors).forEach((msg) => toast.error(msg));
       return;
     }
-
     try {
       await register(form);
       setShowOtp(true);
@@ -65,7 +63,7 @@ function Register() {
         title="Registro"
         subtitle="Crea tu cuenta en segundos"
         description="Únete a nuestra comunidad y accede a viajes exclusivos, gestiona tus reservas de manera sencilla y aprovecha beneficios pensados para ti."
-        background="src/assets/FondosAuth2.jpg"
+        background={FondosAuth2}
         height="80vh"
         align="center"
         backgroundPosition="center top"
@@ -77,23 +75,17 @@ function Register() {
 
           <div className="row align-items-center justify-content-center">
             <div className="col-lg-5 mb-4 mb-lg-0">
-              <div
-                className="p-4 rounded-3 shadow-sm text-center"
-                style={{ backgroundColor: "#102b4a" }}
-              >
+              <div className="p-4 rounded-3 shadow-sm text-center" style={{ backgroundColor: "#102b4a" }}>
                 <img
-                  src="/src/assets/dniejemplo.jpg"
+                  src={DniEjemplo}
                   alt="Ejemplo de DNI"
                   className="img-fluid rounded mb-3"
                   style={{ maxHeight: "250px", objectFit: "contain" }}
                 />
                 <p className="text-light small text-start">
-                  <strong>Importante:</strong> Escribe tus <strong>nombres</strong> y{" "}
-                  <strong>apellidos</strong> exactamente como aparecen en tu DNI.
+                  <strong>Importante:</strong> Escribe tus <strong>nombres</strong> y <strong>apellidos</strong> exactamente como aparecen en tu DNI.
                   <br />
-                  Se recomienda ingresar tu{" "}
-                  <strong>dirección tal cual figura en el documento</strong>, ya que el
-                  sistema valida tus datos con <strong>RENIEC</strong>.
+                  Se recomienda ingresar tu <strong>dirección tal cual figura en el documento</strong>, ya que el sistema valida tus datos con <strong>RENIEC</strong>.
                 </p>
               </div>
             </div>
@@ -208,9 +200,7 @@ function Register() {
                       Inicia sesión
                     </Link>
                   </small>
-
                   <br />
-
                   <small className="mt-2 d-block">
                     ¿Eres empresa?{" "}
                     <Link to="/FormularioEmpresa" className="text-decoration-none text-warning">
