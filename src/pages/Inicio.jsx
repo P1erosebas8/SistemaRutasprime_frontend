@@ -1,28 +1,26 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-import CargaInic from "../assets/CargaInic.jpg";
-import HeroSection from "../components/HeroSection";
-import ListaConImagen from "../components/ListadoConImagen";
-import CarruselCards from "../components/CaruselConCards";
-import { Link } from "react-router-dom";
-
-
-
+import 'bootstrap/dist/css/bootstrap.min.css'
+import CargaInic from "../assets/CargaInic.jpg"
+import FlotaTransp from "../assets/flota_transp.jpg"
+import HeroSection from "../components/HeroSection"
+import ListaConImagen from "../components/ListadoConImagen"
+import CarruselCards from "../components/CaruselConCards"
 
 function Inicio() {
   const listaInicio = [
     {
       icon: "bi-check-circle-fill",
-      text: "Verificación de seguridad de todos los conductores que incluye verificación de antecedentes criminales negativos",
+      text: "Verificación de seguridad de todos los conductores que incluye verificación de antecedentes criminales negativos"
     },
     {
       icon: "bi-check-circle-fill",
-      text: "Centro de emergencia 24/7 para reporte de incidentes.",
+      text: "Centro de emergencia 24/7 para reporte de incidentes."
     },
     {
       icon: "bi-check-circle-fill",
-      text: "Página centrada en el transporte de carga pesada.",
-    },
-  ];
+      text: "Página centrada en el transporte de carga pesada."
+    }
+  ]
+
   const carruselInicio = [
     { icon: "bi-shield-lock", title: "Seguridad", text: "Tu seguridad es nuestro principal objetivo. Por ello, continuamente desarrollamos nuevas funciones en la aplicación que te harán sentir más protegido en cada viaje." },
     { icon: "bi-cash-coin", title: "Precios Accesibles", text: "Solicita viajes a precios del mercado." },
@@ -30,13 +28,14 @@ function Inicio() {
     { icon: "bi-telephone", title: "Soporte 24/7", text: "Para asistirte con cualquier inconveniente o pregunta, tenemos una central telefónica disponible las 24 horas del día, los siete días de la semana: +51-xxx xxx xxx." },
     { icon: "bi-calendar-event", title: "Disponibilidad", text: "Viajes cuando los necesites." },
     { icon: "bi-geo-alt", title: "Cobertura", text: "Llegamos a más lugares para ti." }
-  ];
+  ]
+
   return (
     <>
       <HeroSection
         title="Bienvenido a Rutas Prime"
         subtitle="Tu seguridad y comodidad en cada viaje"
-        background="src/assets/flota_transp.jpg"
+        background={FlotaTransp}
         height="80vh"
         align="left"
         backgroundPosition="center 40%"
@@ -54,7 +53,7 @@ function Inicio() {
         <CarruselCards features={carruselInicio} />
       </section>
     </>
-  );
+  )
 }
 
-export default Inicio;
+export default Inicio

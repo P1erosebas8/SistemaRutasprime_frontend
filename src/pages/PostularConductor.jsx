@@ -1,44 +1,43 @@
-import { useNavigate } from "react-router-dom";
-import HeroSection from "../components/HeroSection";
-import { useAuth } from "../hooks/useAuth";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom"
+import HeroSection from "../components/HeroSection"
+import { useAuth } from "../hooks/useAuth"
+import { useEffect, useState } from "react"
+import { toast } from "react-toastify"
+import FondoPostulacion from "../assets/FondoPostulación.jpg"
 
 function PostularConductor() {
-  const { getProfile, logout, applyConductor, getSolicitudStatus } = useAuth();
-  const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-  const [datosConductorGuardados, setDatosConductorGuardados] = useState(false);
-  const [datosVehiculoGuardados, setDatosVehiculoGuardados] = useState(false);
-  const [sending, setSending] = useState(false);
+  const { getProfile, logout, applyConductor, getSolicitudStatus } = useAuth()
+  const navigate = useNavigate()
+  const [user, setUser] = useState(null)
+  const [datosConductorGuardados, setDatosConductorGuardados] = useState(false)
+  const [datosVehiculoGuardados, setDatosVehiculoGuardados] = useState(false)
+  const [sending, setSending] = useState(false)
 
-  const solicitudHabilitada = datosConductorGuardados && datosVehiculoGuardados;
+  const solicitudHabilitada = datosConductorGuardados && datosVehiculoGuardados
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const data = await getProfile();
-        setUser(data);
+        const data = await getProfile()
+        setUser(data)
 
-        const estadoResponse = await getSolicitudStatus();
-        const params = new URLSearchParams(window.location.search);
-        const isRetry = params.get("retry") === "true";
-        
+        const estadoResponse = await getSolicitudStatus()
+        const params = new URLSearchParams(window.location.search)
+        const isRetry = params.get("retry") === "true"
+
         if (estadoResponse.success && estadoResponse.data?.estado) {
-          const estado = estadoResponse.data.estado.toUpperCase();
-        
+          const estado = estadoResponse.data.estado.toUpperCase()
           if (["PENDIENTE", "APROBADO"].includes(estado)) {
-            navigate("/solicitud-estado");
-            return;
+            navigate("/solicitud-estado")
+            return
           }
-        
           if (estado === "RECHAZADO" && !isRetry) {
-            navigate("/solicitud-estado");
-            return;
+            navigate("/solicitud-estado")
+            return
           }
-        }                   
+        }
 
-        const datosConductor = JSON.parse(localStorage.getItem("datosConductor"));
+        const datosConductor = JSON.parse(localStorage.getItem("datosConductor"))
         if (datosConductor?.form && datosConductor?.uploaded) {
           const completos =
             datosConductor.form.fechaNacimiento &&
@@ -48,12 +47,12 @@ function PostularConductor() {
             datosConductor.form.antecedentesPenales &&
             datosConductor.uploaded.fotoPersonaLicencia &&
             datosConductor.uploaded.fotoLicencia &&
-            datosConductor.uploaded.antecedentesPenales;
+            datosConductor.uploaded.antecedentesPenales
 
-          if (completos) setDatosConductorGuardados(true);
+          if (completos) setDatosConductorGuardados(true)
         }
 
-        const datosVehiculo = JSON.parse(localStorage.getItem("datosVehiculo"));
+        const datosVehiculo = JSON.parse(localStorage.getItem("datosVehiculo"))
         if (datosVehiculo?.form && datosVehiculo?.uploaded) {
           const completos =
             datosVehiculo.form.placa &&
@@ -67,18 +66,17 @@ function PostularConductor() {
             datosVehiculo.uploaded.tarjetaPropiedad &&
             datosVehiculo.uploaded.tarjetaCirculacion &&
             datosVehiculo.uploaded.soat &&
-            datosVehiculo.uploaded.revisionTecnica;
+            datosVehiculo.uploaded.revisionTecnica
 
-          if (completos) setDatosVehiculoGuardados(true);
+          if (completos) setDatosVehiculoGuardados(true)
         }
-
       } catch {
-        logout();
-        navigate("/login");
+        logout()
+        navigate("/login")
       }
-    };
-    fetchProfile();
-  }, []);
+    }
+    fetchProfile()
+  }, [])
 
   if (!user) {
     return (
@@ -86,98 +84,91 @@ function PostularConductor() {
         <div className="spinner-border text-primary" role="status"></div>
         <p className="mt-2">Cargando información...</p>
       </div>
-    );
+    )
   }
 
   const toFile = (item, name) => {
-    if (item instanceof File) return item;
+    if (item instanceof File) return item
     if (typeof item === "string" && item.startsWith("data:")) {
-      const arr = item.split(",");
-      const mime = arr[0].match(/:(.*?);/)[1];
-      const bstr = atob(arr[1]);
-      let n = bstr.length;
-      const u8arr = new Uint8Array(n);
-      while (n--) u8arr[n] = bstr.charCodeAt(n);
-      return new File([u8arr], name, { type: mime });
+      const arr = item.split(",")
+      const mime = arr[0].match(/:(.*?);/)[1]
+      const bstr = atob(arr[1])
+      let n = bstr.length
+      const u8arr = new Uint8Array(n)
+      while (n--) u8arr[n] = bstr.charCodeAt(n)
+      return new File([u8arr], name, { type: mime })
     }
-    return null;
-  };
+    return null
+  }
 
   const handleEnviarSolicitud = async () => {
-    setSending(true);
+    setSending(true)
     try {
-      const conductorData = JSON.parse(localStorage.getItem("datosConductor"));
-      const vehiculoData = JSON.parse(localStorage.getItem("datosVehiculo"));
+      const conductorData = JSON.parse(localStorage.getItem("datosConductor"))
+      const vehiculoData = JSON.parse(localStorage.getItem("datosVehiculo"))
 
       if (!conductorData || !vehiculoData) {
-        toast.warn("Faltan datos por completar antes de postularte");
-        setSending(false);
-        return;
+        toast.warn("Faltan datos por completar antes de postularte")
+        setSending(false)
+        return
       }
 
-      const formData = new FormData();
+      const formData = new FormData()
 
-      formData.append("fechaNacimiento", conductorData.form.fechaNacimiento);
-      formData.append("numeroLicenciaConducir", conductorData.form.numeroLicenciaConducir);
-      formData.append("idUsuario", user.idUsuario);
+      formData.append("fechaNacimiento", conductorData.form.fechaNacimiento)
+      formData.append("numeroLicenciaConducir", conductorData.form.numeroLicenciaConducir)
+      formData.append("idUsuario", user.idUsuario)
 
-      formData.append("fotoPersonaLicencia", toFile(conductorData.form.fotoPersonaLicencia, "fotoPersonaLicencia.jpg"));
-      formData.append("fotoLicencia", toFile(conductorData.form.fotoLicencia, "fotoLicencia.jpg"));
-      formData.append("antecedentesPenales", toFile(conductorData.form.antecedentesPenales, "antecedentesPenales.jpg"));
+      formData.append("fotoPersonaLicencia", toFile(conductorData.form.fotoPersonaLicencia, "fotoPersonaLicencia.jpg"))
+      formData.append("fotoLicencia", toFile(conductorData.form.fotoLicencia, "fotoLicencia.jpg"))
+      formData.append("antecedentesPenales", toFile(conductorData.form.antecedentesPenales, "antecedentesPenales.jpg"))
 
-      formData.append("placa", vehiculoData.form.placa);
-      formData.append("marca", vehiculoData.form.marca);
-      formData.append("color", vehiculoData.form.color);
-      formData.append("anioFabricacion", vehiculoData.form.anioFabricacion);
-      formData.append("tarjetaPropiedad", toFile(vehiculoData.form.tarjetaPropiedad, "tarjetaPropiedad.jpg"));
-      formData.append("tarjetaCirculacion", toFile(vehiculoData.form.tarjetaCirculacion, "tarjetaCirculacion.jpg"));
-      formData.append("soat", toFile(vehiculoData.form.soat, "soat.jpg"));
-      formData.append("revisionTecnica", toFile(vehiculoData.form.revisionTecnica, "revisionTecnica.jpg"));
+      formData.append("placa", vehiculoData.form.placa)
+      formData.append("marca", vehiculoData.form.marca)
+      formData.append("color", vehiculoData.form.color)
+      formData.append("anioFabricacion", vehiculoData.form.anioFabricacion)
+      formData.append("tarjetaPropiedad", toFile(vehiculoData.form.tarjetaPropiedad, "tarjetaPropiedad.jpg"))
+      formData.append("tarjetaCirculacion", toFile(vehiculoData.form.tarjetaCirculacion, "tarjetaCirculacion.jpg"))
+      formData.append("soat", toFile(vehiculoData.form.soat, "soat.jpg"))
+      formData.append("revisionTecnica", toFile(vehiculoData.form.revisionTecnica, "revisionTecnica.jpg"))
 
-      await applyConductor(formData);
+      await applyConductor(formData)
 
-      toast.success("¡Solicitud enviada correctamente!");
-      localStorage.removeItem("datosConductor");
-      localStorage.removeItem("datosVehiculo");
+      toast.success("¡Solicitud enviada correctamente!")
+      localStorage.removeItem("datosConductor")
+      localStorage.removeItem("datosVehiculo")
 
-      setTimeout(() => window.location.reload(), 1500);
+      setTimeout(() => window.location.reload(), 1500)
     } catch (err) {
-      console.error(err);
-      toast.error(err.message || "Error al enviar la solicitud");
+      toast.error(err.message || "Error al enviar la solicitud")
     } finally {
-      setSending(false);
+      setSending(false)
     }
-  };
+  }
 
   return (
     <>
-      {/* HERO SECTION */}
       <HeroSection
         title="Postulación a Conductor"
         subtitle={`Bienvenido, ${user?.nombres || ""} ${user?.apellidos || ""}`}
         description="Completa los siguientes pasos para comenzar a generar ganancias con tu vehículo."
-        background="src/assets/FondoPostulación.jpg"
+        background={FondoPostulacion}
         height="65vh"
         overlay="rgba(0,0,0,0.45)"
         align="center"
       />
 
-      {/* CONTENIDO */}
       <section className="py-5 text-dark" style={{ backgroundColor: "#f3f4f6" }}>
         <div className="container text-center">
           <h2 className="fw-bold mb-3" style={{ color: "#2563eb" }}>
             Te damos la bienvenida, {user?.nombres || ""} {user?.apellidos || ""}
           </h2>
-          <p className="text-muted mb-5">
-            Completa los pasos para empezar a generar ganancias.
-          </p>
+          <p className="text-muted mb-5">Completa los pasos para empezar a generar ganancias.</p>
 
           <div className="row justify-content-center g-4 mb-4">
-            {/* Tarjeta 1: Datos del Conductor */}
             <div className="col-10 col-sm-6 col-md-4">
               <div
-                className={`card h-100 border-0 shadow-sm hover-card ${datosConductorGuardados ? "datos-guardados" : ""
-                  }`}
+                className={`card h-100 border-0 shadow-sm hover-card ${datosConductorGuardados ? "datos-guardados" : ""}`}
                 style={{
                   cursor: "pointer",
                   backgroundColor: "#ffffff",
@@ -212,26 +203,24 @@ function PostularConductor() {
                     </span>
                   </>
                 )}
+
                 <img
                   src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
                   alt="Conductor"
                   className="img-fluid mx-auto mt-4"
                   style={{ width: "140px", height: "140px", objectFit: "contain" }}
                 />
+
                 <div className="card-body">
                   <h5 className="fw-bold text-dark">Datos del conductor</h5>
-                  {datosConductorGuardados && (
-                    <p className="text-success fw-semibold mb-0">✔ Datos completados</p>
-                  )}
+                  {datosConductorGuardados && <p className="text-success fw-semibold mb-0">✔ Datos completados</p>}
                 </div>
               </div>
             </div>
 
-            {/* Tarjeta 2: Datos del Vehículo */}
             <div className="col-10 col-sm-6 col-md-4">
               <div
-                className={`card h-100 border-0 shadow-sm hover-card ${datosVehiculoGuardados ? "datos-guardados" : ""
-                  }`}
+                className={`card h-100 border-0 shadow-sm hover-card ${datosVehiculoGuardados ? "datos-guardados" : ""}`}
                 style={{
                   cursor: "pointer",
                   backgroundColor: "#ffffff",
@@ -253,6 +242,7 @@ function PostularConductor() {
                         fontSize: "1.8rem",
                       }}
                     ></i>
+
                     <span
                       className="badge bg-success position-absolute top-0 start-0"
                       style={{
@@ -266,28 +256,24 @@ function PostularConductor() {
                     </span>
                   </>
                 )}
+
                 <img
                   src="https://cdn-icons-png.flaticon.com/512/713/713311.png"
                   alt="Vehículo"
                   className="img-fluid mx-auto mt-4"
                   style={{ width: "140px", height: "140px", objectFit: "contain" }}
                 />
+
                 <div className="card-body">
                   <h5 className="fw-bold text-dark">Datos del vehículo</h5>
-                  {datosVehiculoGuardados && (
-                    <p className="text-success fw-semibold mb-0">✔ Datos completados</p>
-                  )}
+                  {datosVehiculoGuardados && <p className="text-success fw-semibold mb-0">✔ Datos completados</p>}
                 </div>
               </div>
             </div>
           </div>
 
-          {/* BOTONES */}
           <div className="d-flex justify-content-center gap-3 mb-5 flex-wrap">
-            <button
-              className="btn btn-lg fw-semibold back-btn"
-              onClick={() => navigate("/profile")}
-            >
+            <button className="btn btn-lg fw-semibold back-btn" onClick={() => navigate("/profile")}>
               ← Volver a mi perfil
             </button>
 
@@ -298,10 +284,7 @@ function PostularConductor() {
             >
               {sending ? (
                 <>
-                  <span
-                    className="spinner-border spinner-border-sm me-2"
-                    role="status"
-                  ></span>
+                  <span className="spinner-border spinner-border-sm me-2" role="status"></span>
                   Enviando...
                 </>
               ) : (
@@ -311,11 +294,8 @@ function PostularConductor() {
           </div>
         </div>
 
-        {/* Estilos */}
         <style>{`
-          .hover-card {
-            transition: all 0.3s ease;
-          }
+          .hover-card { transition: all 0.3s ease; }
           .hover-card:hover {
             transform: translateY(-6px);
             box-shadow: 0 10px 28px rgba(59, 130, 246, 0.15);
@@ -359,7 +339,7 @@ function PostularConductor() {
         `}</style>
       </section>
     </>
-  );
+  )
 }
 
-export default PostularConductor;
+export default PostularConductor

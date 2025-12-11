@@ -2,12 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import HeroSection from "../components/HeroSection";
 import { apiRequest } from "../services/api";
-
+import FondosAuth from "../assets/FondosAuth.jpg";
 
 function ProfileEmpresa() {
   const [empresa, setEmpresa] = useState(null);
   const navigate = useNavigate();
-
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -17,7 +16,6 @@ function ProfileEmpresa() {
           setEmpresa(data.data);
         }
       } catch (error) {
-        console.error("Error al cargar perfil:", error);
         localStorage.removeItem("empresaToken");
         localStorage.removeItem("empresaRUC");
         localStorage.removeItem("empresaNombre");
@@ -28,7 +26,6 @@ function ProfileEmpresa() {
     fetchProfile();
   }, [navigate]);
 
-
   const handleLogout = () => {
     localStorage.removeItem("empresaToken");
     localStorage.removeItem("empresaRUC");
@@ -36,7 +33,6 @@ function ProfileEmpresa() {
     localStorage.removeItem("empresaTipo");
     navigate("/LogInEmpresa");
   };
-
 
   if (!empresa) {
     return (
@@ -47,19 +43,17 @@ function ProfileEmpresa() {
     );
   }
 
-
   return (
     <>
       <HeroSection
         title="Perfil Empresa"
         subtitle="Información corporativa y accesos"
         description="Consulta la información de tu empresa y accede a las herramientas disponibles para gestionar tus servicios."
-        background="src/assets/FondosAuth.jpg"
+        background={FondosAuth}
         height="80vh"
         align="center"
         backgroundPosition="center top"
       />
-
 
       <section className="py-5 text-white" style={{ backgroundColor: "#141414" }}>
         <div className="container">
@@ -71,7 +65,6 @@ function ProfileEmpresa() {
             <p><strong>Teléfono:</strong> {empresa.telefono}</p>
             <p><strong>Representante:</strong> {empresa.nombres} {empresa.apellidos}</p>
             <p><strong>DNI Representante:</strong> {empresa.dni}</p>
-
 
             <div className="mt-4">
               <h5 className="text-center fw-bold mb-3">Servicios</h5>
@@ -86,7 +79,6 @@ function ProfileEmpresa() {
                 </div>
               </div>
 
-
               <h5 className="text-center fw-bold mb-3">Panel Financiero</h5>
               <div className="row g-3 mb-4">
                 <div className="col">
@@ -98,7 +90,6 @@ function ProfileEmpresa() {
                   </button>
                 </div>
               </div>
-
 
               <div className="text-center mt-4">
                 <button className="btn btn-danger w-50" onClick={handleLogout}>
@@ -112,6 +103,5 @@ function ProfileEmpresa() {
     </>
   );
 }
-
 
 export default ProfileEmpresa;

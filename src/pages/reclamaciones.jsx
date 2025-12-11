@@ -1,5 +1,6 @@
 import HeroSection from "../components/HeroSection";
 import { Container, Button } from "react-bootstrap";
+import FonfoOscuro from "../assets/FonfoOscuro.jpg";
 
 function Reclamaciones() {
   return (
@@ -7,7 +8,7 @@ function Reclamaciones() {
       <HeroSection
         title="LIBRO DE RECLAMACIONES"
         subtitle=""
-        background="src/assets/FonfoOscuro.jpg"
+        background={FonfoOscuro}
         height="60vh"
         align="center"
         backgroundPosition="center top"
